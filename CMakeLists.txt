@@ -8,5 +8,4 @@ find_package(GTest)
 
 #target_link_libraries(minishell_tests gtest gtest_main)
 
-
 add_executable(minishell src/main.c)

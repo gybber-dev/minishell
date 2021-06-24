@@ -4,7 +4,11 @@
 
 
 extern "C" {
+<<<<<<< HEAD:tests/test.cpp
 #include "../GoogleTest/project/project.h"
+=======
+#include "../../includes/minishell.h"
+>>>>>>> b69bc247808f96299bcaf0249f527ac120621c4d:GoogleTest/Tests/test.cpp
 }
 
 
