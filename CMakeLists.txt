@@ -21,16 +21,17 @@ add_executable(
 add_executable(
         test_minishell
         tests/test.cpp
-#        src/includes/minishell.h
+        src/includes/minishell.h
+        src/main.c
 )
 
 # Вместо src/includes/minishell.h добавляем заголовочные файлы через
 # https://youtu.be/jyQcCWWcIQU?t=2855
-target_link_directories(
-        test_minishell PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/includes"
-)
+#target_link_directories(
+#        test_minishell PRIVATE
+#        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+#        "${CMAKE_CURRENT_SOURCE_DIR}/src/includes"
+#)
 
 target_link_libraries(
         test_minishell PRIVATE

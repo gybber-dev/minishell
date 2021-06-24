@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-
 #include "includes/minishell.h"
 
 int test_fun(int res)
@@ -9,7 +8,7 @@ int test_fun(int res)
 }
 
 
-int main() {
-    printf("Hello, World!\n");
-    return 0;
-}
+//int main() {
+//    printf("Hello, World!\n");
+//    return 0;
+//}
