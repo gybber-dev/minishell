@@ -4,7 +4,7 @@
 
 
 extern "C" {
-#include "../project/project.h"
+#include "../../includes/minishell.h"
 }
 
 

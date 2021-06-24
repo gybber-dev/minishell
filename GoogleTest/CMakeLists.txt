@@ -11,7 +11,6 @@ include_directories(lib/googletest-master/googlemock/include)
 add_executable(minishell_tests
         main.cpp
         Tests/test.cpp
-
-
+		../includes/minishell.h
+		../main.c
         )
-target_link_libraries(minishell_tests gtest gtest_main)
