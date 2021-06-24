@@ -1,15 +1,12 @@
 cmake_minimum_required(VERSION 3.19)
-project(minishell C)
+project(minishell LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 99)
 
-add_subdirectory(GoogleTest)
+#add_subdirectory(GoogleTest)
+find_package(GTest)
+
+#target_link_libraries(minishell_tests gtest gtest_main)
 
 
-add_executable(minishell main.c)
-
-enable_testing()
-add_test(
-        NAME unit_tests
-        COMMAND minishell_tests
-)
+add_executable(minishell src/main.c)
