@@ -9,6 +9,12 @@ set(CMAKE_C_STANDARD 99)
 FILE(GLOB MINISHELL_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/parser/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/includes/*.h
+)
+
+FILE(GLOB LOCAL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/includes/*.h
 )
 # Create copy of the variable for tests
@@ -46,6 +52,12 @@ add_executable(
 )
 # ====================================================
 
+# Local targets
+add_executable(
+        builtins
+        ${LOCAL_SOURCES}
+)
+# ====================================================
 
 target_link_libraries(
         test_minishell PRIVATE
