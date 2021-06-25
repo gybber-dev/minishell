@@ -1,14 +1,7 @@
 #include <stdio.h>
-
 #include "includes/minishell.h"
 
-int test_fun(int res)
-{
-	return res;
+int main() {
+    printf("result %d\n", test_fun(3));
+    return 0;
 }
-
-
-//int main() {
-//    printf("Hello, World!\n");
-//    return 0;
-//}
