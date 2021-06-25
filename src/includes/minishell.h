@@ -14,8 +14,8 @@ typedef struct	s_parser
 typedef struct	s_all
 {
 	t_parser 	*command;
-	char 		**ENV;
-	int			FLAGS;
+	char 		**envs;
+	char		specs;
 }				t_all;
 
 int				test_fun(int res);
