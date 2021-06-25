@@ -8,6 +8,7 @@ set(CMAKE_C_STANDARD 99)
 # Adds list of project files
 FILE(GLOB MINISHELL_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/parser/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/includes/*.h
 )
 # Create copy of the variable for tests
@@ -50,9 +51,15 @@ target_link_libraries(
         test_minishell PRIVATE
         gtest gtest_main
 )
+
+target_link_libraries(
+        minishell PRIVATE
+        readline
+)
+
 target_compile_options(
         minishell PRIVATE
-        -Wall -Wextra -Werror
+#        -Wall -Wextra -Werror
 )
 
 
