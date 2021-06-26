@@ -5,15 +5,10 @@
 # include <stdlib.h>
 
 
-typedef struct	s_parser
-{
-	char		*command;
-	char		**args;
-}				t_parser;
 
 typedef struct	s_all
 {
-	t_parser 	*command;
+	char     	**command;
 	char 		**envs;
 	char		specs;
 }				t_all;
