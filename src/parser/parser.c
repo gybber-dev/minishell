@@ -3,5 +3,5 @@
 void			parser(char *line)
 {
 //	TODO: Dinar
-	;
+    return 0;
 }
