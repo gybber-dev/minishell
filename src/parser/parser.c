@@ -2,6 +2,6 @@
 
 void			parser(char *line)
 {
-//	TODO: Dinar
+    //	TODO: Dinar
 	;
 }
