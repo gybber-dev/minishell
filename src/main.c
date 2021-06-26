@@ -7,10 +7,15 @@
 #include <readline/history.h>
 #include "includes/minishell.h"
 
+void gel()
+{
+    ;
+}
+
 int main(int argc, char** argv)
 {
-	char *line;
-
+	char        *line;
+    t_all       all;
 
 	while (1)
 	{
@@ -18,8 +23,10 @@ int main(int argc, char** argv)
 		if (*line)
 			add_history(line);
 		// do not free the line!
-		parser(line);
+		parser(line, &all);
 		free(line);
+		if (ft_strncmp(line, "exit", 4))
+            exit(0);
 	}
 	return 0;
 }

@@ -36,6 +36,7 @@ add_subdirectory(
 )
 # ====================================================
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libft)
 
 # Add Executables (binary files)
 # ====================================================
@@ -67,6 +68,7 @@ target_link_libraries(
 target_link_libraries(
         minishell PRIVATE
         readline
+        libft
 )
 
 target_compile_options(

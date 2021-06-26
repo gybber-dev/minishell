@@ -4,23 +4,24 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-
-typedef struct	s_parser
-{
-	char		*command;
-	char		**args;
-}				t_parser;
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <unistd.h>
+# include <string.h>
+# include <errno.h>
+# include "../../libft/libft.h"
 
 typedef struct	s_all
 {
-	t_parser 	*command;
+	char     	**command;
 	char 		**envs;
 	char		specs;
 }				t_all;
 
 int				test_fun(int res);
 
-void			parser(char *line);
+void			parser(char *line, t_all *all);
 
 
 #endif
+
