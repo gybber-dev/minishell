@@ -20,6 +20,8 @@ typedef struct	s_all
 
 int				test_fun(int res);
 
+
+int				is_my_command(char *cmd_name);
 void			parser(char *line, t_all *all);
 
 

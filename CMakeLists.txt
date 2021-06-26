@@ -11,6 +11,8 @@ FILE(GLOB MINISHELL_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/parser/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/includes/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/libft/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/libft/*.c
 )
 
 FILE(GLOB LOCAL_SOURCES
@@ -48,7 +50,8 @@ add_executable(
 # Test target
 add_executable(
         test_minishell
-        tests/test.cpp
+#        tests/test.cpp
+        tests/builtins/builtins.cpp
         ${TEST_SOURCES}
 )
 # ====================================================
@@ -63,6 +66,7 @@ add_executable(
 target_link_libraries(
         test_minishell PRIVATE
         gtest gtest_main
+        libft
 )
 
 target_link_libraries(

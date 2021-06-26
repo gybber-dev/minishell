@@ -7,11 +7,6 @@
 #include <readline/history.h>
 #include "includes/minishell.h"
 
-void gel()
-{
-    ;
-}
-
 int main(int argc, char** argv)
 {
 	char        *line;
@@ -26,7 +21,7 @@ int main(int argc, char** argv)
 		parser(line, &all);
 		free(line);
 		if (ft_strncmp(line, "exit", 4))
-            exit(0);
+            exit(EXIT_SUCCESS);
 	}
 	return 0;
 }
