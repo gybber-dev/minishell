@@ -4,7 +4,12 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <unistd.h>
+# include <string.h>
+# include <errno.h>
+# include "../../libft/libft.h"
 
 typedef struct	s_all
 {
@@ -15,7 +20,10 @@ typedef struct	s_all
 
 int				test_fun(int res);
 
-void			parser(char *line);
+
+int				is_my_command(char *cmd_name);
+void			parser(char *line, t_all *all);
 
 
 #endif
+
