@@ -51,7 +51,7 @@ add_executable(
 add_executable(
         test_minishell
 #        tests/test.cpp
-        tests/builtins/builtins.cpp
+#        tests/builtins/builtins.cpp
         ${TEST_SOURCES}
 )
 # ====================================================
@@ -61,19 +61,25 @@ add_executable(
         builtins
         ${LOCAL_SOURCES}
 )
+add_executable(
+        parser
+        ${TEST_SOURCES}
+        libft
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/parser/main/main.c
+)
 # ====================================================
 
-target_link_libraries(
-        test_minishell PRIVATE
-        gtest gtest_main
-        libft
-)
+#target_link_libraries(
+#        test_minishell PRIVATE
+#        gtest gtest_main
+#        libft
+#)
 
-target_link_libraries(
-        minishell PRIVATE
-        readline
-        libft
-)
+#target_link_libraries(
+#        minishell PRIVATE
+#        readline
+#        libft
+#)
 
 target_compile_options(
         minishell PRIVATE

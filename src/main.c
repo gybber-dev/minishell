@@ -12,11 +12,14 @@ void gel()
     ;
 }
 
+
+
 int main(int argc, char** argv)
 {
 	char        *line;
     t_all       all;
 
+	init_all(&all);
 	while (1)
 	{
 		line = readline("minishell: ");

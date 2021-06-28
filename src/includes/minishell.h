@@ -13,9 +13,9 @@
 
 typedef struct	s_all
 {
-	char     	**command;
-	char 		**envs;
-	char		specs;
+	char		**command;
+	char		**envs;
+	char		*specs;
 }				t_all;
 
 int				test_fun(int res);
@@ -23,6 +23,8 @@ int				test_fun(int res);
 
 int				is_my_command(char *cmd_name);
 void			parser(char *line, t_all *all);
+void			init_all(t_all *all);
+char			**ft_get_one_command(char **line,char ***src);
 
 
 #endif
