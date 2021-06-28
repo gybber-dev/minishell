@@ -20,7 +20,8 @@ char			**ft_get_one_command(char **line,char ***src)
 	char	**arr;
 	char	*sub_line;
 	int		n;
-	int 	flag;
+	char 	flag;
+	char 	*tmp;
 
 	i = 0;
 	n = -1;
@@ -33,18 +34,22 @@ char			**ft_get_one_command(char **line,char ***src)
 	i = -1;
 
 
-	while((*line)[++i] != ' ')
+	while((*line)[++i] != ' ' && (*line)[i] != '\0')
 		if ((*line)[i] == '\'')
 		{
-			//flag_1();
-			if (flag == 0)
-				flag = 1;
-			while (flag > 0 && (*line)[i] != '\0' && (*line)[++i] != '\'')
+			flag = (*line)[i];
+			while ((*line)[i] != '\0' && (*line)[++i] != '\'')
 				;
 		}
 
-	sub_line = ft_calloc(i + 1, sizeof(char));
+	sub_line = ft_calloc(i++, sizeof(char));
 	ft_strlcpy(sub_line, (const char*)(*line), i);
+	if (flag == '\'')
+	{
+		tmp = sub_line;
+		sub_line = ft_strtrim(sub_line, &flag);
+		free(tmp);
+	}
 	arr[n++] = sub_line;
 	arr[n] = NULL;
 	free(*src);
@@ -64,11 +69,14 @@ void			parser(char *line, t_all *all)
 	 */
 
 
-	int i;
+	int		i;
+	char	*tmp;
 
 	i = -1;
+	tmp = line;
 	line = ft_strtrim(line, " ");
+	//free(tmp);Not work!!!!!!!!!!!!!!!!!!!
 //parse bin
 // parse args
-		all->command = ft_get_one_command(&line, &(all->command));
+	all->command = ft_get_one_command(&line, &(all->command));
 }

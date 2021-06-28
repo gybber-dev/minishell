@@ -1,1 +1,1 @@
-#include "../../includes/minishell.h"int main(int arc, char **argv){	t_all       all;	init_all(&all);	parser("  line  hah", &all);	printf("%s\n", *(all.command));}
+#include "../../includes/minishell.h"int main(int arc, char **argv){	t_all       all;	init_all(&all);	parser("  'line  hah'", &all);	printf("%s\n", *(all.command));}
