@@ -45,3 +45,8 @@ TEST(get_value, null_array){
 	char *res = get_value(arr, "bc");
 	EXPECT_STREQ(res, nullptr);
 }
+TEST(get_value, empty_value){
+	char *arr[2] = {"ar=", nullptr};
+	char *res = get_value(arr, "ar");
+	EXPECT_STREQ(res, "");
+}
