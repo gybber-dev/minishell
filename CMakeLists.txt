@@ -69,6 +69,12 @@ target_link_libraries(
         libft
 )
 
+
+target_link_libraries(
+        builtins PRIVATE
+        libft
+)
+
 target_link_libraries(
         minishell PRIVATE
         readline

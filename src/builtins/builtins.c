@@ -1,7 +1,55 @@
 #include "../includes/minishell.h"
 
+/**
+**
+** @param envs
+** @param key
+** @return pointer to value
+*/
+char			*get_value(char **envs, char *key)
+{
+	char		**tmp;
+	int			key_len;
+
+	tmp = envs;
+	if (!key)
+		return NULL;
+	key_len = (int)ft_strlen(key);
+	while(*tmp != NULL)
+	{
+		if (!ft_strncmp(*tmp, key, key_len) &&
+			*(*tmp + key_len) == '=')
+			return (*tmp + key_len + 1);
+		tmp++;
+	}
+	return (NULL);
+
+}
+
+/**
+** @param cmnd - binary name
+** @param paths - $PATH value ('PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin
+** :/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin')
+** @return MALLOCED path to binary "/usr/bin/git"
+*/
+
+char			*find_binary(char *cmnd, char *paths)
+{
+	char		path;
+
+	if (!cmnd || !paths)
+		return NULL;
+
+	return path;
+}
+
 int				execute_external_command(t_all *all)
 {
+	char		*path;
+
+	path = get_value(all->envs, "PATH");
+	path = find_binary(all->command[0], get_value(all->envs, "PATH"));
+	free(path);
 	return 0;
 }
 //int			exec_external_programm(char **command)
@@ -54,23 +102,91 @@ int			is_my_command(char *cmd_name)
 
 void		execute_my_command(t_all *all)
 {
+	printf("my_command");
 	return ;
 }
 
 int			builtins(t_all *all)
 {
 	if ((all->command)[0] == NULL)
-    {
-        printf("IS IT AVAILABLE ERROR??????\n");
-        exit(EXIT_FAILURE);
-    }
-    if (is_my_command((all->command)[0]) == 1)
-        execute_my_command(all);
-    else
-        execute_external_command(all);
-    return 0;
+	{
+		printf("IS IT AVAILABLE ERROR??????\n");
+		exit(EXIT_FAILURE);
+	}
+	if (is_my_command((all->command)[0]) == 1)
+		execute_my_command(all);
+	else
+		execute_external_command(all);
+	return 0;
 }
 
+void		printf_array_2x(char **arr)
+{
+	char	**tmp;
+
+	tmp = arr;
+	printf("======================\n");
+	while(*tmp)
+	{
+		printf("'%s'\n", *tmp);
+		*tmp++;
+	}
+	printf(" '%s'\n", *tmp);
+	printf("======================\n");
+}
+
+
+char		**copy_arrays_2x(char **src_arr)
+{
+	int		i;
+	char	**tmp_src;
+	char	**tmp_dst;
+	char	**dst_arr;
+
+	i = 0;
+	if (!src_arr)
+		return NULL;
+	tmp_src = src_arr;
+	while(*tmp_src++) {
+		i++;
+	}
+	dst_arr = (char **) malloc(sizeof(char *) * i + 1);
+	tmp_src = src_arr;
+	tmp_dst = dst_arr;
+	while(*tmp_src)
+	{
+		*tmp_dst++ = ft_strdup(*tmp_src);
+		*tmp_src++;
+	}
+	*tmp_dst = NULL;
+	return dst_arr;
+}
+
+void		my_init_all(t_all *all, char **envp)
+{
+	all->command = (char **)malloc(sizeof(char*) * 2 + 1);
+	all->command[0] = ft_strdup("echo");
+	all->command[1] = ft_strdup("hello");
+	all->command[2] = NULL;
+	all->specs = 0;
+	all->vlast = 0;
+	all->vpid = 0;
+	all->envs = copy_arrays_2x(envp);
+	printf_array_2x(all->envs);
+
+}
+
+//int main(int argc, char *argv[], char *envp[])
+//{
+//	t_all all;
+//
+//	my_init_all(&all, envp);
+//	builtins(&all);
+////	char *arr[3] = {"ar=2", "b=3", NULL};
+////	char *res = get_value(arr, "ar");
+//	char *val = get_value(all.envs, "PATH=");
+//	return 0;
+//}
 
 
 
