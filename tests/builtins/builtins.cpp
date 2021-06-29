@@ -50,3 +50,8 @@ TEST(get_value, empty_value){
 	char *res = get_value(arr, "ar");
 	EXPECT_STREQ(res, "");
 }
+TEST(get_value, no_equal_symbol){
+	char *arr[2] = {"cc", nullptr};
+	char *res = get_value(arr, "cc");
+	EXPECT_STREQ(res, "");
+}
