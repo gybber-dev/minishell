@@ -9,6 +9,8 @@
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
+# include "../../libft/libft.h"
+#include <sys/stat.h>
 
 /**
 ** command	(char **)	list of command words
@@ -37,6 +39,14 @@ typedef struct s_all
 
 int				test_fun(int res);
 
-void			parser(char *line, t_all *all);
+void			clear_arr_2x(char **arr);
+void			print_array_2x(char **arr);
+char			**copy_arrays_2x(char **src_arr);
+char			*get_value(char **envs, char *key);
+int				is_my_command(char *cmd_name);
+int				parser(char *line, t_all *all);
+
+void			ft_echo(char *messages);
 
 #endif
+
