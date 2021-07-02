@@ -124,18 +124,18 @@ void		my_init_all(t_all *all, char **envp)
 	print_array_2x(all->envs);
 }
 
-int main(int argc, char *argv[], char *envp[])
-{
-	t_all all;
-
-	//	my_init_all(&all, envp);
-	ft_echo("hi");
-//	builtins(&all);
-////	char *arr[3] = {"ar=2", "b=3", NULL};
-////	char *res = get_value(arr, "ar");
-//	char *val = get_value(all.envs, "PATH=");
-	return 0;
-}
+//int main(int argc, char *argv[], char *envp[])
+//{
+//	t_all all;
+//
+//	//	my_init_all(&all, envp);
+//	ft_echo("hi");
+////	builtins(&all);
+//////	char *arr[3] = {"ar=2", "b=3", NULL};
+//////	char *res = get_value(arr, "ar");
+////	char *val = get_value(all.envs, "PATH=");
+//	return 0;
+//}
 
 
 

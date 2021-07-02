@@ -9,6 +9,14 @@
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
+
+//#include "/Users/yeschall/.brew/opt/readline/include/readline/readline.h"
+//#include "/Users/yeschall/.brew/opt/readline/include/readline/history.h"
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <sys/termios.h>
+
+
 # include "../../libft/libft.h"
 #include <sys/stat.h>
 

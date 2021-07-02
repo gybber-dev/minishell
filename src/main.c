@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-/* Standard readline include files. */
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "includes/minishell.h"
 
 void		init_struct(t_all *all, char **envp)
@@ -24,11 +17,31 @@ void		processor(t_all *all)
 	;
 }
 
+int			wait_signal(int sign)
+{
+	if (sign == SIGINT)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		exit(EXIT_SUCCESS);
+	}
+}
+
+
 int			main(int argc, char** argv, char **envp)
 {
 	char	*line;
 	t_all	all;
 	int		is_finished;
+	struct termios term;
+
+	tcgetattr(0, &term);
+	term.c_cflag &= ~(ECHOCTL);
+	tcsetattr(0, TCSANOW, &term);
+	signal(SIGINT, wait_signal);
+
 
 	is_finished = 0;
 	while (1)

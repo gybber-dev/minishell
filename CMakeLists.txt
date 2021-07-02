@@ -39,7 +39,7 @@ add_subdirectory(
 # ====================================================
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libft)
-
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/readline)
 # Add Executables (binary files)
 # ====================================================
 # Main target
@@ -67,6 +67,8 @@ target_link_libraries(
         test_minishell PRIVATE
         gtest gtest_main
         libft
+		libreadline.a
+		libhistory.a
 )
 
 
@@ -79,6 +81,8 @@ target_link_libraries(
         minishell PRIVATE
         readline
         libft
+		libreadline.a
+		libhistory.a
 )
 
 target_compile_options(
