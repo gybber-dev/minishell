@@ -9,9 +9,7 @@ void		init_struct(t_all *all, char **envp)
 	all->specs = 0;
 	all->vlast = 0;
 	all->vpid = 0;
-	printf("check0: %s\n", envp[0]);
 	all->envs = copy_arrays_2x(envp);
-	printf("check1\n");
 }
 
 void		processor(t_all *all)
@@ -44,26 +42,28 @@ int			main(int argc, char** argv, char **envp)
 //	tcsetattr(0, TCSANOW, &term);
 //	signal(SIGINT, SIG_IGN);
 
-
+	init_struct(&all, envp);
 	is_finished = 0;
 	while (1)
 	{
 		line = readline("minishell: ");
 		if (!line)
-			printf("zero ctrl + d\n");
-		else if (*line)
-			add_history(line);
-		init_struct(&all, envp);
-		while(!is_finished)
 		{
-			printf("asdfasf %d\n", is_finished);
-			is_finished = parser(line, &all);
-			printf("%d\n", is_finished);
-			processor(&all);
+			printf("\033[Aminishell: exit\n");
+			exit(EXIT_SUCCESS);
 		}
-		if (!ft_strncmp(line, "exit", 4))
-            exit(EXIT_SUCCESS);
-		free(line);
+		else if (*line)
+		{
+			add_history(line);
+			while(!is_finished)
+			{
+				is_finished = parser(line, &all);
+				processor(&all);
+			}
+			if (!ft_strncmp(line, "exit", 4))
+				exit(EXIT_SUCCESS);
+			free(line);
+		}
 	}
 	return 0;
 }
