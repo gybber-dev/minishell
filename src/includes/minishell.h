@@ -11,6 +11,8 @@
 # include <errno.h>
 # include "../../libft/libft.h"
 #include <sys/stat.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
 /**
 ** command	(char **)	list of command words

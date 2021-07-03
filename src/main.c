@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-/* Standard readline include files. */
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "includes/minishell.h"
 
 void		init_struct(t_all *all, char **envp)
@@ -30,21 +23,28 @@ int			main(int argc, char** argv, char **envp)
 	t_all	all;
 	int		is_finished;
 
+	init_struct(&all, envp);
 	is_finished = 0;
 	while (1)
 	{
 		line = readline("minishell: ");
-		if (*line)
-			add_history(line);
-		init_struct(&all, envp);
-		while(!is_finished)
+		if (!line)
 		{
-			is_finished = parser(line, &all);
-			processor(&all);
+			printf("\033[A\nminishell: exit\n");
+			exit(EXIT_SUCCESS);
 		}
-		free(line);
-		if (ft_strncmp(line, "exit", 4))
-            exit(EXIT_SUCCESS);
+		else if (*line)
+		{
+			add_history(line);
+			while(!is_finished)
+			{
+				is_finished = parser(line, &all);
+				processor(&all);
+			}
+			if (!ft_strncmp(line, "exit", 4))
+				exit(EXIT_SUCCESS);
+			free(line);
+		}
 	}
 	return 0;
 }

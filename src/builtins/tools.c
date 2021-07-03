@@ -45,28 +45,28 @@ void		print_array_2x(char **arr)
 char		**copy_arrays_2x(char **src_arr)
 {
 	int		i;
-	char	*tmp_src;
-	char	*tmp_dst;
-	char	**dst_arr;
+	char	**tmp_src;
+	char	**tmp_dst;
+	char	**res_arr;
 
 	i = 0;
 	if (!src_arr)
 		return NULL;
-	tmp_src = *src_arr;
-	while(tmp_src++) {
+	tmp_src = src_arr;
+	while(*(tmp_src++)) {
 		i++;
 	}
-	dst_arr = (char **) malloc(sizeof(char *) * i + 1);
-	tmp_src = *src_arr;
-	tmp_dst = *dst_arr;
-	while(tmp_src)
+	res_arr = (char **) malloc(sizeof(char *) * i + 1);
+	tmp_src = src_arr;
+	tmp_dst = res_arr;
+	while(*tmp_src)
 	{
-		tmp_dst = ft_strdup(tmp_src);
+		*tmp_dst = ft_strdup(*tmp_src);
 		tmp_src++;
 		tmp_dst++;
 	}
-	tmp_dst = NULL;
-	return dst_arr;
+	*tmp_dst = NULL;
+	return res_arr;
 }
 
 void		clear_arr_2x(char **arr)
