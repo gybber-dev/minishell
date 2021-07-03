@@ -21,6 +21,7 @@ FILE(GLOB LOCAL_SOURCES
 )
 # Create copy of the variable for tests
 set(TEST_SOURCES ${MINISHELL_SOURCES})
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lreadline")
 # We can't use another main function in tests, so exclude main.c file
 list(FILTER TEST_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/main.c")
 # Print our variables
@@ -39,7 +40,8 @@ add_subdirectory(
 # ====================================================
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libft)
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/readline)
+#link_directories(${CMAKE_CURRENT_SOURCE_DIR}/readline)
+link_directories(/Users/yeschall/.brew/Cellar/readline/8.1/lib/)
 # Add Executables (binary files)
 # ====================================================
 # Main target

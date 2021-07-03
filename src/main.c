@@ -19,14 +19,15 @@ void		processor(t_all *all)
 
 int			wait_signal(int sign)
 {
-	if (sign == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		exit(EXIT_SUCCESS);
-	}
+	printf("kill %d\n", sign);
+//	if (sign == SIGINT)
+//	{
+//		write(1, "\n", 1);
+//		rl_on_new_line();
+//		rl_replace_line("", 0);
+//		rl_redisplay();
+//		exit(EXIT_SUCCESS);
+//	}
 }
 
 
@@ -34,16 +35,10 @@ int			main(int argc, char** argv, char **envp)
 {
 	char	*line;
 	t_all	all;
-	int		is_finished;
-	struct termios term;
+	int		parse_status;
 
-//	tcgetattr(0, &term);
-//	term.c_cflag &= ~(ECHOCTL);
-//	tcsetattr(0, TCSANOW, &term);
-//	signal(SIGINT, SIG_IGN);
-
+	signal(SIGTERM, SIG_IGN);
 	init_struct(&all, envp);
-	is_finished = 0;
 	while (1)
 	{
 		line = readline("minishell: ");
@@ -55,9 +50,12 @@ int			main(int argc, char** argv, char **envp)
 		else if (*line)
 		{
 			add_history(line);
-			while(!is_finished)
+			parse_status = 0;
+			while(!parse_status )
 			{
-				is_finished = parser(line, &all);
+				parse_status = parser(line, &all);
+				if (parse_status == -1)
+					break;
 				processor(&all);
 			}
 			if (!ft_strncmp(line, "exit", 4))
