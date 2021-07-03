@@ -66,6 +66,72 @@
 //	return 0;
 //}
 
+#include <signal.h>
+#include <stdio.h>
+
+//обработчик
+void listener(int sig) {
+	printf("listener: %d\n", sig);
+	exit(EXIT_SUCCESS);
+}
+
+//int main() {
+//	pid_t child_pid;
+//
+//	signal(SIGINT, SIG_IGN);
+//	child_pid = fork();
+//	if (child_pid < 0)
+//	{
+//		exit(EXIT_FAILURE);
+//	}
+//	else if (child_pid > 0) {
+//		printf("I'm Mother\n");
+////		signal(SIGINT, SIG_IGN);
+//		sleep(6);
+//		printf("M: I'm after SIGINT\n");
+//
+//	} else {
+//		signal(SIGINT, SIG_DFL);
+//		printf("I'm daughter\n");
+//		sleep(5);
+////		raise(SIGINT);
+//		printf("D: I'm after SIGINT\n");
+//		exit (0);
+//	}
+//	return 0;
+//}
+int main() {
+	pid_t child_pid;
+
+	signal(SIGINT, SIG_IGN);
+	sleep(4);
+	printf("start\n");
+	int i = 0;
+	while(1)
+	{
+		if (i > 3)
+			signal(SIGINT, SIG_DFL);
+		printf("tick %d\n", i);
+		sleep(1);
+		i++;
+	}
+	printf("end\n");
+	return 0;
+}
+//int main() {
+//	//устанавливаем обработчик для сигнлана SIGINT
+//	signal(SIGINT, SIG_DFL);
+//	fprintf(stdout, "begin\n");
+//	//посылаем сигнал программно
+////	raise(SIGINT);
+//
+//
+//	//посылаем сигнал вручную
+//	for (int i = 0; i < 100000; ++i) {
+//		printf(".\n");
+//	}
+//	fprintf(stdout, "end\n");
+//}
 
 //
 ///**
