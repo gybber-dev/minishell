@@ -1,15 +1,6 @@
 #include "../includes/minishell.h"
 
-void	init_all(t_all *all)
-{
-	all->command = (char **)malloc(sizeof(char *));
-	all->envs = (char **)malloc(sizeof(char *));
-	all->specs = ft_calloc(1, sizeof(char));
-	(all->command)[0]= NULL;
-	(all->command)[1]= NULL;
-	(all->envs)[0]= NULL;
 
-}
 
 char			**ft_get_one_command(char **line,char ***src)
 {
