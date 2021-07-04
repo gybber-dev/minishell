@@ -75,11 +75,11 @@ add_executable(
 #        libft
 #)
 
-#target_link_libraries(
-#        minishell PRIVATE
-#        readline
-#        libft
-#)
+target_link_libraries(
+        minishell PRIVATE
+        readline
+        libft
+)
 
 target_compile_options(
         minishell PRIVATE
