@@ -57,8 +57,9 @@ char			**ft_get_one_command(char **line,char ***src)
 	return arr;
 }
 
-void			parser(char *line, t_all *all)
-{
+
+
+int 	parser(char *line, t_all *all) {
 	/**
 	 *1) event = get_one_peace(line, exp)
 	 * 2) while (line != '\0' && line != spec)
@@ -71,6 +72,7 @@ void			parser(char *line, t_all *all)
 
 	int		i;
 	char	*tmp;
+	int		ret;
 
 	i = -1;
 	tmp = line;
@@ -79,4 +81,5 @@ void			parser(char *line, t_all *all)
 //parse bin
 // parse args
 	all->command = ft_get_one_command(&line, &(all->command));
+	return 1;
 }
