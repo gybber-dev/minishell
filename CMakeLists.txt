@@ -9,6 +9,14 @@ set(CMAKE_C_STANDARD 99)
 FILE(GLOB MINISHELL_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/parser/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/*.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/includes/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/libft/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/libft/*.c
+)
+
+FILE(GLOB LOCAL_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/*.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/includes/*.h
 )
 # Create copy of the variable for tests
@@ -30,6 +38,7 @@ add_subdirectory(
 )
 # ====================================================
 
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libft)
 
 # Add Executables (binary files)
 # ====================================================
@@ -46,15 +55,17 @@ add_executable(
 )
 # ====================================================
 
-
 target_link_libraries(
         test_minishell PRIVATE
         gtest gtest_main
+        libft
 )
+
 
 target_link_libraries(
         minishell PRIVATE
         readline
+        libft
 )
 
 target_compile_options(

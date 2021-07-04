@@ -1,7 +1,7 @@
 #include "../includes/minishell.h"
 
-void			parser(char *line)
+int			parser(char *line, t_all *all)
 {
-//	TODO: Dinar
-	;
+    //	TODO: Dinar
+	return 1;
 }
