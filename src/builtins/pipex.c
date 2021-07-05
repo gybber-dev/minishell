@@ -64,18 +64,18 @@ void		pipeline(char ***cmd)
 
 // ls -al | grep o | grep a | wc -l
 
-int main()
-{
-	char *ls[] = {"ls", "-al", NULL};
-	char *grep1[] = {"grep", "o", NULL};
-	char *grep2[] = {"grep", "a", NULL};
-	char *wc[] = {"wc", "-l", NULL};
-	char *cat[] = {"cat", "-e", NULL};
-	char **cmd[] = {ls, grep1, grep2, wc, NULL};
-
-	pipeline(cmd);
-	int fd[2];
-	pipe(fd);
-	printf("Do you see a pipe leak? pipe[%d, %d]\n", fd[0], fd[1]);
-	return (0);
-}
+//int main()
+//{
+//	char *ls[] = {"ls", "-al", NULL};
+//	char *grep1[] = {"grep", "o", NULL};
+//	char *grep2[] = {"grep", "a", NULL};
+//	char *wc[] = {"wc", "-l", NULL};
+//	char *cat[] = {"cat", "-e", NULL};
+//	char **cmd[] = {ls, grep1, grep2, wc, NULL};
+//
+//	pipeline(cmd);
+//	int fd[2];
+//	pipe(fd);
+//	printf("Do you see a pipe leak? pipe[%d, %d]\n", fd[0], fd[1]);
+//	return (0);
+//}
