@@ -29,16 +29,16 @@ char			*get_value(char **envs, char *key)
 
 void		print_array_2x(char **arr)
 {
-	char	*tmp;
+	char	**tmp;
 
-	tmp = *arr;
+	tmp = arr;
 	printf("======================\n");
-	while(tmp)
+	while(*tmp)
 	{
-		printf("'%s'\n", tmp);
+		printf("'%s'\n", *tmp);
 		tmp++;
 	}
-	printf(" '%s'\n", tmp);
+	printf(" '%s'\n", *tmp);
 	printf("======================\n");
 }
 
@@ -80,4 +80,65 @@ void		clear_arr_2x(char **arr)
 		i++;
 	}
 	free(arr);
+}
+
+
+/**
+ *
+ * @param cmnd
+ * @param paths $PATH string
+ * @return char* MALLOCED path to binary
+ */
+char   *find_binary(char *cmnd, char *paths)
+{
+	char  *path;
+	char  **arr;
+	char  *tmp;
+	struct stat buf;
+
+	path = NULL;
+	if (!cmnd || !paths)
+		return NULL;
+	arr = ft_split(paths, ':');
+	tmp = *arr;
+	cmnd = ft_strjoin("/", cmnd);
+	while(tmp)
+	{
+		path = ft_strjoin(tmp, cmnd);
+		if (stat(path, &buf) == 0)
+			break;
+		free(path);
+		tmp++;
+	}
+	free(cmnd);
+	clear_arr_2x(arr);
+	return path;
+}
+
+/**
+** Reads data from "from" and writes to "to".
+** How to usage?
+**	int fd_write = open("here.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+**	int fd_read = open("foo.txt", O_RDONLY);
+**	read_from_write_to(fd_read, fd_write);
+** @param from	input fd
+** @param to	output fd
+*/
+void 		read_from_write_to(int from, int to)
+{
+	char	*buf;
+	int 	res;
+
+	buf = (char *)malloc(2);
+	buf[1] = 0;
+	buf[0] = 'e';
+	printf("%s\n", buf);
+	while(1)
+	{
+		res = read(from, buf, 1);
+		if (res == 0)
+			break;
+		write(to, buf, 1);
+	}
+	free(buf);
 }
