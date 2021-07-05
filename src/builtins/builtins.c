@@ -1,141 +1,94 @@
 #include "../includes/minishell.h"
 
-
-
-/**
-** @param cmnd - binary name
-** @param paths - $PATH value
-** @return MALLOCED path to binary "/usr/bin/git"
-*/
-
-char			*find_binary(char *cmnd, char *paths)
+int			execute(char **cmd, char *paths)
 {
-	char		*path;
-	char		**arr;
-	char		*tmp;
-	struct stat	buf;
+	char	*path;
 
-	path = NULL;
-	if (!cmnd || !paths)
-		return NULL;
-	arr = ft_split(paths, ':');
-	tmp = *arr;
-	cmnd = ft_strjoin("/", cmnd);
-	while(tmp)
-	{
-		path = ft_strjoin(tmp, cmnd);
-		if (stat(path, &buf) == 0)
-			break;
-		free(path);
-		tmp++;
-	}
-	free(cmnd);
-	clear_arr_2x(arr);
-	return path;
-}
+	path = find_binary(cmd[0], paths);
 
-int				execute_external_command(t_all *all)
-{
-	char		*path;
-
-	path = get_value(all->envs, "PATH");
-	path = find_binary(all->command[0], get_value(all->envs, "PATH"));
-	free(path);
 	return 0;
-}
-//int			exec_external_programm(char **command)
-//{
-//    pid_t pid, wpid;
-//    int status;
-//
-//    pid = fork();
-//    if (pid == 0) {
-//        // Дочерний процесс
-//        if (execve(command[0], &command[1]) == -1) {
-//            perror("lsh");
-//        }
-//        exit(EXIT_FAILURE);
-//    } else if (pid < 0) {
-//        // Ошибка при форкинге
-//        perror("lsh");
-//    } else {
-//        // Родительский процесс
-//        do {
-//            wpid = waitpid(pid, &status, WUNTRACED);
-//        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-//    }
-//
-//    return 1;
-//}
-
-int			is_my_command(char *cmd_name)
-{
-	int		len;
-
-	if (cmd_name == NULL || (len = ft_strlen(cmd_name)) == 0)
-		return 0;
-	if (!ft_strncmp(cmd_name, "cd", len))
-		return 1;
-	if (!ft_strncmp(cmd_name, "echo", len))
-		return 1;
-	if (!ft_strncmp(cmd_name, "pwd", len))
-		return 1;
-	if (!ft_strncmp(cmd_name, "env", len))
-		return 1;
-	if (!ft_strncmp(cmd_name, "export", len))
-		return 1;
-	if (!ft_strncmp(cmd_name, "unset", len))
-		return 1;
-	if (!ft_strncmp(cmd_name, "exit", len))
-		return 1;
-	return 0;
-}
-
-void		execute_my_command(t_all *all)
-{
-	printf("my_command");
-	return ;
 }
 
 int			builtins(t_all *all)
 {
-	if ((all->command)[0] == NULL)
+	pid_t	cpid;
+	int		pipe_fd[2];
+
+	printf("build\n");
+	if (all->proc.is_complex)
 	{
-		printf("IS IT AVAILABLE ERROR??????\n");
-		exit(EXIT_FAILURE);
+		if (pipe(pipe_fd) == -1)
+		{
+			perror("pipe error");
+			exit(EXIT_FAILURE);
+		}
+		dup2(pipe_fd[1], 1);
+		cpid = fork();
+		if (cpid == -1)
+		{
+			perror("fork error");
+			exit(EXIT_FAILURE);
+		}
+		else if (cpid == 0)
+		{
+			close(pipe_fd[1]);
+			execute(all->command, get_value(all->envs, "PATH");
+			close(pipe_fd[0]);
+		}
+		else
+		{
+			close(pipe_fd[0]);
+		}
 	}
-	if (is_my_command((all->command)[0]) == 1)
-		execute_my_command(all);
-	else
-		execute_external_command(all);
 	return 0;
 }
 
-void		my_init_all(t_all *all, char **envp)
+void		my_init_all(t_all *all, char **envp, int iter)
 {
-	all->command = (char **)malloc(sizeof(char*) * 2 + 1);
-	all->command[0] = ft_strdup("echo");
-	all->command[1] = ft_strdup("hello");
-	all->command[2] = NULL;
-	all->specs = 0;
-	all->vlast = 0;
-	all->vpid = 0;
-	all->envs = copy_arrays_2x(envp);
-	print_array_2x(all->envs);
+	if (iter == 0)
+	{
+		all->command = (char **)malloc(sizeof(char*) * 1 + 1);
+		all->command[0] = ft_strdup("ls");
+		all->command[1] = NULL;
+		all->specs = PIPE;
+		all->vlast = 0;
+		all->vpid = 0;
+		all->envs = copy_arrays_2x(envp);
+		print_array_2x(all->envs);
+		all->proc.is_complex = 1;
+		all->proc.is_complex = 1;
+	}
+	else if (iter == 1)
+	{
+		all->command = (char **)malloc(sizeof(char*) * 2 + 1);
+		all->command[0] = ft_strdup("grep");
+		all->command[1] = ft_strdup("goo");
+		all->command[2] = NULL;
+		all->specs = 0;
+		all->vlast = 0;
+		all->vpid = 0;
+		all->envs = copy_arrays_2x(envp);
+		print_array_2x(all->envs);
+	}
 }
 
-//int main(int argc, char *argv[], char *envp[])
-//{
-//	t_all all;
-//
-//	//	my_init_all(&all, envp);
-//	ft_echo("hi");
-////	builtins(&all);
-//////	char *arr[3] = {"ar=2", "b=3", NULL};
-//////	char *res = get_value(arr, "ar");
-////	char *val = get_value(all.envs, "PATH=");
-//	return 0;
-//}
+int main(int argc, char *argv[], char *envp[])
+{
+	t_all all;
+	int		i;
+
+	i = 0;
+	while (i < 2)
+	{
+		my_init_all(&all, envp, i);
+		builtins(&all);
+		i++;
+	}
+////	char *arr[3] = {"ar=2", "b=3", NULL};
+////	char *res = get_value(arr, "ar");
+//	char *val = get_value(all.envs, "PATH=");
+	return 0;
+}
 
 
 
