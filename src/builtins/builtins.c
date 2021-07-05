@@ -11,35 +11,7 @@ int			execute(char **cmd, char *paths)
 
 int			builtins(t_all *all)
 {
-	pid_t	cpid;
-	int		pipe_fd[2];
-
-	printf("build\n");
-	if (all->proc.is_complex)
-	{
-		if (pipe(pipe_fd) == -1)
-		{
-			perror("pipe error");
-			exit(EXIT_FAILURE);
-		}
-		dup2(pipe_fd[1], 1);
-		cpid = fork();
-		if (cpid == -1)
-		{
-			perror("fork error");
-			exit(EXIT_FAILURE);
-		}
-		else if (cpid == 0)
-		{
-			close(pipe_fd[1]);
-			execute(all->command, get_value(all->envs, "PATH");
-			close(pipe_fd[0]);
-		}
-		else
-		{
-			close(pipe_fd[0]);
-		}
-	}
+	// TODO Gybber
 	return 0;
 }
 
