@@ -26,19 +26,14 @@
 //{
 //	int		fd_f;
 //	char	*arr[2];
+//	int 	p[2];
 //
-//	arr[0] = "/goinfre/main.c";
-//	arr[1] = NULL;
 //	fd_f = open("foo.txt", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-////	fd_f = open("/goinfre/main.c", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-////	dup2(fd_f, 1);
-//	int res = execve("/bin/echo", arr, envp);
-//	printf("%d\n", res);
+//	dup2(fd_f, 1);
+//	printf("ddddd %d\n", fd_f);
 //	close(fd_f);
-////	write(1, "hi", 2);
-//	printf("%s\n", "hello");
+//
 //}
-
 
 /**
  * execve examle
@@ -100,24 +95,24 @@ void listener(int sig) {
 //	}
 //	return 0;
 //}
-int main() {
-	pid_t child_pid;
-
-	signal(SIGINT, SIG_IGN);
-	sleep(4);
-	printf("start\n");
-	int i = 0;
-	while(1)
-	{
-		if (i > 3)
-			signal(SIGINT, SIG_DFL);
-		printf("tick %d\n", i);
-		sleep(1);
-		i++;
-	}
-	printf("end\n");
-	return 0;
-}
+//int main() {
+//	pid_t child_pid;
+//
+//	signal(SIGINT, SIG_IGN);
+//	sleep(4);
+//	printf("start\n");
+//	int i = 0;
+//	while(1)
+//	{
+//		if (i > 3)
+//			signal(SIGINT, SIG_DFL);
+//		printf("tick %d\n", i);
+//		sleep(1);
+//		i++;
+//	}
+//	printf("end\n");
+//	return 0;
+//}
 //int main() {
 //	//устанавливаем обработчик для сигнлана SIGINT
 //	signal(SIGINT, SIG_DFL);

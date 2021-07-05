@@ -36,6 +36,12 @@
 ** vlast	(int)		$? value
 */
 
+typedef struct s_proc
+{
+	int			is_complex;
+}				t_proc;
+
+
 typedef struct s_all
 {
 	char		**command;
@@ -43,7 +49,17 @@ typedef struct s_all
 	char		specs;
 	int			vpid;
 	int			vlast;
+	t_proc		proc;
 }				t_all;
+
+# define PIPE 1
+# define LOW 2
+# define GT 3
+# define LOW2 4
+# define GT2 5
+# define S_OR 6
+# define S_AND 7
+
 
 int				test_fun(int res);
 
@@ -53,6 +69,7 @@ char			**copy_arrays_2x(char **src_arr);
 char			*get_value(char **envs, char *key);
 int				is_my_command(char *cmd_name);
 int				parser(char *line, t_all *all);
+char			*find_binary(char *cmnd, char *paths);
 
 void			ft_echo(char *messages);
 
