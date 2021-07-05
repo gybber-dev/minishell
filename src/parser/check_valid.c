@@ -10,15 +10,16 @@ int		check_valid(char *line)
 
 	while (*line != '\0')
 	{
-		if (*line == '>')
+		if (!ft_strncmp(line, ">", 1) || !ft_strncmp(line, "|", 1) || (!ft_strncmp(line, ">>", 2) && *line++ != '\0'))
 		{
 			ret = 1;
-			while (*line++ == ' ')
-				if (*line == '>')
-					ret = 1;
+			line++;
+			while (*line == ' ')
+				line++;
+			if (ft_strncmp(line, ">", 1))
+				ret = 0;
 		}
 		line++;
 	}
-		printf("%c\n", *line);
 	return ret;
 }
