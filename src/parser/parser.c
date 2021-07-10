@@ -48,7 +48,21 @@ char			**ft_get_one_command(char **line,char ***src)
 	return arr;
 }
 
+void 	realloc_cmd(t_cmd **cmd)
+{
+	int i;
 
+	i = 0;
+	while (*cmd != NULL)
+	{
+		printf("%s\n", (*cmd)[i].command);
+		i++;
+		}
+	printf("%d\n", i);
+	printf("%p\n", cmd[2]);
+
+
+}
 
 int 	parser(char *line, t_all *all) {
 	/**
@@ -64,13 +78,24 @@ int 	parser(char *line, t_all *all) {
 	int		i;
 	char	*tmp;
 	int		ret;
+	t_cmd	*cmd;
+
+	t_cmd q;
 
 	i = -1;
-	tmp = line;
-	line = ft_strtrim(line, " ");
+	cmd = (t_cmd *)malloc(sizeof(t_cmd) * 3);
+	cmd[0].command = ft_strdup("sdf");
+	cmd[1].command = ft_strdup("hi");
+
+
+
+//	while (*line != '\0')
+		realloc_cmd(&cmd);
+//	tmp = line;
+//	line = ft_strtrim(line, " ");
 	//free(tmp);Not work!!!!!!!!!!!!!!!!!!!
 //parse bin
 // parse args
-	all->command = ft_get_one_command(&line, &(all->command));
+//	all->command = ft_get_one_command(&line, &(all->command));
 	return 1;
 }
