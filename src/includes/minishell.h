@@ -9,10 +9,16 @@
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
+
+//#include "/Users/yeschall/.brew/opt/readline/include/readline/readline.h"
+//#include "/Users/yeschall/.brew/opt/readline/include/readline/history.h"
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <sys/termios.h>
+
+
 # include "../../libft/libft.h"
 #include <sys/stat.h>
-# include <readline/readline.h>
-# include <readline/history.h>
 
 /**
 ** command	(char **)	list of command words
@@ -44,6 +50,15 @@ typedef struct s_all
 	int			vpid;
 	int			vlast;
 }				t_all;
+
+# define PIPE 1
+# define LOW 2
+# define GT 3
+# define LOW2 4
+# define GT2 5
+# define S_OR 6
+# define S_AND 7
+
 
 int				test_fun(int res);
 
