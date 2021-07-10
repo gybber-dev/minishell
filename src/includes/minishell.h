@@ -44,8 +44,8 @@ typedef struct s_proc
 
 typedef struct s_all
 {
-	char		**command;
 	char		**envs;
+	char		**command;
 	char		specs;
 	int			vpid;
 	int			vlast;
