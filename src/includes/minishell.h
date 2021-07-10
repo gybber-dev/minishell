@@ -63,7 +63,7 @@ char			**copy_arrays_2x(char **src_arr);
 char			*get_value(char **envs, char *key);
 int				is_my_command(char *cmd_name);
 int				parser(char *line, t_all *all);
-int		check_valid(char *line);
+int				check_valid(char *line);
 
 
 void			ft_echo(char *messages);
