@@ -8,29 +8,6 @@ typedef struct s_flag
 
 
 
-char	*get_words(char **line)
-{
-	/**
-	 * return one line
-	 */
-
-//	while((*line)[++i] != ' ' && (*line)[i] != '\0')
-//		if ((*line)[i] == '\'')
-//		{
-//			flag = (*line)[i];
-//			while ((*line)[i] != '\0' && (*line)[++i] != '\'')
-//				;
-//		}
-//
-//	if (flag == '\'')
-//	{
-//		tmp = sub_line;
-//		sub_line = ft_strtrim(sub_line, &flag);
-//		free(tmp);
-//	}
-
-}
-
 void 	realloc_cmd(t_cmd **cmd)
 {
 	int i;
@@ -53,23 +30,42 @@ t_cmd		*get_cmd(char *line, t_all *all)
 	cmd = (t_cmd *)ft_calloc(sizeof(t_cmd), 2);
 
 }
-int 	parser(char **line, t_all *all) {
-	/**
-	 *1) event = get_one_peace(line, exp)
-	 * 2) while (line != '\0' && line != spec)
-	 * 			envs[i] = get-one_peace()
-	 * 			realloc(envs)
-	 * 3) IF LINE == spec
-	 * 		specs = line
-	 */
+
+int 	parser(char **line, t_all *all)
+{
 	 char *tmp;
-	 tmp = ft_strtrim((const char *)(*line), " ");
-	printf("%s\n", tmp);
-	free(*line);
-//	 while(*line != '\0')
-//	 {
-//
-//	 }
+	 char *tmp2;
+	 int i;
+	 int flag;
+
+	 i = -1;
+	flag = 0;
+	 tmp = *line;
+	 if (!(*line = ft_strtrim((const char *)(tmp), " ")))
+		 exit(EXIT_FAILURE);
+	 free(tmp);
+	 tmp = NULL;
+	 while((*line)[++i] != '\0')
+	 {
+	 	if ((*line)[i] == '\'' && !flag)
+	 		flag = 1;
+		if ((*line)[i] == '\'' && flag)
+	 		flag = 0;
+	 	if ((*line)[i] == '$' && !flag)
+		{
+	 		//дописать тут, проблема с i
+			(*line)[i] = '\0';
+	 		tmp = ft_strjoin(tmp, *line);
+	 		i++;
+			while ((*line)[i] != '\0')
+			{
+				if ((*line)[i] == ' ')
+					(*line)[i++] = '\0';
+
+			}
+
+		}
+	 }
 
 	return 1;
 }
