@@ -3,7 +3,11 @@
 void		init_struct(t_all *all, char **envp)
 {
 	all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+<<<<<<< HEAD
 	all->cmd->command = (char **)malloc(sizeof(char*) * (2 + 1));
+=======
+	all->cmd->command = (char **)malloc(sizeof(char*) * 2 + 1);
+>>>>>>> 66e349a... redir's struct was added to cmd
 	all->cmd->command[0] = ft_strdup("echo");
 	all->cmd->command[1] = ft_strdup("hello");
 	all->cmd->command[2] = NULL;

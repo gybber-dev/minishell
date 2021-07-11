@@ -247,8 +247,22 @@ TEST (ft_export, sort)
 			"export",
 			nullptr
 	};
+
 	int res = ft_export(command, environ);
 	EXPECT_EQ(res, 0);
+}
+
+TEST (set_value_arr_2x, rewrite)
+{
+	char *arr[] = {
+			ft_strdup("a=1"),
+			ft_strdup("aa=2"),
+			nullptr
+	};
+	char *new_val = "a=3";
+	set_value_arr_2x(new_val, arr);
+	char *res = arr[0];
+	EXPECT_STREQ(res, new_val);
 }
 
 

@@ -392,5 +392,3 @@ int processor(char *envp[])
 	((fd_check = check_fd()) == 0) ? printf("fd is OK\n") : printf("FD LEAK IS DETECTED! %d\n", fd_check);
 	return 0;
 }
-
-

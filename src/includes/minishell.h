@@ -29,6 +29,7 @@
 ** vlast	(int)		$? value
 */
 
+
 typedef struct s_fd
 {
 	int			in;
@@ -49,8 +50,10 @@ typedef struct s_proc
 # define GT2 5
 # define S_OR 6
 # define S_AND 7
+
 # define SAFE_TO 1
 # define TAKE_FROM 0
+
 
 typedef struct s_red
 {

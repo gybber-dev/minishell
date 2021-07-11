@@ -1,12 +1,6 @@
 #include "../includes/minishell.h"
 
-/**
-** @param envs
-** @param key
-** @return pointer to value
-*/
-
-char			*get_value(char **envs, char *key)
+char			**check_key(char **envs, char *key)
 {
 	char		**tmp;
 	int			key_len;
@@ -18,14 +12,35 @@ char			*get_value(char **envs, char *key)
 	while(*tmp != NULL)
 	{
 		if (!ft_strncmp(*tmp, key, key_len) && *(*tmp + key_len) == '=')
-			return (*tmp + key_len + 1);
+			return (tmp);
 		if (!ft_strncmp(*tmp, key, key_len + 1))
-			return (*tmp + key_len);
+			return (tmp);
 		tmp++;
 	}
 	return (NULL);
 }
 
+/**
+** @param envs
+** @param key
+** @return pointer to value
+*/
+
+char			*get_value(char **envs, char *key)
+{
+	char		**tmp;
+	int			key_len;
+
+	if (!key)
+		return NULL;
+	key_len = (int)ft_strlen(key);
+	tmp = check_key(envs, key);
+	if (!tmp)
+		return (NULL);
+	if (*((*tmp) + key_len) == '=')
+		return ((*tmp) + key_len + 1);
+	return ((*tmp) + key_len);
+}
 
 void		print_array_2x(char **arr)
 {
@@ -164,7 +179,9 @@ char 	*get_command_result(char **cmd)
 		close(fd[0]);
 		close(fd[1]);
 		execvp(cmd[0],cmd);
-	} else {
+	}
+	else
+	{
 		ssize_t size = read(fd[0], buffer, 1000);
 		if ( (size>0) && (size<sizeof(buffer)) )
 		{
@@ -188,7 +205,9 @@ char 	*get_stdout_fun_result(char **cmd, void (*fun)(char **))
 		close(fd[0]);
 		close(fd[1]);
 		fun(cmd);
-	} else {
+	}
+	else
+	{
 		ssize_t size = read(fd[0], buffer, 1000);
 		if ( (size>0) && (size<sizeof(buffer)) )
 		{
@@ -212,5 +231,27 @@ int			get_arr_2x_len(char **arr)
 
 void		set_value_arr_2x(char *str, char **arr)
 {
-	;
+	int		len;
+	char	**old_line;
+	char	*equal;
+	char	*new_line;
+	char	**res;
+
+	if (!(new_line = ft_strdup(str)))
+		exit(EXIT_FAILURE);
+	equal = ft_strchr(new_line, '=');
+	*equal = 0;
+	if ((old_line = check_key(arr, new_line)))
+	{
+		*equal = '=';
+		free(*old_line);
+		*old_line = new_line;
+	}
+	else
+	{
+		*equal = '=';
+		len = get_arr_2x_len(arr) + 1;
+		res = (char **) malloc(sizeof(char *) * (len + 1));
+//		ft_memcpy(res, arr, )
+	}
 }
