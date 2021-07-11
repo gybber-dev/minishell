@@ -36,11 +36,17 @@
 ** vlast	(int)		$? value
 */
 
-typedef struct s_all
+typedef struct s_cmd
 {
 	char		**command;
+	int			spec;
+}				t_cmd;
+
+
+typedef struct s_all
+{
+	t_cmd		*cmd;
 	char		**envs;
-	char		specs;
 	int			vpid;
 	int			vlast;
 }				t_all;
