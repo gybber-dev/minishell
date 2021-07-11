@@ -21,13 +21,6 @@
 # include "../../libft/libft.h"
 #include <sys/stat.h>
 
-/**
-** command	(char **)	list of command words
-** envs		(char **)	copy of envp (malloced)
-** specs	(char)		special symbols:
-** vpid		(int)		$$ value
-** vlast	(int)		$? value
-*/
 
 
 typedef struct s_fd
@@ -61,6 +54,7 @@ typedef struct s_red
 	char		*value;
 }				t_red;
 
+
 typedef struct s_cmd
 {
 	char		**command;
@@ -68,14 +62,26 @@ typedef struct s_cmd
 	t_red		**reds;
 }				t_cmd;
 
+/**
+** command	(char **)	list of command words
+** envs		(char **)	copy of envp (malloced)
+** specs	(char)		special symbols:
+** vpid		(int)		$$ value
+** vlast	(int)		$? value
+*/
+
 typedef struct s_all
 {
 	char		**envs;
 	t_cmd		*cmd;
 	int			vpid;
 	int			vlast;
+<<<<<<< HEAD
 	t_proc		proc;
 	int			is_pipel;
+=======
+	int 		is_pipel;
+>>>>>>> 7d9be99... add realloc func in tools
 }				t_all;
 
 
@@ -103,5 +109,8 @@ char			*get_command_result(char **cmd);
 int				get_arr_2x_len(char **arr);
 void			set_value_arr_2x(char *str, char **arr);
 int				check_var_name(char *command);
+void			lineaddback(char ***src,char *addback);
+void			ft_echo(char *messages);
+
 #endif
 

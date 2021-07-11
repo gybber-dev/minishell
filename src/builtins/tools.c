@@ -229,29 +229,48 @@ int			get_arr_2x_len(char **arr)
 	return res;
 }
 
-void		set_value_arr_2x(char *str, char **arr)
-{
-	int		len;
-	char	**old_line;
-	char	*equal;
-	char	*new_line;
-	char	**res;
+void		set_value_arr_2x(char *str, char **arr) {
+	int len;
+	char **old_line;
+	char *equal;
+	char *new_line;
+	char **res;
 
 	if (!(new_line = ft_strdup(str)))
 		exit(EXIT_FAILURE);
 	equal = ft_strchr(new_line, '=');
 	*equal = 0;
-	if ((old_line = check_key(arr, new_line)))
-	{
+	if ((old_line = check_key(arr, new_line))) {
 		*equal = '=';
 		free(*old_line);
 		*old_line = new_line;
-	}
-	else
-	{
+	} else {
 		*equal = '=';
 		len = get_arr_2x_len(arr) + 1;
 		res = (char **) malloc(sizeof(char *) * (len + 1));
 //		ft_memcpy(res, arr, )
 	}
+}
+/**
+ * @param src is allocated array for (char *)
+ * @param addback is line, which add back to src **
+ * src is reallocated with free old src
+ * addback is not free
+ */
+
+void		lineaddback(char ***src,char *addback)
+{
+	int		i;
+	char	**arr;
+
+	i = 0;
+	while(*(*src + i) != NULL)
+		i++;
+	arr = (char **)malloc((i += 2) * sizeof(char *));//realloc for char** + 1 line
+	arr[--i] = NULL;
+	arr[--i] = ft_strdup((const char*)addback);
+	while (--i > -1)
+		*(arr + i) = *(*src + i);
+	free(*src);
+	*src = arr;
 }
