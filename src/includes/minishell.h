@@ -75,7 +75,7 @@ char			*get_value(char **envs, char *key);
 int				is_my_command(char *cmd_name);
 int				parser(char *line, t_all *all);
 char			*find_binary(char *cmnd, char *paths);
-
+void			init_struct(t_all *all, char **envp);
 void			ft_echo(char *messages);
 
 #endif
