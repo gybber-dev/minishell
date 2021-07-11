@@ -81,3 +81,28 @@ void		clear_arr_2x(char **arr)
 	}
 	free(arr);
 }
+
+/**
+ *
+ * @param src is allocated array for (char *)
+ * @param addback is line, which add back to src **
+ * src is reallocated with free old src
+ * addback is not free
+ */
+
+void		lineaddback(char ***src,char *addback)
+{
+	int		i;
+	char	**arr;
+
+	i = 0;
+	while(*(*src + i) != NULL)
+		i++;
+	arr = (char **)malloc((i += 2) * sizeof(char *));//realloc for char** + 1 line
+	arr[--i] = NULL;
+	arr[--i] = ft_strdup((const char*)addback);
+	while (--i > -1)
+		*(arr + i) = *(*src + i);
+	free(*src);
+	*src = arr;
+}
