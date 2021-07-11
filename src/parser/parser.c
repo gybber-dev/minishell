@@ -1,51 +1,56 @@
 #include "../includes/minishell.h"
 
+typedef struct s_flag
+{
+	int dq;
+	int sq;
+}				t_flag;
 
 
-char			**ft_get_one_command(char **line,char ***src)
+void			lineaddback(char ***src,char *addback)
 {
 	/**
-	 * return allocated new arr
+	 * realloc char ** and add line back
+	 * need free addback
 	 */
 	int		i;
 	char	**arr;
-	char	*sub_line;
-	int		n;
-	char 	flag;
-	char 	*tmp;
 
 	i = 0;
-	n = -1;
-	flag = 0;
 	while(*(*src + i) != NULL)
 		i++;
-	arr = (char **)malloc(i + 2 * sizeof(char));
-	while (++n < i)
-		*(arr + n) = *(*src + n);
-	i = -1;
-
-
-	while((*line)[++i] != ' ' && (*line)[i] != '\0')
-		if ((*line)[i] == '\'')
-		{
-			flag = (*line)[i];
-			while ((*line)[i] != '\0' && (*line)[++i] != '\'')
-				;
-		}
-
-	sub_line = ft_calloc(i++, sizeof(char));
-	ft_strlcpy(sub_line, (const char*)(*line), i);
-	if (flag == '\'')
-	{
-		tmp = sub_line;
-		sub_line = ft_strtrim(sub_line, &flag);
-		free(tmp);
-	}
-	arr[n++] = sub_line;
-	arr[n] = NULL;
+	arr = (char **)malloc((i += 2) * sizeof(char *));//realloc for char** + 1 line
+	arr[--i] = NULL;
+	arr[--i] = ft_strdup((const char*)addback);
+	while (--i > -1)
+		*(arr + i) = *(*src + i);
 	free(*src);
+	*src = arr;
+}
 
-	return arr;
+
+
+char	*get_words(char **line)
+{
+	/**
+	 * return one line
+	 */
+
+//	while((*line)[++i] != ' ' && (*line)[i] != '\0')
+//		if ((*line)[i] == '\'')
+//		{
+//			flag = (*line)[i];
+//			while ((*line)[i] != '\0' && (*line)[++i] != '\'')
+//				;
+//		}
+//
+//	if (flag == '\'')
+//	{
+//		tmp = sub_line;
+//		sub_line = ft_strtrim(sub_line, &flag);
+//		free(tmp);
+//	}
+
 }
 
 void 	realloc_cmd(t_cmd **cmd)
@@ -63,8 +68,14 @@ void 	realloc_cmd(t_cmd **cmd)
 
 
 }
+t_cmd		*get_cmd(char *line, t_all *all)
+{
+	t_cmd	*cmd;
 
-int 	parser(char *line, t_all *all) {
+	cmd = (t_cmd *)ft_calloc(sizeof(t_cmd), 2);
+
+}
+int 	parser(char **line, t_all *all) {
 	/**
 	 *1) event = get_one_peace(line, exp)
 	 * 2) while (line != '\0' && line != spec)
@@ -73,29 +84,14 @@ int 	parser(char *line, t_all *all) {
 	 * 3) IF LINE == spec
 	 * 		specs = line
 	 */
+	 char *tmp;
+	 tmp = ft_strtrim((const char *)(*line), " ");
+	printf("%s\n", tmp);
+	free(*line);
+//	 while(*line != '\0')
+//	 {
+//
+//	 }
 
-
-	int		i;
-	char	*tmp;
-	int		ret;
-	t_cmd	*cmd;
-
-	t_cmd q;
-
-	i = -1;
-	cmd = (t_cmd *)malloc(sizeof(t_cmd) * 3);
-	cmd[0].command = ft_strdup("sdf");
-	cmd[1].command = ft_strdup("hi");
-
-
-
-//	while (*line != '\0')
-		realloc_cmd(&cmd);
-//	tmp = line;
-//	line = ft_strtrim(line, " ");
-	//free(tmp);Not work!!!!!!!!!!!!!!!!!!!
-//parse bin
-// parse args
-//	all->command = ft_get_one_command(&line, &(all->command));
 	return 1;
 }
