@@ -7,12 +7,16 @@ typedef struct s_flag
 }				t_flag;
 
 
+/**
+ *
+ * @param src is allocated array for (char *)
+ * @param addback is line, which add back to src **
+ * src is reallocated with free old src
+ * addback is not free
+ */
+
 void			lineaddback(char ***src,char *addback)
 {
-	/**
-	 * realloc char ** and add line back
-	 * need free addback
-	 */
 	int		i;
 	char	**arr;
 
