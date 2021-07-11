@@ -1,6 +1,9 @@
 #include "../includes/minishell.h"
 int		check_symb(char **line)
 {
+	/**
+	 * добавить проверку на не закрытые кавычки
+	 */
 	int ret;
 
 	ret = 0;

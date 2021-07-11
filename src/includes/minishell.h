@@ -32,7 +32,7 @@
 
 typedef struct s_cmd
 {
-	char		*command;
+	char		**command;
 	int			spec;
 }				t_cmd;
 
