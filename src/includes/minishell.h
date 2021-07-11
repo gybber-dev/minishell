@@ -9,6 +9,7 @@
 # include <unistd.h>
 # include <string.h>
 # include <errno.h>
+# include <fcntl.h>
 
 //#include "/Users/yeschall/.brew/opt/readline/include/readline/readline.h"
 //#include "/Users/yeschall/.brew/opt/readline/include/readline/history.h"
@@ -28,9 +29,17 @@
 ** vlast	(int)		$? value
 */
 
+typedef struct s_fd
+{
+	int			in;
+	int			out;
+}				t_fd;
+
 typedef struct s_proc
 {
 	int			is_complex;
+	t_fd		fix_fd;
+	t_fd		backup_fd;
 }				t_proc;
 
 # define PIPE 1
@@ -40,6 +49,8 @@ typedef struct s_proc
 # define GT2 5
 # define S_OR 6
 # define S_AND 7
+# define BACKUP 1
+# define RESTORE 0
 
 typedef struct s_red
 {
@@ -61,6 +72,7 @@ typedef struct s_all
 	int			vpid;
 	int			vlast;
 	t_proc		proc;
+	int			is_pipel;
 }				t_all;
 
 

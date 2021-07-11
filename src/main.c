@@ -55,6 +55,7 @@ int			main(int argc, char** argv, char **envp)
 		{
 			add_history(line);
 			parse_status = 0;
+
 			while(!parse_status )
 			{
 				parse_status = parser(line, &all);
