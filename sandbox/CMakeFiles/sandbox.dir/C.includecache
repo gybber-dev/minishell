@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/oem/Desktop/minishell/sandbox/pipe_redirs.c
+sys/wait.h
+-
+string.h
+-
+stdio.h
+-
+unistd.h
+-
+stdlib.h
+-
+fcntl.h
+-
+
