@@ -2,11 +2,13 @@
 
 void		init_struct(t_all *all, char **envp)
 {
-	all->command = (char **)malloc(sizeof(char*) * 2 + 1);
-	all->command[0] = ft_strdup("echo");
-	all->command[1] = ft_strdup("hello");
-	all->command[2] = NULL;
-	all->specs = 0;
+	all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+	all->cmd->command = (char **)malloc(sizeof(char*) * 2 + 1);
+	all->cmd->command[0] = ft_strdup("echo");
+	all->cmd->command[1] = ft_strdup("hello");
+	all->cmd->command[2] = NULL;
+	all->cmd->spec = 0;
+	all->cmd->reds = NULL;
 	all->vlast = 0;
 	all->vpid = 0;
 	all->envs = copy_arrays_2x(envp);

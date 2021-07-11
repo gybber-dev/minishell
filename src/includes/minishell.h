@@ -24,14 +24,6 @@
 ** command	(char **)	list of command words
 ** envs		(char **)	copy of envp (malloced)
 ** specs	(char)		special symbols:
-**		'0'				no specs
-**		'|'				pipes
-**		'<'				redir1
-**		'>'				redir2
-**		'3'				redir3 >>
-**		'4'				redir4 <<
-**		'5'				||
-**		'6'				&&
 ** vpid		(int)		$$ value
 ** vlast	(int)		$? value
 */
@@ -41,17 +33,6 @@ typedef struct s_proc
 	int			is_complex;
 }				t_proc;
 
-
-typedef struct s_all
-{
-	char		**envs;
-	char		**command;
-	char		specs;
-	int			vpid;
-	int			vlast;
-	t_proc		proc;
-}				t_all;
-
 # define PIPE 1
 # define LOW 2
 # define GT 3
@@ -59,6 +40,30 @@ typedef struct s_all
 # define GT2 5
 # define S_OR 6
 # define S_AND 7
+
+typedef struct s_red
+{
+	int			type;
+	char		*value;
+}				t_red;
+
+typedef struct s_cmd
+{
+	char		**command;
+	int			spec;
+	t_red		**reds;
+}				t_cmd;
+
+typedef struct s_all
+{
+	char		**envs;
+	t_cmd		*cmd;
+	int			vpid;
+	int			vlast;
+	t_proc		proc;
+}				t_all;
+
+
 
 
 int				test_fun(int res);

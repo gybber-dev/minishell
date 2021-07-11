@@ -19,10 +19,13 @@ void		my_init_all(t_all *all, char **envp, int iter)
 {
 	if (iter == 0)
 	{
-		all->command = (char **)malloc(sizeof(char*) * 1 + 1);
-		all->command[0] = ft_strdup("ls");
-		all->command[1] = NULL;
-		all->specs = PIPE;
+		t_red *reds;
+		all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+		all->cmd->reds =
+		all->cmd->command = (char **)malloc(sizeof(char*) * 1 + 1);
+		all->cmd->command[0] = ft_strdup("ls");
+		all->cmd->command[1] = NULL;
+		all->cmd->spec = PIPE;
 		all->vlast = 0;
 		all->vpid = 0;
 		all->envs = copy_arrays_2x(envp);
@@ -32,11 +35,11 @@ void		my_init_all(t_all *all, char **envp, int iter)
 	}
 	else if (iter == 1)
 	{
-		all->command = (char **)malloc(sizeof(char*) * 2 + 1);
-		all->command[0] = ft_strdup("grep");
-		all->command[1] = ft_strdup("goo");
-		all->command[2] = NULL;
-		all->specs = 0;
+		all->cmd->command = (char **)malloc(sizeof(char*) * 2 + 1);
+		all->cmd->command[0] = ft_strdup("grep");
+		all->cmd->command[1] = ft_strdup("goo");
+		all->cmd->command[2] = NULL;
+		all->cmd->spec = 0;
 		all->vlast = 0;
 		all->vpid = 0;
 		all->envs = copy_arrays_2x(envp);
