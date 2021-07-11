@@ -4,3 +4,4 @@ cmake-build-debug
 build*
 *.gch
 sandbox.c
+sandbox

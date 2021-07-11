@@ -87,6 +87,9 @@ void		pipeline(char ***cmd, char *oper, int flag)
 	int fd[2];
 	int backup_stdin = dup(0);
 	prev = 0;
+	t_fix_fd fix_fd;
+	fix_fd.in = 0;
+	fix_fd.out = 1;
 
 	while (*cmd != NULL)
 	{
