@@ -4,6 +4,7 @@
 
 extern "C" {
 #include "../../src/includes/minishell.h"
+#include "builtins.h"
 }
 //
 //TEST(is_my_command, is_cd){
@@ -90,4 +91,26 @@ TEST(find_binary, incorrect_cmd){
 	char path[] = "/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
 	char *res = find_binary("lssss", path);
 	EXPECT_STREQ(res, nullptr);
+}
+
+TEST(builtins, single_fd_leak){
+	t_all all;
+	int i = 0;
+//	char *envp[] = {
+//			"PATH=/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki",
+//			nullptr
+//	}
+	init_all(&all);
+	while (1) {
+		generate_cmd(1, &all, i);
+		if (!all.cmd)
+			break;
+		builtins(&all);
+		i++;
+	}
+	std_fd(TAKE_FROM, &(all.proc.backup_fd));
+	close(all.proc.backup_fd.in);
+	close(all.proc.backup_fd.out);
+	int fd_check = check_fd();
+	EXPECT_EQ(fd_check, 0);
 }
