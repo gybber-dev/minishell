@@ -49,8 +49,8 @@ typedef struct s_proc
 # define GT2 5
 # define S_OR 6
 # define S_AND 7
-# define BACKUP 1
-# define RESTORE 0
+# define SAFE_TO 1
+# define TAKE_FROM 0
 
 typedef struct s_red
 {
@@ -89,6 +89,9 @@ int				parser(char *line, t_all *all);
 char			*find_binary(char *cmnd, char *paths);
 void			init_struct(t_all *all, char **envp);
 void			ft_echo(char *messages);
-
+int				builtins(t_all *all);
+void			std_fd(int opt, t_fd *fd);
+int				check_fd(void);
+int				processor(char *envp[]);
 #endif
 
