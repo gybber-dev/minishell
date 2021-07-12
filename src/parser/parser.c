@@ -33,39 +33,45 @@ t_cmd		*get_cmd(char *line, t_all *all)
 
 int 	parser(char **line, t_all *all)
 {
-	 char *tmp;
-	 char *tmp2;
-	 int i;
+	 char *head;
+	 char *prev_head;
+	 char *n_line;
 	 int flag;
 
-	 i = -1;
 	flag = 0;
-	 tmp = *line;
-	 if (!(*line = ft_strtrim((const char *)(tmp), " ")))
+	head = *line;
+	 if (!(*line = ft_strtrim((const char *)(head), " ")))
 		 exit(EXIT_FAILURE);
-	 free(tmp);
-	 tmp = NULL;
-	 while((*line)[++i] != '\0')
+	 free(head);
+	 head = *line;
+	 prev_head = head;
+	 n_line = NULL;
+	 while(*head++ != '\0')
 	 {
-	 	if ((*line)[i] == '\'' && !flag)
+	 	if (*head == '\'' && !flag)
 	 		flag = 1;
-		if ((*line)[i] == '\'' && flag)
+		if (*head == '\'' && flag)
 	 		flag = 0;
-	 	if ((*line)[i] == '$' && !flag)
-		{
-	 		//дописать тут, проблема с i
-			(*line)[i] = '\0';
-	 		tmp = ft_strjoin(tmp, *line);
-	 		i++;
-			while ((*line)[i] != '\0')
+	 	if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
+ 		{
+	 		*head++ = '\0';
+	 		if (!(n_line = ft_strjoin(n_line, prev_head)))//need free if !Null
+	 			n_line = ft_strdup(prev_head);
+
+	 		prev_head = head;
+			while (*head++ != '\0')
 			{
-				if ((*line)[i] == ' ')
-					(*line)[i++] = '\0';
+				if (*head == ' ')
+					*head = '\0';
+				n_line = ft_strjoin(n_line, get_value(all->envs, prev_head));//need free if !Null
+				prev_head = head;
+				prev_head++;
 
 			}
-
 		}
 	 }
+	 *line = n_line;
+	 printf("%s\n", *line);
 
 	return 1;
 }
