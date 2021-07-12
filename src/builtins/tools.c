@@ -93,21 +93,22 @@ char   *find_binary(char *cmnd, char *paths)
 {
 	char  *path;
 	char  **arr;
-	char  *tmp;
+	char  **tmp;
 	struct stat buf;
 
 	path = NULL;
-	if (!cmnd || !paths)
+	if (!cmnd || !paths || (*paths == 0) || (*cmnd) == 0)
 		return NULL;
 	arr = ft_split(paths, ':');
-	tmp = *arr;
+	tmp = arr;
 	cmnd = ft_strjoin("/", cmnd);
-	while(tmp)
+	while(*tmp)
 	{
-		path = ft_strjoin(tmp, cmnd);
+		path = ft_strjoin(*tmp, cmnd);
 		if (stat(path, &buf) == 0)
 			break;
 		free(path);
+		path = NULL;
 		tmp++;
 	}
 	free(cmnd);

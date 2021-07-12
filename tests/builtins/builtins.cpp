@@ -5,30 +5,30 @@
 extern "C" {
 #include "../../src/includes/minishell.h"
 }
-
-TEST(is_my_command, is_cd){
-	int res = is_my_command("cd");
-	EXPECT_EQ(res,1);
-}
-
-TEST(is_my_command, empty_command){
-	int res = is_my_command("");
-	EXPECT_EQ(res,0);
-}
-
-TEST(is_my_command, greater_by_one){
-	int res = is_my_command("cdd");
-	EXPECT_EQ(res,0);
-}
-
-TEST(is_my_command, null_command){
-	int res = is_my_command(NULL);
-	EXPECT_EQ(res,0);
-}
-TEST(is_my_command, another_right_command){
-	int res = is_my_command("env");
-	EXPECT_EQ(res,1);
-}
+//
+//TEST(is_my_command, is_cd){
+//	int res = is_my_command("cd");
+//	EXPECT_EQ(res,1);
+//}
+//
+//TEST(is_my_command, empty_command){
+//	int res = is_my_command("");
+//	EXPECT_EQ(res,0);
+//}
+//
+//TEST(is_my_command, greater_by_one){
+//	int res = is_my_command("cdd");
+//	EXPECT_EQ(res,0);
+//}
+//
+//TEST(is_my_command, null_command){
+//	int res = is_my_command(NULL);
+//	EXPECT_EQ(res,0);
+//}
+//TEST(is_my_command, another_right_command){
+//	int res = is_my_command("env");
+//	EXPECT_EQ(res,1);
+//}
 
 TEST(get_value, normal){
 	char *arr[3] = {"ar=2", "b=3", nullptr};
@@ -54,4 +54,40 @@ TEST(get_value, no_equal_symbol){
 	char *arr[2] = {"cc", nullptr};
 	char *res = get_value(arr, "cc");
 	EXPECT_STREQ(res, "");
+}
+
+TEST(find_binary, normal){
+	char path[] = "/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
+	char *res = find_binary("ls", path);
+	EXPECT_STREQ(res, "/bin/ls");
+}
+
+TEST(find_binary, null_cmd){
+	char path[] = "/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
+	char *res = find_binary(nullptr, path);
+	EXPECT_STREQ(res, nullptr);
+}
+
+TEST(find_binary, null_path){
+	char path[] = "/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
+	char *res = find_binary("ls", nullptr);
+	EXPECT_STREQ(res, nullptr);
+}
+
+TEST(find_binary, empty_path){
+	char path[] = "";
+	char *res = find_binary("ls", path);
+	EXPECT_STREQ(res, nullptr);
+}
+
+TEST(find_binary, empty_cmd){
+	char path[] = "/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
+	char *res = find_binary("", path);
+	EXPECT_STREQ(res, nullptr);
+}
+
+TEST(find_binary, incorrect_cmd){
+	char path[] = "/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki";
+	char *res = find_binary("lssss", path);
+	EXPECT_STREQ(res, nullptr);
 }

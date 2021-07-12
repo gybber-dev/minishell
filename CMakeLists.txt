@@ -68,6 +68,7 @@ add_executable(
 target_link_libraries(
         test_minishell PRIVATE
         gtest gtest_main
+		readline
         libft
 		libreadline.a
 		libhistory.a
