@@ -20,10 +20,11 @@ FILE(GLOB LOCAL_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/src/includes/*.h
 )
 # Create copy of the variable for tests
-set(TEST_SOURCES ${MINISHELL_SOURCES})
+set(TEST_SOURCES ${MINISHELL_SOURCES} tests/builtins/cmd_generator.cpp tests/builtins/builtins.h)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lreadline")
 # We can't use another main function in tests, so exclude main.c file
 list(FILTER TEST_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/main.c")
+list(FILTER TEST_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/main.c")
 # Print our variables
 message(STATUS ${MINISHELL_SOURCES})
 message(STATUS ${TEST_SOURCES})
@@ -54,6 +55,7 @@ add_executable(
         test_minishell
 #        tests/test.cpp
         tests/builtins/builtins.cpp
+		tests/builtins/cmd_generator.cpp
         ${TEST_SOURCES}
 )
 # ====================================================
