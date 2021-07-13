@@ -72,8 +72,9 @@ int 	parser(char **line, t_all *all)
 			prev_head++;
 		}
 	 }
-	 *line = n_line;
-	 printf("%s\n", *line);
+	if (n_line)
+		*line = n_line;
+	printf("%s\n", *line);
 
 	return 1;
 }
