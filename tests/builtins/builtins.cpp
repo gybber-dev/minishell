@@ -6,30 +6,30 @@ extern "C" {
 #include "../../src/includes/minishell.h"
 #include "builtins.h"
 }
-//
-//TEST(is_my_command, is_cd){
-//	int res = is_my_command("cd");
-//	EXPECT_EQ(res,1);
-//}
-//
-//TEST(is_my_command, empty_command){
-//	int res = is_my_command("");
-//	EXPECT_EQ(res,0);
-//}
-//
-//TEST(is_my_command, greater_by_one){
-//	int res = is_my_command("cdd");
-//	EXPECT_EQ(res,0);
-//}
-//
-//TEST(is_my_command, null_command){
-//	int res = is_my_command(NULL);
-//	EXPECT_EQ(res,0);
-//}
-//TEST(is_my_command, another_right_command){
-//	int res = is_my_command("env");
-//	EXPECT_EQ(res,1);
-//}
+
+TEST(is_builtin, is_cd){
+	int res = is_builtin("cd");
+	EXPECT_EQ(res,1);
+}
+
+TEST(is_builtin, empty_command){
+	int res = is_builtin("");
+	EXPECT_EQ(res,0);
+}
+
+TEST(is_builtin, greater_by_one){
+	int res = is_builtin("cdd");
+	EXPECT_EQ(res,0);
+}
+
+TEST(is_builtin, null_command){
+	int res = is_builtin(nullptr);
+	EXPECT_EQ(res,0);
+}
+TEST(is_builtin, another_right_command){
+	int res = is_builtin("env");
+	EXPECT_EQ(res,1);
+}
 
 TEST(get_value, normal){
 	char *arr[3] = {"ar=2", "b=3", nullptr};
@@ -105,7 +105,7 @@ TEST(builtins, single_fd_leak){
 		generate_cmd(1, &all, i);
 		if (!all.cmd)
 			break;
-		builtins(&all);
+		exec_command(&all);
 		i++;
 	}
 	std_fd(TAKE_FROM, &(all.proc.backup_fd));
@@ -114,3 +114,74 @@ TEST(builtins, single_fd_leak){
 	int fd_check = check_fd();
 	EXPECT_EQ(fd_check, 0);
 }
+
+//TEST(processor, single_fd_leak){
+//	char *envp[] = {
+//		"PATH=/Users/yeschall/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki",
+//		nullptr
+//	};
+//	EXPECT_EQ(fd_check, 0);
+//}
+
+TEST (check_flag_n, normal)
+{
+	char *command = "-n";
+	int res = check_flag_n(command);
+	EXPECT_EQ(res, 1);
+}
+
+TEST (check_flag_n, not_flag)
+{
+	char *command = "n";
+	int res = check_flag_n(command);
+	EXPECT_EQ(res, 0);
+}
+
+TEST (check_flag_n, multi_n)
+{
+	char *command = "-nnnnn";
+	int res = check_flag_n(command);
+	EXPECT_EQ(res, 1);
+}
+
+TEST (check_flag_n, only_dash)
+{
+	char *command = "-";
+	int res = check_flag_n(command);
+	EXPECT_EQ(res, 0);
+}
+
+
+TEST (ft_echo, normal)
+{
+	char *command[] = {
+		"echo",
+		"hello",
+		nullptr
+	};
+	char *res = get_stdout_fun_result(command, &ft_echo);
+	EXPECT_STREQ(res, "hello\n");
+}
+
+TEST (ft_echo, only_echo)
+{
+	char *command[] = {
+			"echo",
+			nullptr
+	};
+	char *res = get_stdout_fun_result(command, &ft_echo);
+	EXPECT_STREQ(res, "\n");
+}
+
+//TEST (ft_echo, norm_with_n)
+//{
+//	char *command[] = {
+//			"echo",
+//			"-n",
+//			"hello",
+//			nullptr
+//	};
+//	char *res = get_stdout_fun_result(command, &ft_echo);
+//	EXPECT_STREQ(res, "hello");
+//}
+
