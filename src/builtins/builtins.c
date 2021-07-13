@@ -56,7 +56,19 @@ int			check_redirs(t_red **reds, t_fd *fix_fd)
 
 int			is_builtin(char *command)
 {
-	return 0;
+	if (!command)
+		return 0;
+	return (
+		!(
+		ft_strncmp(command, "echo", (ft_strlen(command) + 1)) &&
+		ft_strncmp(command, "cd", (ft_strlen(command) + 1)) &&
+		ft_strncmp(command, "export", (ft_strlen(command) + 1)) &&
+		ft_strncmp(command, "unset", (ft_strlen(command) + 1)) &&
+		ft_strncmp(command, "exit", (ft_strlen(command) + 1)) &&
+		ft_strncmp(command, "env", (ft_strlen(command) + 1)) &&
+		ft_strncmp(command, "pwd", (ft_strlen(command) + 1))
+		)
+	);
 }
 
 int			exec_binary(t_all *all)
@@ -76,6 +88,7 @@ int			exec_binary(t_all *all)
 				all->envs)	== -1)
 		{
 			perror("Could not execve");
+			exit(EXIT_FAILURE);
 		}
 	}
 	else if (parent)
@@ -87,6 +100,8 @@ int			exec_binary(t_all *all)
 
 int			exec_builtin(t_all *all)
 {
+	if (!ft_strncmp(all->cmd->command[0], "echo", 5))
+		ft_echo(all);
 	return 0;
 }
 
@@ -110,75 +125,124 @@ void		do_pipel(t_all *all)
 }
 
 
-int			builtins(t_all *all)
+int			exec_command(t_all *all)
 {
 	int		fd[2];
 	pid_t	parent;
 	int		status;
 
-
-	int res = check_redirs(all->cmd->reds, &(all->proc.fix_fd));
-//	printf("AFTER REDIRS: [%d, %d]\n", all->proc.fix_fd.in, all->proc.fix_fd.out);
-	if (!all->is_pipel)
+	check_redirs(all->cmd->reds, &(all->proc.fix_fd));
+	if (all->cmd->command[0])
 	{
-		if (is_builtin(all->cmd->command[0]))
-			exec_builtin(all);
+		if (!all->is_pipel)
+		{
+			if (is_builtin(all->cmd->command[0]))
+				exec_builtin(all);
+			else
+			{
+				std_fd(TAKE_FROM, &(all->proc.fix_fd));
+				if (all->cmd->command[0])
+					exec_binary(all);
+				// may be it's necessary to restore fd before all exits inside exec_binary
+				std_fd(TAKE_FROM, &(all->proc.backup_fd));
+			}
+		}
 		else
 		{
-			std_fd(TAKE_FROM, &(all->proc.fix_fd));
-			exec_binary(all);
-			// may be it's necessary to restore fd before all exits inside exec_binary
-			std_fd(TAKE_FROM, &(all->proc.backup_fd));
-		}
-	}
-	else
-	{
-		pipe(fd);
-		if ((parent = fork()) == -1)
-			exit(EXIT_FAILURE);
-		else if (!parent)
-		{
+			pipe(fd);
+			if ((parent = fork()) == -1)
+				exit(EXIT_FAILURE);
+			else if (!parent)
+			{
 //			printf("\tdaughter\n\tcmd:\t'%s'\n", all->cmd->command[0]);
 //			printf("\tspec is: %d\n", all->cmd->spec);
 //			printf("\tfd is [%d, %d]\n", fd[0], fd[1]);
-			// if not last command write result to the pipe
-			if (all->cmd->spec)
-			{
+				// if not last command write result to the pipe
+				if (all->cmd->spec)
+				{
 //				printf("\tchange fd_out:\t'%d' -> '%d'\n", fd[1], all->proc.fix_fd.out);
-				dup2(fd[1], all->proc.fix_fd.out);
+					dup2(fd[1], all->proc.fix_fd.out);
+				}
+				close(fd[1]);
+				close(fd[0]);
+				if (execve(
+						find_binary(
+								all->cmd->command[0],
+								get_value(all->envs, "PATH")),
+						all->cmd->command,
+						all->envs)	== -1)
+				{
+					perror("Could not execve");
+					exit(EXIT_FAILURE);
+				}
 			}
-			close(fd[1]);
-			close(fd[0]);
-//			execvp(all->cmd->command[0], all->cmd->command);
-//			perror("Could not execve");
-//			exit(EXIT_FAILURE);
-			if (execve(
-					find_binary(
-							all->cmd->command[0],
-							get_value(all->envs, "PATH")),
-					all->cmd->command,
-					all->envs)	== -1)
+			else if (parent)
 			{
-				perror("Could not execve");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else if (parent)
-		{
 //			printf("parent\ncmd:\t'%s'\nwait for:\t'%d'\n", all->cmd->command[0], parent);
 //			printf("fd is [%d, %d]\n", fd[0], fd[1]);
-			close(fd[1]);
+				close(fd[1]);
 //			printf("change fd_in:\t'%d' -> '%d'\n", fd[0], all->proc.fix_fd.in);
-			dup2(fd[0], all->proc.fix_fd.in);
-			waitpid(parent, &status, 0);
-			close(fd[0]);
+				dup2(fd[0], all->proc.fix_fd.in);
+				waitpid(parent, &status, 0);
+				close(fd[0]);
+			}
 		}
-
 	}
 	return 0;
 }
 
-void		my_init_all(t_all *all, char **envp, int iter)
+// > 1 > 2
+void		my_init_all0(t_all *all, char **envp, int iter)
+{
+	all->is_pipel = 1;
+	if (iter == 0)
+	{
+		all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+		all->cmd->command = (char **)malloc(sizeof(char*) * (0 + 1));
+		all->cmd->command[0] = NULL;
+
+		all->cmd->reds = (t_red **)malloc(sizeof(t_red *) * (2 + 1));
+		all->cmd->reds[0] = (t_red *) malloc(sizeof(t_red));
+		all->cmd->reds[0]->type = GT;
+		all->cmd->reds[0]->value = "1";
+		all->cmd->reds[1] = (t_red *) malloc(sizeof(t_red));
+		all->cmd->reds[1]->type = GT;
+		all->cmd->reds[1]->value = "2";
+		all->cmd->reds[2] = NULL;
+
+		all->cmd->spec = 0;
+
+		all->vlast = 0;
+		all->vpid = 0;
+	}
+	else if (iter == 1)
+		all->cmd = NULL;
+}
+// cat 1 > 2
+void		my_init_all1(t_all *all, char **envp, int iter)
+{
+	all->is_pipel = 1;
+	if (iter == 0)
+	{
+		all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+		all->cmd->command = (char **)malloc(sizeof(char*) * (2 + 1));
+		all->cmd->command[0] = ft_strdup("cat");
+		all->cmd->command[1] = ft_strdup("1");
+		all->cmd->command[2] = NULL;
+
+		all->cmd->reds = (t_red **)malloc(sizeof(t_red *) * (1 + 1));
+		all->cmd->reds[0] = (t_red *) malloc(sizeof(t_red));
+		all->cmd->reds[0]->type = GT;
+		all->cmd->reds[0]->value = "2";
+		all->cmd->reds[1] = NULL;
+
+		all->cmd->spec = 0;
+	}
+	else if (iter == 1)
+		all->cmd = NULL;
+}
+// ls -al | grep o > 222
+void		my_init_all2(t_all *all, char **envp, int iter)
 {
 	all->is_pipel = 1;
 	if (iter == 0)
@@ -216,6 +280,74 @@ void		my_init_all(t_all *all, char **envp, int iter)
 	else if (iter == 2)
 		all->cmd = NULL;
 }
+// ls googletest | grep o > 1 > 2
+void		my_init_all3(t_all *all, char **envp, int iter)
+{
+	all->is_pipel = 1;
+	if (iter == 0)
+	{
+		all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+		all->cmd->command = (char **)malloc(sizeof(char*) * (2 + 1));
+		all->cmd->command[0] = ft_strdup("ls");
+		all->cmd->command[1] = "googletest";
+		all->cmd->command[2] = NULL;
+
+		all->cmd->reds = NULL;
+		all->cmd->spec = PIPE;
+
+		all->vlast = 0;
+		all->vpid = 0;
+	}
+	else if (iter == 1)
+	{
+		all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+		all->cmd->command = (char **)malloc(sizeof(char*) * (2 + 1));
+		all->cmd->command[0] = ft_strdup("grep");
+		all->cmd->command[1] = ft_strdup("o");
+		all->cmd->command[2] = NULL;
+
+		all->cmd->reds = (t_red **)malloc(sizeof(t_red *) * (2 + 1));
+		all->cmd->reds[0] = (t_red *) malloc(sizeof(t_red));
+		all->cmd->reds[0]->type = GT;
+		all->cmd->reds[0]->value = "1";
+		all->cmd->reds[1] = (t_red *) malloc(sizeof(t_red));
+		all->cmd->reds[1]->type = GT;
+		all->cmd->reds[1]->value = "2";
+		all->cmd->reds[2] = NULL;
+
+		all->cmd->spec = 0;
+
+		all->vlast = 0;
+		all->vpid = 0;
+	}
+	else if (iter == 2)
+		all->cmd = NULL;
+}
+// cat < 1 > 2
+void		my_init_all(t_all *all, char **envp, int iter)
+{
+	all->is_pipel = 1;
+	if (iter == 0)
+	{
+		all->cmd = (t_cmd *) malloc(sizeof(t_cmd));
+		all->cmd->command = (char **)malloc(sizeof(char*) * (1 + 1));
+		all->cmd->command[0] = ft_strdup("cat");
+		all->cmd->command[1] = NULL;
+
+		all->cmd->reds = (t_red **)malloc(sizeof(t_red *) * (2 + 1));
+		all->cmd->reds[0] = (t_red *) malloc(sizeof(t_red));
+		all->cmd->reds[0]->type = GT;
+		all->cmd->reds[0]->value = "2";
+		all->cmd->reds[1] = (t_red *) malloc(sizeof(t_red));
+		all->cmd->reds[1]->type = LOW;
+		all->cmd->reds[1]->value = "1";
+		all->cmd->reds[2] = NULL;
+
+		all->cmd->spec = 0;
+	}
+	else if (iter == 1)
+		all->cmd = NULL;
+}
 
 int			check_fd(void)
 {
@@ -242,9 +374,10 @@ int processor(char *envp[])
 	while (1)
 	{
 		my_init_all(&all, envp, i);
+		//	printf("AFTER REDIRS: [%d, %d]\n", all->proc.fix_fd.in, all->proc.fix_fd.out);
 		if (!all.cmd)
 			break;
-		builtins(&all);
+		exec_command(&all);
 		clear(&all);
 		i++;
 	}
@@ -259,4 +392,5 @@ int processor(char *envp[])
 	((fd_check = check_fd()) == 0) ? printf("fd is OK\n") : printf("FD LEAK IS DETECTED! %d\n", fd_check);
 	return 0;
 }
+
 
