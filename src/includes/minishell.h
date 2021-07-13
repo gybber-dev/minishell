@@ -84,14 +84,16 @@ void			clear_arr_2x(char **arr);
 void			print_array_2x(char **arr);
 char			**copy_arrays_2x(char **src_arr);
 char			*get_value(char **envs, char *key);
-int				is_my_command(char *cmd_name);
 int				parser(char *line, t_all *all);
 char			*find_binary(char *cmnd, char *paths);
 void			init_struct(t_all *all, char **envp);
-void			ft_echo(char *messages);
-int				builtins(t_all *all);
+int				exec_command(t_all *all);
 void			std_fd(int opt, t_fd *fd);
 int				check_fd(void);
 int				processor(char *envp[]);
+int				is_builtin(char *command);
+void			ft_echo(char **command);
+int				check_flag_n(char *command_1);
+char			*get_stdout_fun_result(char **cmd, void (*fun)(char **));
 #endif
 
