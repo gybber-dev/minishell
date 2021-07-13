@@ -1,11 +1,11 @@
 #include "../includes/minishell.h"
 
-
 /**
 ** @param envs
 ** @param key
 ** @return pointer to value
 */
+
 char			*get_value(char **envs, char *key)
 {
 	char		**tmp;
@@ -82,13 +82,13 @@ void		clear_arr_2x(char **arr)
 	free(arr);
 }
 
-
 /**
  *
  * @param cmnd
  * @param paths $PATH string
  * @return char* MALLOCED path to binary
  */
+
 char   *find_binary(char *cmnd, char *paths)
 {
 	char  *path;
@@ -125,6 +125,7 @@ char   *find_binary(char *cmnd, char *paths)
 ** @param from	input fd
 ** @param to	output fd
 */
+
 void 		read_from_write_to(int from, int to)
 {
 	char	*buf;
@@ -142,4 +143,59 @@ void 		read_from_write_to(int from, int to)
 		write(to, buf, 1);
 	}
 	free(buf);
+}
+
+/**
+** Redirects stdout of command to buffer variable. Needs to free buffer
+** Buffer size is 1000
+** @param cmd list of commands
+** @return malloced pointer to result of command
+*/
+
+char 	*get_command_result(char **cmd)
+{
+	int fd[2];
+	char *buffer;
+
+	buffer = malloc(1000);
+	pipe(fd);
+	if (fork() == 0) {
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		execvp(cmd[0],cmd);
+	} else {
+		ssize_t size = read(fd[0], buffer, 1000);
+		if ( (size>0) && (size<sizeof(buffer)) )
+		{
+			buffer[size]='\0';
+		}
+		close(fd[0]);
+		close(fd[1]);
+	}
+	return buffer;
+}
+
+char 	*get_stdout_fun_result(char **cmd, void (*fun)(char **))
+{
+	int fd[2];
+	char *buffer;
+
+	buffer = malloc(1000);
+	pipe(fd);
+	if (fork() == 0) {
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		fun(cmd);
+	} else {
+		ssize_t size = read(fd[0], buffer, 1000);
+		if ( (size>0) && (size<sizeof(buffer)) )
+		{
+			buffer[size]='\0';
+		}
+		close(fd[0]);
+		close(fd[1]);
+	}
+	return buffer;
 }
