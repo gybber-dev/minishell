@@ -93,7 +93,12 @@ int				check_fd(void);
 int				processor(char *envp[]);
 int				is_builtin(char *command);
 void			ft_echo(char **command);
+int 			ft_export(char **command, char **env);
 int				check_flag_n(char *command_1);
 char			*get_stdout_fun_result(char **cmd, void (*fun)(char **));
+char			*get_command_result(char **cmd);
+int				get_arr_2x_len(char **arr);
+void			set_value_arr_2x(char *str, char **arr);
+int				check_var_name(char *command);
 #endif
 

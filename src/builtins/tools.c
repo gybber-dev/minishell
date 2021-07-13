@@ -199,3 +199,18 @@ char 	*get_stdout_fun_result(char **cmd, void (*fun)(char **))
 	}
 	return buffer;
 }
+
+int			get_arr_2x_len(char **arr)
+{
+	int 	res;
+
+	res = 0;
+	while(*arr++)
+		res++;
+	return res;
+}
+
+void		set_value_arr_2x(char *str, char **arr)
+{
+	;
+}
