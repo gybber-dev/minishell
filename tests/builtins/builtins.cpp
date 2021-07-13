@@ -173,15 +173,84 @@ TEST (ft_echo, only_echo)
 	EXPECT_STREQ(res, "\n");
 }
 
-//TEST (ft_echo, norm_with_n)
-//{
-//	char *command[] = {
-//			"echo",
-//			"-n",
-//			"hello",
-//			nullptr
-//	};
-//	char *res = get_stdout_fun_result(command, &ft_echo);
-//	EXPECT_STREQ(res, "hello");
-//}
+TEST (ft_echo, norm_with_n)
+{
+	char *command[] = {
+			"echo",
+			"hello",
+			nullptr
+	};
+	char **tmp = environ;
+	char *res = get_stdout_fun_result(command, &ft_echo);
+	char *orig = get_command_result(command);
+	EXPECT_STREQ(res, orig);
+}
+
+TEST (get_arr2_len, norm)
+{
+	char *command[] = {
+			"echo",
+			"hello",
+			nullptr
+	};
+	int res = get_arr_2x_len(command);
+	EXPECT_EQ(res, 2);
+}
+
+TEST (get_arr_2x_len, null_arr)
+{
+	char *command[] = {
+			nullptr
+	};
+	int res = get_arr_2x_len(command);
+	EXPECT_EQ(res, 0);
+}
+
+TEST (check_var_name, normal)
+{
+	int res = check_var_name("hel=1");
+	EXPECT_EQ(res, 1);
+}
+
+TEST (check_var_name, without_value)
+{
+	int res = check_var_name("hel=");
+	EXPECT_EQ(res, 1);
+}
+
+TEST (check_var_name, without_equal)
+{
+	int res = check_var_name("hel");
+	EXPECT_EQ(res, 0);
+}
+
+TEST (check_var_name, first_digit)
+{
+	int res = check_var_name("1hel=0");
+	EXPECT_EQ(res, 0);
+}
+TEST (check_var_name, first__)
+{
+	int res = check_var_name("_hel=0");
+	EXPECT_EQ(res, 1);
+}
+TEST (check_var_name, wrong_symbol_in_name)
+{
+	int res = check_var_name("he<l=0");
+	EXPECT_EQ(res, 0);
+}
+
+
+TEST (ft_export, sort)
+{
+	char *command[] = {
+			"export",
+			nullptr
+	};
+	int res = ft_export(command, environ);
+	EXPECT_EQ(res, 0);
+}
+
+
+
 
