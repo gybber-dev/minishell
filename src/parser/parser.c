@@ -7,29 +7,29 @@ typedef struct s_flag
 }				t_flag;
 
 
-
-void 	realloc_cmd(t_cmd **cmd)
-{
-	int i;
-
-	i = 0;
-	while (*cmd != NULL)
-	{
-		printf("%s\n", (*cmd)[i].command);
-		i++;
-		}
-	printf("%d\n", i);
-	printf("%p\n", cmd[2]);
-
-
-}
-t_cmd		*get_cmd(char *line, t_all *all)
-{
-	t_cmd	*cmd;
-
-	cmd = (t_cmd *)ft_calloc(sizeof(t_cmd), 2);
-
-}
+//
+//void 	realloc_cmd(t_cmd **cmd)
+//{
+//	int i;
+//
+//	i = 0;
+//	while (*cmd != NULL)
+//	{
+//		printf("%s\n", (*cmd)[i].command);
+//		i++;
+//		}
+//	printf("%d\n", i);
+//	printf("%p\n", cmd[2]);
+//
+//
+//}
+//t_cmd		*get_cmd(char *line, t_all *all)
+//{
+//	t_cmd	*cmd;
+//
+//	cmd = (t_cmd *)ft_calloc(sizeof(t_cmd), 2);
+//
+//}
 
 int 	parser(char **line, t_all *all)
 {
@@ -62,12 +62,14 @@ int 	parser(char **line, t_all *all)
 			while (*head++ != '\0')
 			{
 				if (*head == ' ')
+				{
 					*head = '\0';
-				n_line = ft_strjoin(n_line, get_value(all->envs, prev_head));//need free if !Null
-				prev_head = head;
-				prev_head++;
-
+					break;
+				}
 			}
+			n_line = ft_strjoin(n_line, get_value(all->envs, prev_head));//need free if !Null
+			prev_head = head;
+			prev_head++;
 		}
 	 }
 	 *line = n_line;
