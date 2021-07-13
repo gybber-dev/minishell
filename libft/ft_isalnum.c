@@ -12,6 +12,12 @@
 
 #include "libft.h"
 
+/**
+** Returns 0 if c is not digit or alpha. Else returns ascii index of c
+** @param c
+** @return
+*/
+
 int		ft_isalnum(int c)
 {
 	int i;
