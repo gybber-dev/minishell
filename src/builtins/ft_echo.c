@@ -15,7 +15,7 @@ int			check_flag_n(char *command_1)
 	return 0;
 }
 
-void		ft_echo(char **command)
+void		ft_echo(char **command, char **env)
 {
 	char	*tmp;
 	int		flag_n;

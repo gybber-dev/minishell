@@ -159,7 +159,7 @@ TEST (ft_echo, normal)
 		"hello",
 		nullptr
 	};
-	char *res = get_stdout_fun_result(command, &ft_echo);
+	char *res = get_stdout_fun_result(command, ft_echo, nullptr);
 	EXPECT_STREQ(res, "hello\n");
 }
 
@@ -169,7 +169,7 @@ TEST (ft_echo, only_echo)
 			"echo",
 			nullptr
 	};
-	char *res = get_stdout_fun_result(command, &ft_echo);
+	char *res = get_stdout_fun_result(command, &ft_echo, nullptr);
 	EXPECT_STREQ(res, "\n");
 }
 
@@ -181,8 +181,8 @@ TEST (ft_echo, norm_with_n)
 			nullptr
 	};
 	char **tmp = environ;
-	char *res = get_stdout_fun_result(command, &ft_echo);
-	char *orig = get_command_result(command);
+	char *res = get_stdout_fun_result(command, &ft_echo, nullptr);
+	char *orig = get_command_result(command, nullptr);
 	EXPECT_STREQ(res, orig);
 }
 
@@ -290,5 +290,55 @@ TEST (set_value_arr_2x, add_in_empty_arr)
 	EXPECT_STREQ(res, new_val);
 }
 
+TEST (del_line_arr_2x, normal)
+{
+	char **arr;
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1"),
+	arr[1] = ft_strdup("aa=2"),
+	arr[2] = nullptr;
+	char *del_val = "a";
+	del_line_arr_2x(del_val, &arr);
+	char *res = arr[0];
+	EXPECT_STREQ(res, "aa=2");
+}
+TEST (del_line_arr_2x, normal_del_from_middle)
+{
+	char **arr;
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1"),
+	arr[1] = ft_strdup("aa=2"),
+	arr[2] = nullptr;
+	char *del_val = "aa";
+	del_line_arr_2x(del_val, &arr);
+	char *res = arr[1];
+	EXPECT_STREQ(res, nullptr);
+}
 
+TEST (del_line_arr_2x, no_key)
+{
+	char **arr;
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1"),
+	arr[1] = ft_strdup("aa=2"),
+	arr[2] = nullptr;
+	int res_backup = get_arr_2x_len(arr);
+	char *del_val = "bb";
+	del_line_arr_2x(del_val, &arr);
+	int res_changed = get_arr_2x_len(arr);
+	EXPECT_EQ(res_backup, res_changed);
+}
+
+TEST (ft_env, normal)
+{
+	char **arr;
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1"),
+	arr[1] = ft_strdup("aa=2"),
+	arr[2] = nullptr;
+	char *command[] = {
+			"env",
+			nullptr
+	};
+}
 

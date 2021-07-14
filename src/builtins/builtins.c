@@ -101,7 +101,7 @@ int			exec_binary(t_all *all)
 int			exec_builtin(t_all *all)
 {
 	if (!ft_strncmp(all->cmd->command[0], "echo", 5))
-		ft_echo(all);
+		ft_echo(all->cmd->command, all->envs);
 	return 0;
 }
 
