@@ -1,35 +1,111 @@
 #include "../includes/minishell.h"
 
-typedef struct s_flag
+
+void 	init_cmd(t_cmd *cmd)
 {
-	int dq;
-	int sq;
-}				t_flag;
+	cmd->command = (char **)malloc(sizeof(char *));
+	cmd->reds = (t_red **)malloc(sizeof(t_red *));
+	cmd->reds[0] = NULL;
+	cmd->command[0] = NULL;
+}
+
+void 	add_tred(t_red ***reds, char *value, int type)
+{
+	int i;
+	t_red	**n_red;
+	t_red	*one_red;
+
+	one_red = (t_red *)malloc(sizeof(t_red));
+	*one_red = (t_red){type, value};
+	i = 0;
+	while (*(*reds + i) != NULL)
+		i++;
+	n_red = (t_red **)malloc((i += 2) * sizeof(t_red *));
+	n_red[--i] = NULL;
+	n_red[--i] = one_red;
+	while(--i > -1)
+		*(n_red + i) = *(*reds + i);
+	free(*reds);
+	*reds = n_red;
+}
+
+void	next_head(char **head, char **prev_head)
+{
+	int flag;
+
+	flag = 0;
+
+	while (**head != '\0' && (**head == ' ' || **head == '>' || **head == '<'))
+		(*head)++;
+	*prev_head = *head;
+	while ((**head != ' ' || flag) && **head != '\0')
+	{
+		if (**head == '\'' && !flag)
+			flag = 1;
+		else if (**head == '\"' && !flag)
+			flag = 2;
+		else if (**head == '\'' && flag == 1)
+			flag = 0;
+		else if (**head == '\"' && flag == 2)
+			flag = 0;
+		(*head)++;
+	}
+}
+void 	add_cmd(char ***command, char *value)
+{
+
+}
+t_cmd	read_cmd(char **line)
+{
+	t_cmd 	cmd;
+	int		flag;
+	char 	*head;
+	char 	*prev_head;
+	char 	*tmp;
 
 
-//
-//void 	realloc_cmd(t_cmd **cmd)
-//{
-//	int i;
-//
-//	i = 0;
-//	while (*cmd != NULL)
-//	{
-//		printf("%s\n", (*cmd)[i].command);
-//		i++;
-//		}
-//	printf("%d\n", i);
-//	printf("%p\n", cmd[2]);
-//
-//
-//}
-//t_cmd		*get_cmd(char *line, t_all *all)
-//{
-//	t_cmd	*cmd;
-//
-//	cmd = (t_cmd *)ft_calloc(sizeof(t_cmd), 2);
-//
-//}
+	init_cmd(&cmd);
+	head = *line;
+	flag = 0;
+	prev_head = head;
+	while (*head != '\0' && *head != '|' && ft_strncmp(head, "||", 2) && ft_strncmp(head, "&&", 2))
+	{
+		if ((*head == '\'' || *head == '\"') && !flag)
+			flag = 1;
+		else if ((*head == '\'' || *head == '\"') && flag)
+			flag = 0;
+		else if (!ft_strncmp(head, ">>", 2) && !flag)
+		{
+			next_head(&head, &prev_head);
+			*head = '\0';
+			head++;
+			add_tred(&(cmd.reds), ft_strtrim(prev_head, " "), GT2);
+			prev_head = head;
+		}
+		else if (!ft_strncmp(head, ">", 1) && !flag)
+		{
+			next_head(&head, &prev_head);
+			*head = '\0';
+			head++;
+			add_tred(&(cmd.reds), ft_strtrim(prev_head, " "), GT);
+			prev_head = head;
+		}
+		else if (*head == ' ')
+		{
+			*head = '\0';
+			head++;
+			tmp = ft_strtrim(prev_head, " ");
+			lineaddback(&(cmd.command), tmp);
+			free(tmp);
+			prev_head = head;
+		}
+		else
+			head++;
+	}
+	return cmd;
+}
+
+char 	*read_redirs();
 
 int 	parser(char **line, t_all *all)
 {
@@ -37,6 +113,7 @@ int 	parser(char **line, t_all *all)
 	 char *prev_head;
 	 char *n_line;
 	 int flag;
+	 t_cmd cmd;
 
 	flag = 0;
 	head = *line;
@@ -54,6 +131,7 @@ int 	parser(char **line, t_all *all)
 	 		flag = 0;
 	 	if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
  		{
+	 		//-------------------------------------------------------------------
 	 		*head++ = '\0';
 	 		if (!(n_line = ft_strjoin(n_line, prev_head)))//need free if !Null
 	 			n_line = ft_strdup(prev_head);
@@ -70,11 +148,13 @@ int 	parser(char **line, t_all *all)
 			n_line = ft_strjoin(n_line, get_value(all->envs, prev_head));//need free if !Null
 			prev_head = head;
 			prev_head++;
+			//-------------------------------------------------------------------
 		}
 	 }
 	if (n_line)
 		*line = n_line;
-	printf("%s\n", *line);
-
+	cmd = read_cmd(line);
+	all->cmd = &cmd;
+//	printf("%s\n", cmd.command[0]);
 	return 1;
 }

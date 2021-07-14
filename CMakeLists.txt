@@ -66,6 +66,7 @@ add_executable(
         ${TEST_SOURCES}
         libft
         ${CMAKE_CURRENT_SOURCE_DIR}/src/parser/main/main.c
+
 )
 # ====================================================
 
@@ -82,8 +83,14 @@ target_link_libraries(
 )
 
 target_compile_options(
-        minishell PRIVATE
+        parser PRIVATE
 #        -Wall -Wextra -Werror
+        -fno-stack-protector
 )
+
+#target_compile_options(
+#        parser
+#        -fno-stack-protector
+#        )
 
 
