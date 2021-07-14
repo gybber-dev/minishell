@@ -76,12 +76,8 @@ typedef struct s_all
 	t_cmd		*cmd;
 	int			vpid;
 	int			vlast;
-<<<<<<< HEAD
 	t_proc		proc;
 	int			is_pipel;
-=======
-	int 		is_pipel;
->>>>>>> 7d9be99... add realloc func in tools
 }				t_all;
 
 
@@ -107,10 +103,9 @@ int				check_flag_n(char *command_1);
 char			*get_stdout_fun_result(char **cmd, void (*fun)(char **));
 char			*get_command_result(char **cmd);
 int				get_arr_2x_len(char **arr);
-void			set_value_arr_2x(char *str, char **arr);
+void			set_value_arr_2x(char *str, char ***arr);
 int				check_var_name(char *command);
 void			lineaddback(char ***src,char *addback);
-void			ft_echo(char *messages);
 
 #endif
 

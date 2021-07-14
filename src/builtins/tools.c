@@ -229,7 +229,7 @@ int			get_arr_2x_len(char **arr)
 	return res;
 }
 
-void		set_value_arr_2x(char *str, char **arr) {
+void		set_value_arr_2x(char *str, char ***arr) {
 	int len;
 	char **old_line;
 	char *equal;
@@ -240,15 +240,14 @@ void		set_value_arr_2x(char *str, char **arr) {
 		exit(EXIT_FAILURE);
 	equal = ft_strchr(new_line, '=');
 	*equal = 0;
-	if ((old_line = check_key(arr, new_line))) {
+	if ((old_line = check_key(*arr, new_line))) {
 		*equal = '=';
 		free(*old_line);
 		*old_line = new_line;
 	} else {
 		*equal = '=';
-		len = get_arr_2x_len(arr) + 1;
-		res = (char **) malloc(sizeof(char *) * (len + 1));
-//		ft_memcpy(res, arr, )
+		lineaddback(arr, new_line);
+		free(new_line);
 	}
 }
 /**

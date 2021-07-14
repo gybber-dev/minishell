@@ -92,7 +92,7 @@ int 		ft_export(char **command, char **env)
 			if (!check_var_name(*command))
 				exit(EXIT_FAILURE);
 			else
-				set_value_arr_2x(*command, env);
+				set_value_arr_2x(*command, &env);
 		}
 	}
 	return 0;

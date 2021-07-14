@@ -254,17 +254,41 @@ TEST (ft_export, sort)
 
 TEST (set_value_arr_2x, rewrite)
 {
-	char *arr[] = {
-			ft_strdup("a=1"),
-			ft_strdup("aa=2"),
-			nullptr
-	};
+	char **arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1"),
+	arr[1] = ft_strdup("aa=2"),
+	arr[2] = nullptr;
 	char *new_val = "a=3";
-	set_value_arr_2x(new_val, arr);
+	set_value_arr_2x(new_val, &arr);
 	char *res = arr[0];
 	EXPECT_STREQ(res, new_val);
 }
 
+TEST (set_value_arr_2x, add_last)
+{
+	char **arr;
+
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1"),
+	arr[1] = ft_strdup("aa=2"),
+	arr[2] = nullptr;
+	char *new_val = "b=3";
+	set_value_arr_2x(new_val, &arr);
+	char *res = arr[2];
+	EXPECT_STREQ(res, new_val);
+}
+
+TEST (set_value_arr_2x, add_in_empty_arr)
+{
+	char **arr;
+
+	arr = (char **)malloc(sizeof(char *) * 1);
+	arr[0] = nullptr;
+	char *new_val = "b=3";
+	set_value_arr_2x(new_val, &arr);
+	char *res = arr[0];
+	EXPECT_STREQ(res, new_val);
+}
 
 
 
