@@ -10,6 +10,7 @@ char			**check_key(char **envs, char *key)
 		return NULL;
 	key_len = (int)ft_strlen(key);
 	while(*tmp != NULL)
+
 	{
 		if (!ft_strncmp(*tmp, key, key_len) && *(*tmp + key_len) == '=')
 			return (tmp);
@@ -92,6 +93,7 @@ void		clear_arr_2x(char **arr)
 	while(arr[i])
 	{
 		free(arr[i]);
+		arr[i] = NULL;
 		i++;
 	}
 	free(arr);
@@ -167,10 +169,11 @@ void 		read_from_write_to(int from, int to)
 ** @return malloced pointer to result of command
 */
 
-char 	*get_command_result(char **cmd)
+char 	*get_command_result(char **cmd, char **env)
 {
 	int fd[2];
 	char *buffer;
+	char *path;
 
 	buffer = malloc(1000);
 	pipe(fd);
@@ -178,7 +181,12 @@ char 	*get_command_result(char **cmd)
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		execvp(cmd[0],cmd);
+		if (env){
+			path = find_binary(cmd[0], get_value(env, "PATH"));
+			execve(path, cmd, env);
+		}else{
+			execvp(cmd[0], cmd);
+		}
 	}
 	else
 	{
@@ -193,7 +201,8 @@ char 	*get_command_result(char **cmd)
 	return buffer;
 }
 
-char 	*get_stdout_fun_result(char **cmd, void (*fun)(char **))
+char 	*get_stdout_fun_result(char **cmd, void (*fun)(char **, char **), char
+**env)
 {
 	int fd[2];
 	char *buffer;
@@ -204,7 +213,10 @@ char 	*get_stdout_fun_result(char **cmd, void (*fun)(char **))
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		fun(cmd);
+		if (env)
+			fun(cmd, env);
+		else
+			fun(cmd, NULL);
 	}
 	else
 	{
@@ -271,5 +283,29 @@ void		lineaddback(char ***src,char *addback)
 	while (--i > -1)
 		*(arr + i) = *(*src + i);
 	free(*src);
+	*src = arr;
+}
+
+void		del_line_arr_2x(char *line, char ***src)
+{
+	int		size;
+	char	**arr;
+	char	**found_line;
+	char	**tmp;
+
+	found_line = check_key(*src, line);
+	if (!found_line)
+		return;
+	size = get_arr_2x_len(*src);
+	arr = (char **)malloc(size * sizeof(char *));
+	arr[size] = NULL;
+	tmp = *src;
+	while (*tmp)
+	{
+		if (*tmp != *found_line)
+			*arr = ft_strdup(*tmp);
+		tmp++;
+	}
+	clear_arr_2x(*src);
 	*src = arr;
 }
