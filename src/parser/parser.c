@@ -1,6 +1,5 @@
 #include "../includes/minishell.h"
 
-
 void 	init_cmd(t_cmd *cmd)
 {
 	cmd->command = (char **)malloc(sizeof(char *));

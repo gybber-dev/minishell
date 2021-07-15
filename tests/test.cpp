@@ -3,7 +3,8 @@
 
 
 extern "C" {
-#include "../src/includes/minishell.h"
+	#include "../src/includes/minishell.h"
+	#include "../libft/libft.h"
 }
 
 TEST(test_fun, nameOfTheTest1){
