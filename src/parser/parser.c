@@ -65,7 +65,7 @@ void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
 		var = LOW;
 	next_head(head, prev_head);
 	*(*head)++ = '\0';
-	add_tred(&(cmd->reds), *prev_head, var);
+	add_tred(&(cmd->reds), ft_strdup(*prev_head), var);
 	*prev_head = *head;
 }
 
