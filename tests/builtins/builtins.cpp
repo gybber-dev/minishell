@@ -240,23 +240,105 @@ TEST (check_var_name, wrong_symbol_in_name)
 	EXPECT_EQ(res, 0);
 }
 
-
-TEST (ft_export, sort)
+TEST (ft_export, normal)
 {
 	char *command[] = {
 			"export",
+			"aa=2",
 			nullptr
 	};
+	char **arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("b=2");
+	arr[2] = nullptr;
+	int res = ft_export(command, &arr);
+	EXPECT_STREQ(arr[0], "a=1");
+	EXPECT_STREQ(arr[1], "b=2");
+	EXPECT_STREQ(arr[2], "aa=2");
+	EXPECT_STREQ(arr[3], nullptr);
+}
 
-	int res = ft_export(command, environ);
+TEST (ft_export, without_equal)
+{
+	char *command[] = {
+			"export",
+			"aa2",
+			nullptr
+	};
+	char **arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("b=2");
+	arr[2] = nullptr;
+	int res = ft_export(command, &arr);
+	EXPECT_STREQ(arr[0], "a=1");
+	EXPECT_STREQ(arr[1], "b=2");
+	EXPECT_STREQ(arr[2], nullptr);
 	EXPECT_EQ(res, 0);
 }
+
+TEST (ft_export, without_val)
+{
+	char **command = (char **)malloc(sizeof(char *) * 3);
+	command[0] = ft_strdup("export");
+	command[1] = ft_strdup("aa2=");
+	command[2] = nullptr;
+
+	char **arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("b=2");
+	arr[2] = nullptr;
+	int res = ft_export(command, &arr);
+	EXPECT_STREQ(arr[0], "a=1");
+	EXPECT_STREQ(arr[1], "b=2");
+	EXPECT_STREQ(arr[2], "aa2=\"\"");
+	EXPECT_EQ(res, 1);
+}
+
+TEST (ft_export, add_two_vars)
+{
+	char **command = (char **)malloc(sizeof(char *) * 4);
+	command[0] = ft_strdup("export");
+	command[1] = ft_strdup("c=");
+	command[2] = ft_strdup("d=");
+	command[3] = nullptr;
+
+	char **arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("b=2");
+	arr[2] = nullptr;
+	int res = ft_export(command, &arr);
+	EXPECT_STREQ(arr[0], "a=1");
+	EXPECT_STREQ(arr[1], "b=2");
+	EXPECT_STREQ(arr[2], "c=\"\"");
+	EXPECT_STREQ(arr[3], "d=\"\"");
+	EXPECT_STREQ(arr[4], nullptr);
+	EXPECT_EQ(res, 1);
+}
+
+TEST (ft_export, invalid_var_name)
+{
+	char *command[] = {
+			"export",
+			"a 2=",
+			nullptr
+	};
+	char **arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("b=2");
+	arr[2] = nullptr;
+	int res = ft_export(command, &arr);
+	EXPECT_STREQ(arr[0], "a=1");
+	EXPECT_STREQ(arr[1], "b=2");
+	EXPECT_STREQ(arr[2], nullptr);
+	EXPECT_EQ(res, 0);
+}
+
 
 TEST (set_value_arr_2x, rewrite)
 {
 	char **arr = (char **)malloc(sizeof(char *) * 3);
-	arr[0] = ft_strdup("a=1"),
-	arr[1] = ft_strdup("aa=2"),
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
 	arr[2] = nullptr;
 	char *new_val = "a=3";
 	set_value_arr_2x(new_val, &arr);
@@ -269,8 +351,8 @@ TEST (set_value_arr_2x, add_last)
 	char **arr;
 
 	arr = (char **)malloc(sizeof(char *) * 3);
-	arr[0] = ft_strdup("a=1"),
-	arr[1] = ft_strdup("aa=2"),
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
 	arr[2] = nullptr;
 	char *new_val = "b=3";
 	set_value_arr_2x(new_val, &arr);
@@ -282,20 +364,92 @@ TEST (set_value_arr_2x, add_in_empty_arr)
 {
 	char **arr;
 
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
+	arr[2] = nullptr;
+	char *new_val = "b=3";
+	set_value_arr_2x(new_val, &arr);
+	char *res = arr[2];
+	EXPECT_STREQ(res, new_val);
+}
+
+TEST (set_value_arr_2x, add_in_empty_val)
+{
+	char **arr;
+
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
+	arr[2] = nullptr;
+	char *new_val = "";
+	set_value_arr_2x(new_val, &arr);
+	char *res = arr[2];
+	EXPECT_STREQ(res, nullptr);
+}
+
+TEST (lineaddback, normal)
+{
+	char **arr;
+
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
+	arr[2] = nullptr;
+	char *new_val = "b=3";
+	lineaddback(&arr, new_val);
+	char *res = arr[2];
+	EXPECT_STREQ(res, new_val);
+	EXPECT_STREQ(arr[3], nullptr);
+}
+
+TEST (lineaddback, add_empty)
+{
+	char **arr;
+
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
+	arr[2] = nullptr;
+	char *new_val = "";
+	lineaddback(&arr, new_val);
+	char *res = arr[2];
+	EXPECT_STREQ(res, new_val);
+}
+
+TEST (lineaddback, add_null)
+{
+	char **arr;
+
+	arr = (char **)malloc(sizeof(char *) * 3);
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
+	arr[2] = nullptr;
+	char *new_val = nullptr;
+	lineaddback(&arr, new_val);
+	char *res = arr[2];
+	EXPECT_STREQ(res, new_val);
+}
+
+TEST (lineaddback, add_in_null)
+{
+	char **arr;
+
 	arr = (char **)malloc(sizeof(char *) * 1);
 	arr[0] = nullptr;
 	char *new_val = "b=3";
-	set_value_arr_2x(new_val, &arr);
+	lineaddback(&arr, new_val);
 	char *res = arr[0];
 	EXPECT_STREQ(res, new_val);
+	EXPECT_STREQ(arr[1], nullptr);
 }
 
 TEST (del_line_arr_2x, normal)
 {
 	char **arr;
 	arr = (char **)malloc(sizeof(char *) * 3);
-	arr[0] = ft_strdup("a=1"),
-	arr[1] = ft_strdup("aa=2"),
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
 	arr[2] = nullptr;
 	char *del_val = "a";
 	del_line_arr_2x(del_val, &arr);
@@ -306,8 +460,8 @@ TEST (del_line_arr_2x, normal_del_from_middle)
 {
 	char **arr;
 	arr = (char **)malloc(sizeof(char *) * 3);
-	arr[0] = ft_strdup("a=1"),
-	arr[1] = ft_strdup("aa=2"),
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
 	arr[2] = nullptr;
 	char *del_val = "aa";
 	del_line_arr_2x(del_val, &arr);
@@ -319,8 +473,8 @@ TEST (del_line_arr_2x, no_key)
 {
 	char **arr;
 	arr = (char **)malloc(sizeof(char *) * 3);
-	arr[0] = ft_strdup("a=1"),
-	arr[1] = ft_strdup("aa=2"),
+	arr[0] = ft_strdup("a=1");
+	arr[1] = ft_strdup("aa=2");
 	arr[2] = nullptr;
 	int res_backup = get_arr_2x_len(arr);
 	char *del_val = "bb";
@@ -329,16 +483,4 @@ TEST (del_line_arr_2x, no_key)
 	EXPECT_EQ(res_backup, res_changed);
 }
 
-TEST (ft_env, normal)
-{
-	char **arr;
-	arr = (char **)malloc(sizeof(char *) * 3);
-	arr[0] = ft_strdup("a=1"),
-	arr[1] = ft_strdup("aa=2"),
-	arr[2] = nullptr;
-	char *command[] = {
-			"env",
-			nullptr
-	};
-}
 
