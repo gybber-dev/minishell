@@ -46,17 +46,17 @@ char			*get_value(char **envs, char *key)
 
 void		print_array_2x(char **arr)
 {
-	char	*tmp;
+	char	**tmp;
 
-	tmp = *arr;
-	printf("======================\n");
-	while(tmp)
+	tmp = arr;
+//	printf("======================\n");
+	while(*tmp)
 	{
-		printf("'%s'\n", tmp);
+		printf("\t%s\n", *tmp);
 		tmp++;
 	}
-	printf(" '%s'\n", tmp);
-	printf("======================\n");
+	printf(" \t%s\n", *tmp);
+//	printf("======================\n");
 }
 
 char		**copy_arrays_2x(char **src_arr)
