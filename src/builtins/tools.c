@@ -96,6 +96,8 @@ void		lineaddback(char ***src,char *addback)
 	char	**arr;
 
 	i = 0;
+	if (!addback)
+		return;
 	while(*(*src + i) != NULL)
 		i++;
 	arr = (char **)malloc((i += 2) * sizeof(char *));//realloc for char** + 1 line

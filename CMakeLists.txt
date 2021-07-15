@@ -50,7 +50,8 @@ add_executable(
 # Test target
 add_executable(
         test_minishell
-        tests/test.cpp
+#        tests/test.cpp
+#        tests/builtins/builtins.cpp
         ${TEST_SOURCES}
 )
 # ====================================================
@@ -60,7 +61,6 @@ target_link_libraries(
         gtest gtest_main
         libft
 )
-
 
 target_link_libraries(
         minishell PRIVATE

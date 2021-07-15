@@ -61,20 +61,15 @@ typedef struct s_all
 }				t_all;
 
 
-
-
-int				test_fun(int res);
-
 void			clear_arr_2x(char **arr);
 void			print_array_2x(char **arr);
 char			**copy_arrays_2x(char **src_arr);
 char			*get_value(char **envs, char *key);
 int				is_my_command(char *cmd_name);
-int				parser(char *line, t_all *all);
+int 			parser(char **line, t_all *all);
 void			lineaddback(char ***src,char *addback);
 
 
 void			ft_echo(char *messages);
 
 #endif
-

@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/c/Users/dinar/CLionProjects/minishell/libft/libft.h
+stdlib.h
+-
+unistd.h
+-
+
+/mnt/c/Users/dinar/CLionProjects/minishell/src/builtins/builtins.c
+../includes/minishell.h
+/mnt/c/Users/dinar/CLionProjects/minishell/src/includes/minishell.h
+
+/mnt/c/Users/dinar/CLionProjects/minishell/src/builtins/cd.c
+../includes/minishell.h
+/mnt/c/Users/dinar/CLionProjects/minishell/src/includes/minishell.h
+
+/mnt/c/Users/dinar/CLionProjects/minishell/src/includes/minishell.h
+stdio.h
+-
+stdlib.h
+-
+sys/types.h
+-
+sys/wait.h
+-
+unistd.h
+-
+string.h
+-
+errno.h
+-
+../../libft/libft.h
+/mnt/c/Users/dinar/CLionProjects/minishell/libft/libft.h
+

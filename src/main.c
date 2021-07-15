@@ -43,10 +43,12 @@ int			main(int argc, char** argv, char **envp)
 				is_finished = parser(line, &all);
 				processor(&all);
 			}
+
 			if (!ft_strncmp(line, "exit", 4))
 				exit(EXIT_SUCCESS);
 			free(line);
 		}
+
 	}
 	return 0;
 }
