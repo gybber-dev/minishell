@@ -26,7 +26,6 @@ int			main(int argc, char** argv, char **envp)
 	int		is_finished;
 
 	init_struct(&all, envp);
-	is_finished = 0;
 	while (1)
 	{
 		line = readline("minishell: ");
@@ -38,9 +37,10 @@ int			main(int argc, char** argv, char **envp)
 		else if (*line)
 		{
 			add_history(line);
-			while(!is_finished)
+			is_finished = 1;
+			while(is_finished)
 			{
-				is_finished = parser(line, &all);
+				is_finished = parser(&line, &all);
 				processor(&all);
 			}
 

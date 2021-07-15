@@ -165,5 +165,13 @@ int 	parser(char **line, t_all *all)
 	all->cmd = &cmd;
 	if (all->cmd->spec)
 		all->is_pipel = 1;
+//	if (*(all->cmd->reds))
+//		printf("from all	reds 1: %s\n", all->cmd->reds[0]->value);
+////	printf("from all	reds type : %d\n", all->cmd->reds[0]->type);
+////	printf("from all reds 2: %s\n", all->cmd->reds[1]->value);
+////	printf("from all	reds 2 type: %d\n", all->cmd->reds[1]->type);
+//	printf("from all command1: %s\n", all->cmd->command[0]);
+//	printf("from all command2: %s\n", all->cmd->command[1]);
+//	printf("spec: %d\n", all->cmd->spec);
 	return all->cmd->spec;
 }
