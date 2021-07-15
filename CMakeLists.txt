@@ -25,6 +25,7 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -lreadline")
 # We can't use another main function in tests, so exclude main.c file
 list(FILTER TEST_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/main.c")
 list(FILTER TEST_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/main.c")
+list(FILTER MINISHELL_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/src/builtins/main.c")
 # Print our variables
 message(STATUS ${MINISHELL_SOURCES})
 message(STATUS ${TEST_SOURCES})
