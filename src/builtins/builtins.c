@@ -8,11 +8,6 @@ int			execute(char **cmd, char *paths)
 	return 0;
 }
 
-void		clear(t_all *all)
-{
-	;
-}
-
 int			check_redirs(t_red **reds, t_fd *fix_fd)
 {
 	int		fd;
@@ -378,7 +373,7 @@ int processor(char *envp[])
 		if (!all.cmd)
 			break;
 		exec_command(&all);
-		clear(&all);
+//		clear(&all);
 		i++;
 	}
 	std_fd(TAKE_FROM, &(all.proc.backup_fd));
