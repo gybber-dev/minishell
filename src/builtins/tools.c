@@ -241,16 +241,18 @@ int			get_arr_2x_len(char **arr)
 	return res;
 }
 
-void		set_value_arr_2x(char *str, char ***arr) {
-	int len;
+void		set_value_arr_2x(char *str, char ***arr)
+{
 	char **old_line;
 	char *equal;
 	char *new_line;
-	char **res;
+	char *tmp;
 
 	if (!(new_line = ft_strdup(str)))
 		exit(EXIT_FAILURE);
-	equal = ft_strchr(new_line, '=');
+	if (!(equal = ft_strchr(new_line, '=')))
+		return;
+//		exit(EXIT_FAILURE); // no '=' in line
 	*equal = 0;
 	if ((old_line = check_key(*arr, new_line))) {
 		*equal = '=';
@@ -275,6 +277,8 @@ void		lineaddback(char ***src,char *addback)
 	char	**arr;
 
 	i = 0;
+	if (!addback)
+		return;
 	while(*(*src + i) != NULL)
 		i++;
 	arr = (char **)malloc((i += 2) * sizeof(char *));//realloc for char** + 1 line

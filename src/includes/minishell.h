@@ -98,8 +98,9 @@ int				check_fd(void);
 int				processor(char *envp[]);
 int				is_builtin(char *command);
 void			ft_echo(char **command, char **env);
-int 			ft_export(char **command, char **env);
+int 			ft_export(char **command, char ***env);
 int				ft_env(char **command, char **env);
+int				ft_unset(char **command, char ***env);
 int				check_flag_n(char *command_1);
 char			*get_stdout_fun_result(char **cmd, void (*fun)(char **, char
 **), char **env);
@@ -109,5 +110,8 @@ void			set_value_arr_2x(char *str, char ***arr);
 int				check_var_name(char *command);
 void			lineaddback(char ***src,char *addback);
 void			del_line_arr_2x(char *line, char ***src);
+int				ft_pwd(void);
+char			*get_pwd(void);
+int				ft_free_all(char **arr, int size);
 #endif
 

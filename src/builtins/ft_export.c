@@ -67,6 +67,8 @@ void		sort_env(char **env)
 
 int			check_var_name(char *command)
 {
+	if (!command)
+		return 0;
 	if (!ft_strchr(command, '='))
 		return 0;
 	if (!(ft_isalpha(*command) || *command == '_'))
@@ -81,19 +83,47 @@ int			check_var_name(char *command)
 	return 1;
 }
 
-int 		ft_export(char **command, char **env)
+int			check_string(char **command)
 {
+	char	*new_line;
+	char	*equal;
+	char	*tmp;
+
+	new_line = *command;
+	if (!(equal = ft_strchr(new_line, '=')))
+		return 0;
+	if (*(equal + 1) == '\0')
+	{
+		if (!(tmp = ft_strjoin(new_line, "\"\"")))
+			return 0;
+		free(*command);
+		*command = tmp;
+	}
+	return 1;
+}
+
+int 		ft_export(char **command, char ***env)
+{
+	int		i;
+
 	if (*(command + 1) == NULL)
-		sort_env(env);
+		sort_env(*env);
 	else
 	{
-		while (*command++)
+		command++;
+		i = 0;
+		while (command[i])
 		{
 			if (!check_var_name(*command))
-				exit(EXIT_FAILURE);
+				return 0;
+//				exit(EXIT_FAILURE);
+			if (!check_string(&command[i]))
+				return 0;
+//				exit(EXIT_FAILURE);
 			else
-				set_value_arr_2x(*command, &env);
+				set_value_arr_2x(command[i], env);
+			i++;
 		}
 	}
-	return 0;
+	return 1;
 }
