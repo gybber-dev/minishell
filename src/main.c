@@ -29,9 +29,45 @@ int			wait_signal(int sign)
 }
 
 
-void		processor(t_all *all)
+void		clear(t_all *all)
 {
 	;
+}
+
+void		print_all(t_all *all)
+{
+	printf("\n================================\n");
+	printf("commands:\n");
+	if (!(all->cmd->command))
+		printf("\t%s\n", NULL);
+	else
+	{
+		print_array_2x(all->cmd->command);
+	}
+	printf("redirs:\n");
+	if (!(all->cmd->reds))
+		printf("\t%s\n", NULL);
+	else
+	{
+		int i = 0;
+		while(all->cmd->reds[i])
+		{
+			printf("\t1. type: %d\n", all->cmd->reds[i]->type);
+			printf("\t1.  val: %s\n", all->cmd->reds[i]->value);
+			i++;
+		}
+
+	}
+
+}
+
+
+int			iterable_init(t_all *all)
+{
+	all->proc.fix_fd.in = 0;
+	all->proc.fix_fd.out = 1;
+	all->cmd->reds = NULL;
+	std_fd(SAFE_TO, &(all->proc.backup_fd));
 }
 
 int			main(int argc, char** argv, char **envp)
@@ -53,15 +89,18 @@ int			main(int argc, char** argv, char **envp)
 		else if (*line)
 		{
 			add_history(line);
+			iterable_init(&all); // TODO Dinar add init here
 			is_finished = 1;
 			while(is_finished)
 			{
 				is_finished = parser(&line, &all);
-				processor(&all);
+				print_all(&all);
+				exec_command(&all);
+				clear(&all); // TODO Dinar clear all here
 			}
-
-			if (!ft_strncmp(line, "exit", 4))
-				exit(EXIT_SUCCESS);
+			std_fd(TAKE_FROM, &(all.proc.backup_fd));
+			close(all.proc.backup_fd.in);
+			close(all.proc.backup_fd.out);
 			free(line);
 		}
 
