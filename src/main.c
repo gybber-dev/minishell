@@ -52,10 +52,18 @@ void		print_all(t_all *all)
 		int i = 0;
 		while(all->cmd->reds[i])
 		{
-			printf("\t1. type: %d\n", all->cmd->reds[i]->type);
-			printf("\t1.  val: %s\n", all->cmd->reds[i]->value);
+			printf("\t%d. type: %d\n", i, all->cmd->reds[i]->type);
+			printf("\t%d.  val: %s\n", i, all->cmd->reds[i]->value);
 			i++;
+			printf("\t---\n");
 		}
+		printf("\t%d.  %s\n", i, NULL);
+		printf("-----\n");
+		printf("is spec  : %d\n", all->cmd->spec);
+		printf("is pipe  : %d\n", all->is_pipel);
+//		printf("is finish: %d\n", all->is_finished); ?????
+
+
 
 	}
 
