@@ -21,7 +21,16 @@
 # include "../../libft/libft.h"
 #include <sys/stat.h>
 
+# define PIPE 1
+# define LOW 2
+# define GT 3
+# define LOW2 4
+# define GT2 5
+# define S_OR 6
+# define S_AND 7
 
+# define SAFE_TO 1
+# define TAKE_FROM 0
 
 typedef struct s_fd
 {
