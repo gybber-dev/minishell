@@ -27,7 +27,7 @@
 # define LOW2 4
 # define GT2 5
 # define S_OR 6
-# define S_AND 7
+# define S_AND 7 //&&
 
 typedef struct s_red
 {

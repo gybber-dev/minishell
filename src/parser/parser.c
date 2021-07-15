@@ -28,84 +28,92 @@ void 	add_tred(t_red ***reds, char *value, int type)
 	free(*reds);
 	*reds = n_red;
 }
-
 void	next_head(char **head, char **prev_head)
 {
 	int flag;
 
 	flag = 0;
-
 	while (**head != '\0' && (**head == ' ' || **head == '>' || **head == '<'))
 		(*head)++;
 	*prev_head = *head;
-	while ((**head != ' ' || flag) && **head != '\0')
+	if ((**head == '\"' || **head == '\'') && !flag)
 	{
-		if (**head == '\'' && !flag)
-			flag = 1;
-		else if (**head == '\"' && !flag)
+		flag = 1;
+		if (**head == '\'' && (*head)++)
 			flag = 2;
-		else if (**head == '\'' && flag == 1)
-			flag = 0;
-		else if (**head == '\"' && flag == 2)
-			flag = 0;
-		(*head)++;
+		*prev_head = *head;
 	}
+	while (**head != '\0' && **head != '\'' && flag == 2)
+		(*head)++;
+	while (**head != '\0' && **head != '\"' && flag == 1)
+		(*head)++;
+	while(**head != '\0' && **head != ' ' && !flag && **head != '<' && **head != '>')
+			(*head)++;
 }
-void 	add_cmd(char ***command, char *value)
-{
 
+void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
+{
+	int		var;
+
+	if (!ft_strncmp(*head, ">>", 2))
+		var = GT2;
+	else if (!ft_strncmp(*head, ">", 1))
+		var = GT;
+	else if (!ft_strncmp(*head, "<<", 2))
+		var = LOW2;
+	else if (!ft_strncmp(*head, "<", 1))
+		var = LOW;
+	next_head(head, prev_head);
+	*(*head)++ = '\0';
+	add_tred(&(cmd->reds), *prev_head, var);
+	*prev_head = *head;
+}
+
+void 	add_cmd(t_cmd *cmd, char **prev_head, char **head)
+{
+	next_head(head, prev_head);
+	*(*head)++ = '\0';
+	lineaddback(&(cmd->command), *prev_head);
+	*prev_head = *head;
+}
+void check_end(t_cmd *cmd, char **head)
+{
+	if (!ft_strncmp(*head, "||", 2) && (*head += 2))
+		cmd->spec = S_OR;
+	else if(!ft_strncmp(*head, "&&", 2) && (*head + 2))
+		cmd->spec = S_AND;
+	else if (**head == '|' && (*head)++)
+		cmd->spec = PIPE;
+	else if (**head == '\0')
+		cmd->spec = 0;
 }
 t_cmd	read_cmd(char **line)
 {
 	t_cmd 	cmd;
-	int		flag;
 	char 	*head;
 	char 	*prev_head;
-	char 	*tmp;
-
 
 	init_cmd(&cmd);
 	head = *line;
-	flag = 0;
 	prev_head = head;
-	while (*head != '\0' && *head != '|' && ft_strncmp(head, "||", 2) && ft_strncmp(head, "&&", 2))
+	while (*head != '\0' && *head != '|' && *head != '&')
 	{
-		if ((*head == '\'' || *head == '\"') && !flag)
-			flag = 1;
-		else if ((*head == '\'' || *head == '\"') && flag)
-			flag = 0;
-		else if (!ft_strncmp(head, ">>", 2) && !flag)
-		{
-			next_head(&head, &prev_head);
-			*head = '\0';
-			head++;
-			add_tred(&(cmd.reds), ft_strtrim(prev_head, " "), GT2);
-			prev_head = head;
-		}
-		else if (!ft_strncmp(head, ">", 1) && !flag)
-		{
-			next_head(&head, &prev_head);
-			*head = '\0';
-			head++;
-			add_tred(&(cmd.reds), ft_strtrim(prev_head, " "), GT);
-			prev_head = head;
-		}
-		else if (*head == ' ')
-		{
-			*head = '\0';
-			head++;
-			tmp = ft_strtrim(prev_head, " ");
-			lineaddback(&(cmd.command), tmp);
-			free(tmp);
-			prev_head = head;
-		}
+		if (*head == '>' || *head == '<')
+			read_redirs(&cmd, &prev_head, &head);
+		else if (*head == '\'' || *head == '\"' || *head)
+			add_cmd(&cmd, &prev_head, &head);
 		else
 			head++;
+		while(*head == ' ')
+			head++;
 	}
+	check_end(&cmd, &head);
+	prev_head = *line;
+	if (*head && (*line = ft_strdup(head)))
+		free(prev_head);
 	return cmd;
 }
 
-char 	*read_redirs();
 
 int 	parser(char **line, t_all *all)
 {
@@ -155,6 +163,5 @@ int 	parser(char **line, t_all *all)
 		*line = n_line;
 	cmd = read_cmd(line);
 	all->cmd = &cmd;
-//	printf("%s\n", cmd.command[0]);
-	return 1;
+	return all->cmd->spec;
 }
