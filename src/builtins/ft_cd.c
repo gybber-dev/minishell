@@ -55,7 +55,8 @@ int				ft_cd(char **command, char ***env)
 	if (len == 1 || *(command[1]) == '~')
 		if (!(home = get_value(*env, "HOME")))
 			exit(EXIT_FAILURE); // Home not set
-	if (len == 1 || (len == 2 && !home)
+	if (len == 1 || (len == 2 && !home))
+		;
 
 
 
