@@ -112,4 +112,5 @@ void			lineaddback(char ***src,char *addback);
 void			del_line_arr_2x(char *line, char ***src);
 int				ft_pwd(void);
 char			*get_pwd(void);
+int				free_and_return(char **mem, int res);
 #endif

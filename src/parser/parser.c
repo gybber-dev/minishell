@@ -132,30 +132,13 @@ void		unc_envs(char **line, t_all *all)
 			flag = 0;
 		if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
 		{
-			//-------------------------------------------------------------------
 			*head++ = '\0';
-			if (ft_strlen(prev_head))
-				n_line = ft_strdup(prev_head);
 			tmp = n_line;
-			if (!(n_line = ft_strjoin(tmp, prev_head)))
-			{
-
-			}
-			else n_line = ft_strdup(prev_head);
-
+			if (ft_strlen(prev_head) && !(n_line = ft_strjoin(n_line, prev_head)))
+				n_line = ft_strdup(prev_head);
+			free_and_return(&tmp, 1);
 			prev_head = head;
-			while (*head++ != '\0')
-			{
-				if (*head == ' ')
-				{
-					*head = '\0';
-					break;
-				}
-			}
-			n_line = ft_strjoin(n_line, get_value(all->envs, prev_head));//need free if !Null
-			prev_head = head;
-			prev_head++;
-			//-------------------------------------------------------------------
+			get_dollar(&head, &n_line);//TODO
 		}
 	}
 	if (n_line)
