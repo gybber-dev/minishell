@@ -161,7 +161,7 @@ int 	parser(char **line, t_all *all)
 	if (n_line)
 		*line = n_line;
 	cmd = read_cmd(line);
-	all->cmd = &cmd;
+	*(all->cmd) = cmd;
 	if (all->cmd->spec)
 		all->is_pipel = 1;
 //	if (*(all->cmd->reds))

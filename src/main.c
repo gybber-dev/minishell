@@ -62,6 +62,7 @@ void		print_all(t_all *all)
 		printf("is spec  : %d\n", all->cmd->spec);
 		printf("is pipe  : %d\n", all->is_pipel);
 //		printf("is finish: %d\n", all->is_finished); ?????
+	printf("\n================================\n");
 
 
 
