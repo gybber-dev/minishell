@@ -1,11 +1,11 @@
 #include "../includes/minishell.h"
 
-void 	init_cmd(t_cmd *cmd)
+void 	init_cmd(t_cmd **cmd)
 {
-	cmd->command = (char **)malloc(sizeof(char *));
-	cmd->reds = (t_red **)malloc(sizeof(t_red *));
-	cmd->reds[0] = NULL;
-	cmd->command[0] = NULL;
+	(*cmd)->command = (char **)malloc(sizeof(char *));
+	(*cmd)->reds = (t_red **)malloc(sizeof(t_red *));
+	(*cmd)->reds[0] = NULL;
+	(*cmd)->command[0] = NULL;
 }
 
 void 	add_tred(t_red ***reds, char *value, int type)
@@ -63,8 +63,12 @@ void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
 	else if (!ft_strncmp(*head, "<", 1))
 		var = LOW;
 	next_head(head, prev_head);
-	*(*head)++ = '\0';
-	add_tred(&(cmd->reds), ft_strdup(*prev_head), var);
+	if (**head != '\0' && **head != '<' && **head != '>')
+		*(*head)++ = '\0';
+	if (**head == '<' || **head == '>')
+		add_tred(&(cmd->reds), ft_substr(*prev_head, 0, *head - *prev_head), var);
+	else
+		add_tred(&(cmd->reds), ft_strdup(*prev_head), var);
 	*prev_head = *head;
 }
 
@@ -87,33 +91,65 @@ void check_end(t_cmd *cmd, char **head)
 	else if (**head == '\0')
 		cmd->spec = 0;
 }
-t_cmd	read_cmd(char **line)
+t_cmd	*read_cmd(char **line)
 {
-	t_cmd 	cmd;
+	t_cmd 	*cmd;
 	char 	*head;
 	char 	*prev_head;
 
+	cmd = (t_cmd *)malloc(sizeof(t_cmd));
 	init_cmd(&cmd);
 	head = *line;
 	prev_head = head;
 	while (*head != '\0' && *head != '|' && *head != '&')
 	{
 		if (*head == '>' || *head == '<')
-			read_redirs(&cmd, &prev_head, &head);
+			read_redirs(cmd, &prev_head, &head);
 		else if (*head == '\'' || *head == '\"' || *head)
-			add_cmd(&cmd, &prev_head, &head);
+			add_cmd(cmd, &prev_head, &head);
 		else
 			head++;
 		while(*head == ' ')
 			head++;
 	}
-	check_end(&cmd, &head);
+	check_end(cmd, &head);
 	prev_head = *line;
 	if (*head && (*line = ft_strdup(head)))
 		free(prev_head);
 	return cmd;
 }
 
+//void		unc_envs(char **line, t_all *all)
+//{
+//	char	*head;
+//	char 	*prev_head;
+//	char 	*n_line;
+//	int		flag;
+//	char	*tmp;
+//
+//	head = *line;
+//	n_line = NULL;
+//	while(*head++ != '\0')
+//	{
+//		prev_head = head;
+//		if (*head == '\'' && !flag)
+//			flag = 1;
+//		if (*head == '\'' && flag)
+//			flag = 0;
+//		if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
+//		{
+//			*head++ = '\0';
+//			tmp = n_line;
+//			if (ft_strlen(prev_head) && !(n_line = ft_strjoin(n_line, prev_head)))
+//				n_line = ft_strdup(prev_head);
+//			free_and_return(&tmp, 1);
+//			prev_head = head;
+//			get_dollar(&head, &n_line);//TODO
+//		}
+//	}
+//	if (n_line)
+//		*line = n_line;
+//}
 
 int 	parser(char **line, t_all *all)
 {
@@ -121,7 +157,6 @@ int 	parser(char **line, t_all *all)
 	 char *prev_head;
 	 char *n_line;
 	 int flag;
-	 t_cmd cmd;
 
 	flag = 0;
 	head = *line;
@@ -161,8 +196,7 @@ int 	parser(char **line, t_all *all)
 	 }
 	if (n_line)
 		*line = n_line;
-	cmd = read_cmd(line);
-	*(all->cmd) = cmd;
+	all->cmd = read_cmd(line);
 	if (all->cmd->spec)
 		all->is_pipel = 1;
 //	if (*(all->cmd->reds))

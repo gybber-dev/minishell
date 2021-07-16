@@ -9,7 +9,7 @@
 
 void		init_struct(t_all *all, char **envp)
 {
-	all->cmd->reds = NULL;
+//	all->cmd->reds = NULL;
 	all->vlast = 0;
 	all->vpid = 0;
 	all->envs = copy_arrays_2x(envp);
@@ -71,7 +71,7 @@ int			iterable_init(t_all *all)
 {
 	all->proc.fix_fd.in = 0;
 	all->proc.fix_fd.out = 1;
-	all->cmd->reds = NULL;
+//	all->cmd->reds = NULL;
 	std_fd(SAFE_TO, &(all->proc.backup_fd));
 }
 

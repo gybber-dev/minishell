@@ -43,7 +43,7 @@ add_subdirectory(
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libft)
 #link_directories(${CMAKE_CURRENT_SOURCE_DIR}/readline)
-link_directories(/Users/yeschall/.brew/Cellar/readline/8.1/lib/)
+link_directories(/Users/desausag/.brew/Cellar/readline/8.1/lib/)
 # Add Executables (binary files)
 # ====================================================
 # Main target
