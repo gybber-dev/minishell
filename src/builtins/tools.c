@@ -314,3 +314,11 @@ void		del_line_arr_2x(char *line, char ***src)
 	clear_arr_2x(*src);
 	*src = arr;
 }
+
+int			free_and_return(char **mem, int res)
+{
+	if (*mem)
+		free(*mem);
+	*mem = NULL;
+	return res;
+}
