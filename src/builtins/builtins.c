@@ -89,6 +89,7 @@ int			exec_binary(t_all *all)
 	else if (parent)
 	{
 		waitpid(parent, &status, 0);
+		printf("%d\n", status);
 	}
 	return 0;
 }
@@ -97,6 +98,18 @@ int			exec_builtin(t_all *all)
 {
 	if (!ft_strncmp(all->cmd->command[0], "echo", 5))
 		ft_echo(all->cmd->command, all->envs);
+	if (!ft_strncmp(all->cmd->command[0], "pwd", 4))
+		ft_pwd();
+	if (!ft_strncmp(all->cmd->command[0], "export", 7))
+		ft_export(all->cmd->command, &(all->envs));
+	if (!ft_strncmp(all->cmd->command[0], "unset", 6))
+		ft_unset(all->cmd->command, &(all->envs));
+	if (!ft_strncmp(all->cmd->command[0], "cd", 3))
+		ft_cd(all->cmd->command, &(all->envs));
+	if (!ft_strncmp(all->cmd->command[0], "env", 4))
+		ft_env(all->cmd->command, all->envs);
+//	if (!ft_strncmp(all->cmd->command[0], "exit", 5))
+//		ft_exit(all->cmd->command, all->envs);
 	return 0;
 }
 
@@ -113,12 +126,6 @@ void		std_fd(int opt, t_fd *fd)
 		dup2(fd->out, 1);
 	}
 }
-
-void		do_pipel(t_all *all)
-{
-
-}
-
 
 int			exec_command(t_all *all)
 {

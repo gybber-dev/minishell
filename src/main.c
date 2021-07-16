@@ -29,7 +29,7 @@ int			wait_signal(int sign)
 }
 
 
-void		clear(t_all *all)
+void		clear_cmd(t_all *all)
 {
 	;
 }
@@ -61,12 +61,8 @@ void		print_all(t_all *all)
 		printf("-----\n");
 		printf("is spec  : %d\n", all->cmd->spec);
 		printf("is pipe  : %d\n", all->is_pipel);
-//		printf("is finish: %d\n", all->is_finished); ?????
-	printf("\n================================\n");
-
-
-
 	}
+	printf("\n================================\n");
 
 }
 
@@ -105,7 +101,7 @@ int			main(int argc, char** argv, char **envp)
 				is_finished = parser(&line, &all);
 				print_all(&all);
 				exec_command(&all);
-				clear(&all); // TODO Dinar clear all here
+				clear_cmd(&all); // TODO Dinar clear all here
 			}
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);

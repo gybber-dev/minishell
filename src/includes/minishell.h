@@ -100,6 +100,7 @@ int				is_builtin(char *command);
 void			ft_echo(char **command, char **env);
 int 			ft_export(char **command, char ***env);
 int				ft_env(char **command, char **env);
+int				ft_cd(char **command, char ***env);
 int				ft_unset(char **command, char ***env);
 int				check_flag_n(char *command_1);
 char			*get_stdout_fun_result(char **cmd, void (*fun)(char **, char
@@ -112,4 +113,5 @@ void			lineaddback(char ***src,char *addback);
 void			del_line_arr_2x(char *line, char ***src);
 int				ft_pwd(void);
 char			*get_pwd(void);
+int				free_and_return(char **mem, int res);
 #endif

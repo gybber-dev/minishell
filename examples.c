@@ -70,31 +70,31 @@ void listener(int sig) {
 	exit(EXIT_SUCCESS);
 }
 
-//int main() {
-//	pid_t child_pid;
-//
-//	signal(SIGINT, SIG_IGN);
-//	child_pid = fork();
-//	if (child_pid < 0)
-//	{
-//		exit(EXIT_FAILURE);
-//	}
-//	else if (child_pid > 0) {
-//		printf("I'm Mother\n");
-////		signal(SIGINT, SIG_IGN);
-//		sleep(6);
-//		printf("M: I'm after SIGINT\n");
-//
-//	} else {
-//		signal(SIGINT, SIG_DFL);
-//		printf("I'm daughter\n");
-//		sleep(5);
-////		raise(SIGINT);
-//		printf("D: I'm after SIGINT\n");
-//		exit (0);
-//	}
-//	return 0;
-//}
+int main() {
+	pid_t child_pid;
+
+	signal(SIGINT, SIG_IGN);
+	child_pid = fork();
+	if (child_pid < 0)
+	{
+		exit(EXIT_FAILURE);
+	}
+	else if (child_pid > 0) {
+		printf("I'm Mother\n");
+//		signal(SIGINT, SIG_IGN);
+		sleep(6);
+		printf("M: I'm after SIGINT\n");
+
+	} else {
+		signal(SIGINT, SIG_DFL);
+		printf("I'm daughter\n");
+		sleep(5);
+//		raise(SIGINT);
+		printf("D: I'm after SIGINT\n");
+		exit (0);
+	}
+	return 0;
+}
 //int main() {
 //	pid_t child_pid;
 //
