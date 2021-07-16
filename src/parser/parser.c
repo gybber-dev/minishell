@@ -71,7 +71,8 @@ void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
 void 	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 {
 	next_head(head, prev_head);
-	*(*head)++ = '\0';
+	if (**head != '\0')
+		*(*head)++ = '\0';
 	lineaddback(&(cmd->command), *prev_head);
 	*prev_head = *head;
 }
@@ -113,37 +114,37 @@ t_cmd	read_cmd(char **line)
 	return cmd;
 }
 
-void		unc_envs(char **line, t_all *all)
-{
-	char	*head;
-	char 	*prev_head;
-	char 	*n_line;
-	int		flag;
-	char	*tmp;
-
-	head = *line;
-	n_line = NULL;
-	while(*head++ != '\0')
-	{
-		prev_head = head;
-		if (*head == '\'' && !flag)
-			flag = 1;
-		if (*head == '\'' && flag)
-			flag = 0;
-		if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
-		{
-			*head++ = '\0';
-			tmp = n_line;
-			if (ft_strlen(prev_head) && !(n_line = ft_strjoin(n_line, prev_head)))
-				n_line = ft_strdup(prev_head);
-			free_and_return(&tmp, 1);
-			prev_head = head;
-			get_dollar(&head, &n_line);//TODO
-		}
-	}
-	if (n_line)
-		*line = n_line;
-}
+//void		unc_envs(char **line, t_all *all)
+//{
+//	char	*head;
+//	char 	*prev_head;
+//	char 	*n_line;
+//	int		flag;
+//	char	*tmp;
+//
+//	head = *line;
+//	n_line = NULL;
+//	while(*head++ != '\0')
+//	{
+//		prev_head = head;
+//		if (*head == '\'' && !flag)
+//			flag = 1;
+//		if (*head == '\'' && flag)
+//			flag = 0;
+//		if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
+//		{
+//			*head++ = '\0';
+//			tmp = n_line;
+//			if (ft_strlen(prev_head) && !(n_line = ft_strjoin(n_line, prev_head)))
+//				n_line = ft_strdup(prev_head);
+//			free_and_return(&tmp, 1);
+//			prev_head = head;
+//			get_dollar(&head, &n_line);//TODO
+//		}
+//	}
+//	if (n_line)
+//		*line = n_line;
+//}
 
 int 	parser(char **line, t_all *all)
 {
