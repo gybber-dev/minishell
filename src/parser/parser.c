@@ -113,6 +113,54 @@ t_cmd	read_cmd(char **line)
 	return cmd;
 }
 
+void		unc_envs(char **line, t_all *all)
+{
+	char	*head;
+	char 	*prev_head;
+	char 	*n_line;
+	int		flag;
+	char	*tmp;
+
+	head = *line;
+	n_line = NULL;
+	while(*head++ != '\0')
+	{
+		prev_head = head;
+		if (*head == '\'' && !flag)
+			flag = 1;
+		if (*head == '\'' && flag)
+			flag = 0;
+		if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
+		{
+			//-------------------------------------------------------------------
+			*head++ = '\0';
+			if (ft_strlen(prev_head))
+				n_line = ft_strdup(prev_head);
+			tmp = n_line;
+			if (!(n_line = ft_strjoin(tmp, prev_head)))
+			{
+
+			}
+			else n_line = ft_strdup(prev_head);
+
+			prev_head = head;
+			while (*head++ != '\0')
+			{
+				if (*head == ' ')
+				{
+					*head = '\0';
+					break;
+				}
+			}
+			n_line = ft_strjoin(n_line, get_value(all->envs, prev_head));//need free if !Null
+			prev_head = head;
+			prev_head++;
+			//-------------------------------------------------------------------
+		}
+	}
+	if (n_line)
+		*line = n_line;
+}
 
 int 	parser(char **line, t_all *all)
 {
