@@ -71,7 +71,8 @@ void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
 void 	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 {
 	next_head(head, prev_head);
-	*(*head)++ = '\0';
+	if (**head != '\0')
+		*(*head)++ = '\0';
 	lineaddback(&(cmd->command), *prev_head);
 	*prev_head = *head;
 }
