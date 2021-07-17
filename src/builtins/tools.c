@@ -10,7 +10,6 @@ char			**check_key(char **envs, char *key)
 		return NULL;
 	key_len = (int)ft_strlen(key);
 	while(*tmp != NULL)
-
 	{
 		if (!ft_strncmp(*tmp, key, key_len) && *(*tmp + key_len) == '=')
 			return (tmp);
@@ -86,18 +85,37 @@ char		**copy_arrays_2x(char **src_arr)
 	return res_arr;
 }
 
-void		clear_arr_2x(char **arr)
+void		clear_arr_2x(char ***arr)
 {
 	int		i;
+	char	***tmp;
 
 	i = 0;
-	while(arr[i])
-	{
-		free(arr[i]);
-		arr[i] = NULL;
-		i++;
-	}
-	free(arr);
+//	free(**arr);
+	int size = get_arr_2x_len(*arr);
+	tmp = arr;
+//	free(*(*arr+1));
+//	printf("==================\n");
+//	print_array_2x(*arr);
+//	printf("==================\n");
+//	while(**arr)
+//	{
+//		free(**arr);
+//		(*arr)++;
+//	}
+	// TODO Azat to while
+	for(int i = 0; i < size; i++)
+		free((*arr)[i]);
+	free(*arr);
+//	free(*arr);
+//	free(*tmp);
+//	while((*arr)[i])
+//	{
+//		free((*arr)[i]);
+//		(*arr)[i] = NULL;
+//		i++;
+//	}
+//	free(*arr);
 }
 
 /**
@@ -130,7 +148,7 @@ char   *find_binary(char *cmnd, char *paths)
 		tmp++;
 	}
 	free(cmnd);
-	clear_arr_2x(arr);
+	clear_arr_2x(&arr);
 	return path;
 }
 
@@ -202,7 +220,7 @@ char 	*get_command_result(char **cmd, char **env)
 	return buffer;
 }
 
-char 	*get_stdout_fun_result(char **cmd, void (*fun)(char **, char **), char
+char 	*get_stdout_fun_result(char **cmd, int (*fun)(char **, char **), char
 **env)
 {
 	int fd[2];
@@ -242,28 +260,29 @@ int			get_arr_2x_len(char **arr)
 	return res;
 }
 
-void		set_value_arr_2x(char *str, char ***arr)
+int			set_value_arr_2x(char *str, char ***arr)
 {
 	char **old_line;
 	char *equal;
 	char *new_line;
-	char *tmp;
 
 	if (!(new_line = ft_strdup(str)))
-		exit(EXIT_FAILURE);
+		return EXIT_FAILURE;
 	if (!(equal = ft_strchr(new_line, '=')))
-		return;
-//		exit(EXIT_FAILURE); // no '=' in line
+		return (ft_error("Don't work with shell variables", 1));
 	*equal = 0;
-	if ((old_line = check_key(*arr, new_line))) {
+	if ((old_line = check_key(*arr, new_line)))
+	{
 		*equal = '=';
 		free(*old_line);
 		*old_line = new_line;
-	} else {
+	} else
+	{
 		*equal = '=';
 		lineaddback(arr, new_line);
 		free(new_line);
 	}
+	return 0;
 }
 /**
  * @param src is allocated array for (char *)
@@ -291,28 +310,47 @@ void		lineaddback(char ***src,char *addback)
 	*src = arr;
 }
 
-void		del_line_arr_2x(char *line, char ***src)
+int 		del_line_arr_2x(char *line, char ***src)
 {
 	int		size;
 	char	**arr;
 	char	**found_line;
 	char	**tmp;
+	char 	**tmp_src;
+	char	**tmp_arr;
 
 	found_line = check_key(*src, line);
 	if (!found_line)
-		return;
+		return EXIT_SUCCESS;
 	size = get_arr_2x_len(*src);
-	arr = (char **)malloc(size * sizeof(char *));
-	arr[size] = NULL;
-	tmp = *src;
-	while (*tmp)
+	if (!(arr = (char **)malloc(size * sizeof(char *))))
+		return (EXIT_FAILURE);
+//	arr[size] = NULL;
+//	free(**src);
+//	tmp = *src;
+//	while (*tmp)
+//	{
+//		if (*tmp != *found_line)
+//			if (!(*arr = ft_strdup(*tmp)))
+//				return (EXIT_FAILURE);
+//		tmp++;
+//	}
+	tmp_src = *src;
+	tmp_arr = arr;
+	while(*tmp_src)
 	{
-		if (*tmp != *found_line)
-			*arr = ft_strdup(*tmp);
-		tmp++;
+		if (*tmp_src != *found_line)
+			*tmp_arr = ft_strdup(*tmp_src);
+		else
+			tmp_arr--;
+		tmp_src++;
+		tmp_arr++;
 	}
-	clear_arr_2x(*src);
+	*tmp_arr = NULL;
+//	free(**src);
+	clear_arr_2x(src);
 	*src = arr;
+	return (EXIT_SUCCESS);
 }
 
 int			free_and_return(char **mem, int res)
@@ -323,4 +361,14 @@ int			free_and_return(char **mem, int res)
 	return res;
 }
 
-int				ft_error()
+int				ft_error(char *err_msg, int res)
+{
+	printf("%s\n", err_msg);
+	return res;
+}
+
+int				ft_perror(char *msg, int res)
+{
+	perror(msg);
+	return res;
+}
