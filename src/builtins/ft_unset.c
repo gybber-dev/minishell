@@ -3,12 +3,16 @@
 int			ft_unset(char **command, char ***env)
 {
 	char	**tmp;
+	int		err_status;
 
+	err_status = 0;
 	tmp = command + 1;
 	while (*tmp)
 	{
-		del_line_arr_2x(*tmp, env);
+		err_status = del_line_arr_2x(*tmp, env);
+		if (err_status)
+			return (err_status);
 		tmp++;
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
