@@ -71,6 +71,7 @@ int			iterable_init(t_all *all)
 {
 	all->proc.fix_fd.in = 0;
 	all->proc.fix_fd.out = 1;
+	all->is_pipel = 0;
 //	all->cmd->reds = NULL;
 	std_fd(SAFE_TO, &(all->proc.backup_fd));
 }
