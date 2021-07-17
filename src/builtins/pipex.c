@@ -47,6 +47,12 @@ void		pipeline(char ***cmd)
 //			writes pipe's output to 0
 			dup2(fd[0], 0);
 			waitpid(pid, &status, 0);
+			if ( WIFEXITED(status) )
+			{
+				int exit_status = WEXITSTATUS(status);
+				printf("Exit status of the child was %d\n",
+					   exit_status);
+			}
 			close(fd[0]);
 			if (*(cmd + 1) == NULL)
 			{
@@ -66,13 +72,13 @@ void		pipeline(char ***cmd)
 
 // int main()
 // {
-// 	char *ls[] = {"ls", "-al", NULL};
+// 	char *ls[] = {"ls", "1231312312", NULL};
 // 	char *grep1[] = {"grep", "o", NULL};
 // 	char *grep2[] = {"grep", "a", NULL};
-// 	char *wc[] = {"wc", "-l", NULL};
+//// 	char *wc[] = {"wc", "-l", NULL};
 // //	char *cat[] = {"cat", "-e", NULL};
-// 	char **cmd[] = {ls, grep1, grep2, wc, NULL};
-
+// 	char **cmd[] = {ls, grep1, grep2, NULL};
+//
 // 	pipeline(cmd);
 // 	int fd[2];
 // 	pipe(fd);
