@@ -322,3 +322,5 @@ int			free_and_return(char **mem, int res)
 	*mem = NULL;
 	return res;
 }
+
+int				ft_error()

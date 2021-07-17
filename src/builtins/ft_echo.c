@@ -15,9 +15,8 @@ int			check_flag_n(char *command_1)
 	return 0;
 }
 
-void		ft_echo(char **command, char **env)
+int			ft_echo(char **command, char **env)
 {
-	char	*tmp;
 	int		flag_n;
 
 	if ((flag_n = check_flag_n(*(command + 1))) == 1)
@@ -30,4 +29,5 @@ void		ft_echo(char **command, char **env)
 	}
 	if (!flag_n)
 		printf("\n");
+	return 0;
 }

@@ -97,19 +97,19 @@ int			exec_binary(t_all *all)
 int			exec_builtin(t_all *all)
 {
 	if (!ft_strncmp(all->cmd->command[0], "echo", 5))
-		ft_echo(all->cmd->command, all->envs);
+		return (ft_echo(all->cmd->command, all->envs));
 	if (!ft_strncmp(all->cmd->command[0], "pwd", 4))
-		ft_pwd();
+		return (ft_pwd());
 	if (!ft_strncmp(all->cmd->command[0], "export", 7))
-		ft_export(all->cmd->command, &(all->envs));
+		return (ft_export(all->cmd->command, &(all->envs)));
 	if (!ft_strncmp(all->cmd->command[0], "unset", 6))
-		ft_unset(all->cmd->command, &(all->envs));
+		return (ft_unset(all->cmd->command, &(all->envs)));
 	if (!ft_strncmp(all->cmd->command[0], "cd", 3))
-		ft_cd(all->cmd->command, &(all->envs));
+		return (ft_cd(all->cmd->command, &(all->envs)));
 	if (!ft_strncmp(all->cmd->command[0], "env", 4))
-		ft_env(all->cmd->command, all->envs);
-//	if (!ft_strncmp(all->cmd->command[0], "exit", 5))
-//		ft_exit(all->cmd->command, all->envs);
+		return (ft_env(all->cmd->command, all->envs));
+	if (!ft_strncmp(all->cmd->command[0], "exit", 5))
+		ft_exit();
 	return 0;
 }
 
@@ -139,7 +139,7 @@ int			exec_command(t_all *all)
 		if (!all->is_pipel)
 		{
 			if (is_builtin(all->cmd->command[0]))
-				exec_builtin(all);
+				all->vlast = exec_builtin(all);
 			else
 			{
 				std_fd(TAKE_FROM, &(all->proc.fix_fd));

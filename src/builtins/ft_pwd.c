@@ -19,9 +19,9 @@ int			ft_pwd(void)
 	char	*buf;
 
 	if (!(buf = get_pwd()))
-		return (-1);
+		return (12);
 	// exit(EXIT_FAILURE);
 	printf("%s\n", buf);
 	free(buf);
-	return 1;
+	return 0;
 }
