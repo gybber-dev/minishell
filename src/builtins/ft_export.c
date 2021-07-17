@@ -55,7 +55,7 @@ void		sort_env(char **env)
 		write(1, "\"\n", 2);
 		tmp++;
 	}
-	clear_arr_2x(tmp_backup);
+	clear_arr_2x(&tmp_backup);
 }
 
 /**
@@ -70,9 +70,12 @@ int			check_var_name(char *command)
 	if (!command)
 		return 0;
 	if (!ft_strchr(command, '='))
-		return 0;
+		return (ft_error("Don't add shell variables", 0));
 	if (!(ft_isalpha(*command) || *command == '_'))
+	{
+		printf("export: '%s': not a valid identifier\n", command);
 		return 0;
+	}
 	command++;
 	while(*command != '=')
 	{
@@ -91,11 +94,11 @@ int			check_string(char **command)
 
 	new_line = *command;
 	if (!(equal = ft_strchr(new_line, '=')))
-		return 0;
+		return (ft_error("Don't add shell variables", 0));
 	if (*(equal + 1) == '\0')
 	{
 		if (!(tmp = ft_strjoin(new_line, "\"\"")))
-			return 0;
+			return (ft_perror("malloc", 0));
 		free(*command);
 		*command = tmp;
 	}
@@ -115,15 +118,13 @@ int 		ft_export(char **command, char ***env)
 		while (command[i])
 		{
 			if (!check_var_name(*command))
-				return 0;
-//				exit(EXIT_FAILURE);
+				return (EXIT_FAILURE);
 			if (!check_string(&command[i]))
-				return 0;
-//				exit(EXIT_FAILURE);
-			else
-				set_value_arr_2x(command[i], env);
+				return (EXIT_FAILURE);
+			else if (set_value_arr_2x(command[i], env))
+				return (EXIT_FAILURE);
 			i++;
 		}
 	}
-	return 1;
+	return (EXIT_SUCCESS);
 }

@@ -78,15 +78,9 @@ typedef struct s_all
 }				t_all;
 
 
-void			clear_arr_2x(char **arr);
-void			print_array_2x(char **arr);
-char			**copy_arrays_2x(char **src_arr);
-char			*get_value(char **envs, char *key);
-int				is_my_command(char *cmd_name);
 int 			parser(char **line, t_all *all);
 void			lineaddback(char ***src,char *addback);
-
-void			clear_arr_2x(char **arr);
+void			clear_arr_2x(char ***arr);
 void			print_array_2x(char **arr);
 char			**copy_arrays_2x(char **src_arr);
 char			*get_value(char **envs, char *key);
@@ -102,17 +96,18 @@ int 			ft_export(char **command, char ***env);
 int				ft_env(char **command, char **env);
 int				ft_cd(char **command, char ***env);
 int				ft_unset(char **command, char ***env);
-void			ft_exit();
+int				ft_exit(char **command);
 int				check_flag_n(char *command_1);
-char			*get_stdout_fun_result(char **cmd, void (*fun)(char **, char
+char			*get_stdout_fun_result(char **cmd, int (*fun)(char **, char
 **), char **env);
 char			*get_command_result(char **cmd, char **env);
 int				get_arr_2x_len(char **arr);
-void			set_value_arr_2x(char *str, char ***arr);
+int				set_value_arr_2x(char *str, char ***arr);
 int				check_var_name(char *command);
-void			lineaddback(char ***src,char *addback);
-void			del_line_arr_2x(char *line, char ***src);
+int 			del_line_arr_2x(char *line, char ***src);
 int				ft_pwd(void);
 char			*get_pwd(void);
+int				ft_error(char *err_msg, int res);
+int				ft_perror(char *msg, int res);
 int				free_and_return(char **mem, int res);
 #endif

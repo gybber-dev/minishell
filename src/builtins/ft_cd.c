@@ -8,22 +8,25 @@ static int		exec_cd(char *path, char ***env)
 
 	old_path = get_pwd();
 	if (!old_path)
-		return 0;
+		return 1;
 	if (chdir(path) == -1)
-		return free_and_return(&old_path, 0);
+		return free_and_return(&old_path, 1);
 	new_path = get_pwd();
 	if (!new_path)
-		return free_and_return(&old_path, 0);
+		return free_and_return(&old_path, 1);
 	if (!(tmp = ft_strjoin("PWD=", new_path)))
-		return (free_and_return(&old_path, 0) * free_and_return(new_path, 0));
-	set_value_arr_2x(tmp, env);
+		return (free_and_return(&old_path, 1) * free_and_return(&new_path, 1));
+	if (set_value_arr_2x(tmp, env))
+		return (EXIT_FAILURE);
 	free(tmp);
 	if (!(tmp = ft_strjoin("OLDPWD=", old_path)))
-		return (free_and_return(&old_path, 0) * free_and_return(new_path, 0));
-	set_value_arr_2x(tmp, env);
+		return (free_and_return(&old_path, 1) * free_and_return(&new_path, 1));
+	if (set_value_arr_2x(tmp, env))
+		return (EXIT_FAILURE);
 	free(tmp);
-	free_and_return(&old_path, 1);
-	free_and_return(&new_path, 1);
+	free_and_return(&old_path, 0);
+	free_and_return(&new_path, 0);
+	return (EXIT_SUCCESS);
 }
 
 
@@ -35,10 +38,10 @@ int				ft_cd(char **command, char ***env)
 
 	home = NULL;
 	if ((len = get_arr_2x_len(command)) > 2)
-		exit(EXIT_FAILURE);
+		return 1;
 	if (len == 1 || *(command[1]) == '~')
 		if (!(home = get_value(*env, "HOME")))
-			exit(EXIT_FAILURE); // Home not set
+			return 1;
 	if (len == 1)
 		return exec_cd(home, env);
 	if (len == 2 && !home)
@@ -47,10 +50,10 @@ int				ft_cd(char **command, char ***env)
 	{
 		tmp = command[1];
 		if (!(tmp = ft_strjoin(home, (command[1] + 1))))
-			return 0;
+			return 1;
 		free(command[1]);
 		command[1] = tmp;
 		return exec_cd(command[1], env);
 	}
-	return 1;
+	return 0;
 }

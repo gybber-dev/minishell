@@ -72,7 +72,7 @@ int			exec_binary(t_all *all)
 	int		status;
 
 	if ((parent = fork()) == -1)
-		exit(EXIT_FAILURE);
+		return (ft_perror("fork", 71));
 	else if (!parent)
 	{
 		if (execve(
@@ -89,7 +89,12 @@ int			exec_binary(t_all *all)
 	else if (parent)
 	{
 		waitpid(parent, &status, 0);
-		printf("%d\n", status);
+		printf("status: %d\n", status);
+		if (WIFEXITED(status))
+			all->vlast = WEXITSTATUS(status);
+//		if (WIFSIGNALED(status)) {
+//			printf("The process ended with kill -%d.\n", WTERMSIG(status));
+//		}
 	}
 	return 0;
 }
@@ -109,7 +114,7 @@ int			exec_builtin(t_all *all)
 	if (!ft_strncmp(all->cmd->command[0], "env", 4))
 		return (ft_env(all->cmd->command, all->envs));
 	if (!ft_strncmp(all->cmd->command[0], "exit", 5))
-		ft_exit();
+		ft_exit(all->cmd->command);
 	return 0;
 }
 
@@ -144,7 +149,7 @@ int			exec_command(t_all *all)
 			{
 				std_fd(TAKE_FROM, &(all->proc.fix_fd));
 				if (all->cmd->command[0])
-					exec_binary(all);
+					all->vlast = exec_binary(all);
 				// may be it's necessary to restore fd before all exits inside exec_binary
 				std_fd(TAKE_FROM, &(all->proc.backup_fd));
 			}
@@ -167,6 +172,7 @@ int			exec_command(t_all *all)
 				}
 				close(fd[1]);
 				close(fd[0]);
+//				// TODO Azat execut_builtin
 				if (execve(
 						find_binary(
 								all->cmd->command[0],
@@ -187,6 +193,8 @@ int			exec_command(t_all *all)
 				dup2(fd[0], all->proc.fix_fd.in);
 				waitpid(parent, &status, 0);
 				close(fd[0]);
+				if (WIFEXITED(status))
+					all->vlast = WEXITSTATUS(status);
 			}
 		}
 	}
