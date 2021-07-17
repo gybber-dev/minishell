@@ -74,10 +74,18 @@ void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
 
 void 	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 {
+	char *tmp;
 	next_head(head, prev_head);
-	if (**head != '\0')
+	if (**head != '\0' && **head != '<' && **head != '>')
 		*(*head)++ = '\0';
-	lineaddback(&(cmd->command), *prev_head);
+	if (**head == '<' || **head == '>')
+	{
+		tmp = ft_substr(*prev_head, 0, *head - *prev_head);
+		lineaddback(&(cmd->command), tmp);
+		free_and_return(&tmp, 1);
+	}
+	else
+		lineaddback(&(cmd->command), *prev_head);
 	*prev_head = *head;
 }
 void check_end(t_cmd *cmd, char **head)
