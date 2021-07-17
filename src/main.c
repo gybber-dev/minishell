@@ -103,6 +103,7 @@ int			main(int argc, char** argv, char **envp)
 				print_all(&all);
 				exec_command(&all);
 				clear_cmd(&all); // TODO Dinar clear all here
+				printf("status: %d\n", all.vlast);
 			}
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);

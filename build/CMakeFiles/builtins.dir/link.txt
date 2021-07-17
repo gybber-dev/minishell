@@ -1,1 +1,0 @@
-/usr/bin/cc    CMakeFiles/builtins.dir/src/builtins/builtins.c.o CMakeFiles/builtins.dir/src/builtins/cd.c.o  -o builtins 
