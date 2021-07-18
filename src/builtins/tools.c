@@ -72,6 +72,7 @@ char		**copy_arrays_2x(char **src_arr)
 	while(*(tmp_src++)) {
 		i++;
 	}
+//	printf("%d lines were malloced\n", i);
 	res_arr = (char **) malloc(sizeof(char *) * i + 1);
 	tmp_src = src_arr;
 	tmp_dst = res_arr;
@@ -95,6 +96,7 @@ void		clear_arr_2x(char ***arr)
 	while (i < size)
 		free((*arr)[i++]);
 	free(*arr);
+//	printf("%d lines were been free\n", size);
 }
 
 /**
