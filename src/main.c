@@ -15,17 +15,15 @@ void		init_struct(t_all *all, char **envp)
 	all->envs = copy_arrays_2x(envp);
 }
 
-int			wait_signal(int sign)
+void wait_signal(int sign)
 {
-	printf("kill %d\n", sign);
-//	if (sign == SIGINT)
-//	{
-//		write(1, "\n", 1);
-//		rl_on_new_line();
-//		rl_replace_line("", 0);
-//		rl_redisplay();
-//		exit(EXIT_SUCCESS);
-//	}
+	if (sign == SIGINT)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
 }
 
 
@@ -81,8 +79,13 @@ int			main(int argc, char** argv, char **envp)
 	char	*line;
 	t_all	all;
 	int		is_finished;
+	struct termios term;
 
-	signal(SIGTERM, SIG_IGN);
+	tcgetattr(0, &term);
+	term.c_lflag &= ~(ECHOCTL);
+	tcsetattr(0, TCSANOW, &term);
+	signal(SIGINT, wait_signal);
+	signal(SIGQUIT, SIG_IGN);
 	init_struct(&all, envp);
 	while (1)
 	{
