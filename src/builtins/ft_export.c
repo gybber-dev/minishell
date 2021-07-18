@@ -90,18 +90,10 @@ int			check_string(char **command)
 {
 	char	*new_line;
 	char	*equal;
-	char	*tmp;
 
 	new_line = *command;
 	if (!(equal = ft_strchr(new_line, '=')))
 		return (ft_error("Don't add shell variables", 0));
-	if (*(equal + 1) == '\0')
-	{
-		if (!(tmp = ft_strjoin(new_line, "\"\"")))
-			return (ft_perror("malloc", 0));
-		free(*command);
-		*command = tmp;
-	}
 	return 1;
 }
 
