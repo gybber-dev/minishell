@@ -88,34 +88,13 @@ char		**copy_arrays_2x(char **src_arr)
 void		clear_arr_2x(char ***arr)
 {
 	int		i;
-	char	***tmp;
+	int size;
 
 	i = 0;
-//	free(**arr);
-	int size = get_arr_2x_len(*arr);
-	tmp = arr;
-//	free(*(*arr+1));
-//	printf("==================\n");
-//	print_array_2x(*arr);
-//	printf("==================\n");
-//	while(**arr)
-//	{
-//		free(**arr);
-//		(*arr)++;
-//	}
-	// TODO Azat to while
-	for(int i = 0; i < size; i++)
-		free((*arr)[i]);
+	size = get_arr_2x_len(*arr);
+	while (i < size)
+		free((*arr)[i++]);
 	free(*arr);
-//	free(*arr);
-//	free(*tmp);
-//	while((*arr)[i])
-//	{
-//		free((*arr)[i]);
-//		(*arr)[i] = NULL;
-//		i++;
-//	}
-//	free(*arr);
 }
 
 /**
