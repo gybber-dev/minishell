@@ -66,7 +66,7 @@ int			is_builtin(char *command)
 	);
 }
 
-void			exec_binary(t_all *all)
+int			exec_binary(t_all *all)
 {
 	pid_t	parent;
 	int		status;
@@ -183,7 +183,7 @@ int			exec_command(t_all *all)
 					exit(EXIT_FAILURE);
 				}
 			}
-			else if (parent)
+			else if (parent > 0)
 			{
 //			printf("parent\ncmd:\t'%s'\nwait for:\t'%d'\n", all->cmd->command[0], parent);
 //			printf("fd is [%d, %d]\n", fd[0], fd[1]);

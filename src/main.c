@@ -36,13 +36,13 @@ void handler_sigquit(int sign)
 
 void	handle_sigquit(int sig)
 {
-	printf("in_Sigquit\n");
+//	printf("in_Sigquit\n");
 	if (sig == SIGQUIT)
 	{
-		printf("Sigquit\n");
+//		printf("Sigquit\n");
 //		if (g_data.is_fork == 1)
 //		{
-//			printf("Quit: 3\n");
+			printf("Quit (core dumped)\n");
 //			rl_on_new_line();
 //			rl_replace_line("", 0);
 //		}
@@ -114,7 +114,7 @@ int			main(int argc, char** argv, char **envp)
 	term.c_lflag &= ~(ECHOCTL);
 	tcsetattr(0, TCSANOW, &term);
 	signal(SIGINT, handler_sigint);
-	signal(SIGQUIT, SIG_IGN);
+//	signal(SIGQUIT, SIG_IGN);
 	init_struct(&all, envp);
 	while (1)
 	{
@@ -127,6 +127,7 @@ int			main(int argc, char** argv, char **envp)
 		}
 		else if (*line)
 		{
+//			signal(SIGQUIT, handle_sigquit);
 			signal(SIGQUIT, handle_sigquit);
 			add_history(line);
 			iterable_init(&all); // TODO Dinar add init here
@@ -134,7 +135,7 @@ int			main(int argc, char** argv, char **envp)
 			while(is_finished)
 			{
 				is_finished = parser(&line, &all);
-				print_all(&all);
+//				print_all(&all);
 				exec_command(&all);
 				clear_cmd(&all); // TODO Dinar clear all here
 				printf("status: %d\n", all.vlast);
