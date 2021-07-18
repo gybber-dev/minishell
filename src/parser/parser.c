@@ -216,46 +216,12 @@ void		unc_envs(char **line, t_all *all)
 int 	parser(char **line, t_all *all)
 {
 	 char *head;
-	 char *prev_head;
-	 char *n_line;
-	 int flag;
 
-	flag = 0;
 	head = *line;
 	 if (!(*line = ft_strtrim((const char *)(head), " ")))
 		 exit(EXIT_FAILURE);
 	 free(head);
 	 head = *line;
-	 prev_head = head;
-	 n_line = NULL;
-//	 while(*head++ != '\0')
-//	 {
-//	 	if (*head == '\'' && !flag)
-//	 		flag = 1;
-//		if (*head == '\'' && flag)
-//	 		flag = 0;
-//	 	if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
-// 		{
-//	 		//-------------------------------------------------------------------
-//	 		*head++ = '\0';
-//	 		if (!(n_line = ft_strjoin(n_line, prev_head)))//need free if !Null
-//	 			n_line = ft_strdup(prev_head);
-//
-//	 		prev_head = head;
-//			while (*head++ != '\0')
-//			{
-//				if (*head == ' ')
-//				{
-//					*head = '\0';
-//					break;
-//				}
-//			}
-//			n_line = ft_strjoin(n_line, get_value(all->envs, prev_head));//need free if !Null
-//			prev_head = head;
-//			prev_head++;
-//			//-------------------------------------------------------------------
-//		}
-//	 }
 	unc_envs(line, all);
 	all->cmd = read_cmd(line);
 	if (all->cmd->spec)
