@@ -15,7 +15,7 @@ void		init_struct(t_all *all, char **envp)
 	all->envs = copy_arrays_2x(envp);
 }
 
-void wait_signal(int sign)
+void handler_sigint(int sign)
 {
 	if (sign == SIGINT)
 	{
@@ -25,6 +25,35 @@ void wait_signal(int sign)
 		rl_redisplay();
 	}
 }
+
+void handler_sigquit(int sign)
+{
+	if (sign == SIGQUIT)
+	{
+		printf("SIGQUIT\n");
+	}
+}
+
+void	handle_sigquit(int sig)
+{
+	printf("in_Sigquit\n");
+	if (sig == SIGQUIT)
+	{
+		printf("Sigquit\n");
+//		if (g_data.is_fork == 1)
+//		{
+//			printf("Quit: 3\n");
+//			rl_on_new_line();
+//			rl_replace_line("", 0);
+//		}
+//		else
+//		{
+			rl_on_new_line();
+			rl_replace_line("", 0);
+//		}
+	}
+}
+
 
 
 void		clear_cmd(t_all *all)
@@ -84,11 +113,12 @@ int			main(int argc, char** argv, char **envp)
 	tcgetattr(0, &term);
 	term.c_lflag &= ~(ECHOCTL);
 	tcsetattr(0, TCSANOW, &term);
-	signal(SIGINT, wait_signal);
+	signal(SIGINT, handler_sigint);
 	signal(SIGQUIT, SIG_IGN);
 	init_struct(&all, envp);
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
 		line = readline("minishell: ");
 		if (!line)
 		{
@@ -97,6 +127,7 @@ int			main(int argc, char** argv, char **envp)
 		}
 		else if (*line)
 		{
+			signal(SIGQUIT, handle_sigquit);
 			add_history(line);
 			iterable_init(&all); // TODO Dinar add init here
 			is_finished = 1;
@@ -113,7 +144,7 @@ int			main(int argc, char** argv, char **envp)
 			close(all.proc.backup_fd.out);
 			free(line);
 		}
-
+//		signal(SIGQUIT, SIG_IGN);
 	}
 	return 0;
 }
