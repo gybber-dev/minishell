@@ -66,7 +66,7 @@ int			is_builtin(char *command)
 	);
 }
 
-int			exec_binary(t_all *all)
+void			exec_binary(t_all *all)
 {
 	pid_t	parent;
 	int		status;
@@ -89,14 +89,14 @@ int			exec_binary(t_all *all)
 	else if (parent)
 	{
 		waitpid(parent, &status, 0);
-		printf("status: %d\n", status);
+//		printf("status: %d\n", status);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
 //		if (WIFSIGNALED(status)) {
 //			printf("The process ended with kill -%d.\n", WTERMSIG(status));
 //		}
 	}
-	return 0;
+//	return 0;
 }
 
 void		exec_builtin(t_all *all)
@@ -148,7 +148,7 @@ int			exec_command(t_all *all)
 			{
 				std_fd(TAKE_FROM, &(all->proc.fix_fd));
 				if (all->cmd->command[0])
-					all->vlast = exec_binary(all);
+					exec_binary(all);
 				// may be it's necessary to restore fd before all exits inside exec_binary
 				std_fd(TAKE_FROM, &(all->proc.backup_fd));
 			}
