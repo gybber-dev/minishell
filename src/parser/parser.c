@@ -130,13 +130,7 @@ t_cmd	*read_cmd(char **line)
 	return cmd;
 }
 
-int			is_dolr(char c)
-{
-	if (ft_isdigit(c) || ft_isalpha(c) || c == '_')
-		return (1);
-	else
-		return (0);
-}
+
 void		get_dollar(char **head, char **n_line, t_all *all)
 {
 	char *prev_head;
@@ -169,54 +163,76 @@ void		get_dollar(char **head, char **n_line, t_all *all)
 			free_and_return(&prev_head, 1);
 		}
 	}
-
-
 }
+
+void 	check_quotes(char head, t_brack *br)
+{
+	if (head == '\'')
+	{
+		if (br->single)
+			br->single = 0;
+		else
+			br->single = 1;
+	}
+	if (head == '\"')
+	{
+		if (br->twice)
+			br->twice = 0;
+		else
+			br->twice = 1;
+	}
+}
+
+void		add_tonline(char **n_line, char *prev_head, char **line)
+{
+	char *tmp;
+
+	tmp = *n_line;
+	if (ft_strlen(prev_head) && !(*n_line = ft_strjoin(tmp, prev_head)) ||
+		free_and_return(&tmp, 0))
+			*n_line = ft_strdup(*line); //скопировать в н_лайн, либо добавить либо проигнорить
+}
+
+char		*init_unc_envs(t_brack *br, char **head, char **line, char **prev)
+{
+	br->single = 0;
+	br->twice = 0;
+	*head = *line;
+	*prev = *head;
+	return (NULL);
+}
+void		with_dolr(char **head, char **n_line, char **prev_head)
+{
+
+	char	*tmp;
+
+	*(*head)++ = '$';
+	tmp = *n_line;
+	*prev_head = ft_substr(*prev_head, 0, *head - *prev_head);
+	if (!(*n_line = ft_strjoin(tmp, *prev_head)) || free_and_return(&tmp, 0))
+		*n_line = *prev_head;
+	else
+		free_and_return(prev_head, 1);
+}
+
 void		unc_envs(char **line, t_all *all)
 {
 	char	*head;
-	char 	*prev_head;
-	char 	*n_line;
-	char	*tmp;
+	char	*prev_head;
+	char	*n_line;
 	t_brack	br;
 
-	head = *line;
-	br.single = 0;
-	br.twice = 0;
-	n_line = NULL;
-	prev_head = head;
+	n_line = init_unc_envs(&br, &head, line, &prev_head);
 	while(*head != '\0')
 	{
-		if (*head == '\'')
+		check_quotes(*head, &br);
+		if (*head == '$' && !br.single)
 		{
-			if (br.single)
-				br.single = 0;
-			else
-				br.single = 1;
-		}
-		if (*head == '\"')
-		{
-			if (br.twice)
-				br.twice = 0;
-			else
-				br.twice = 1;
-		}
-		if (*head == '$' && !br.single)//Если после " ", то $PWD, del ""
-		{
-			tmp = n_line;
 			*head++ = '\0';
 			if (*head == '\'' && br.twice && head--)
-			{
-				*head++ = '$';
-				prev_head = ft_substr(prev_head, 0, head - prev_head);
-				if (!(n_line = ft_strjoin(tmp, prev_head)) || free_and_return(&tmp, 0))
-					n_line = prev_head; //скопировать в н_лайн, либо добавить либо проигнорить
-				else
-					free_and_return(&prev_head, 1);
-			}
-			else if (ft_strlen(prev_head) && !(n_line = ft_strjoin(tmp, prev_head)) ||
-					free_and_return(&tmp, 0))
-				n_line = ft_strdup(*line); //скопировать в н_лайн, либо добавить либо проигнорить
+				with_dolr(&head, &n_line, &prev_head);
+			else
+				add_tonline(&n_line, prev_head, line);
 			get_dollar(&head, &n_line, all);//TODO
 			prev_head = head;
 		}
@@ -224,12 +240,7 @@ void		unc_envs(char **line, t_all *all)
 			head++;
 	}
 	if (ft_strlen(prev_head))
-	{
-		tmp = n_line;
-		if (!(n_line = ft_strjoin(tmp, prev_head)))
-			n_line = ft_strdup(prev_head);
-		free_and_return(&tmp, 1);
-	}
+		add_tonline(&n_line, prev_head, line);
 	if (n_line && free_and_return(line, 1))
 		*line = n_line;
 }
@@ -242,7 +253,6 @@ int 	parser(char **line, t_all *all)
 	 if (!(*line = ft_strtrim((const char *)(head), " ")))
 		 exit(EXIT_FAILURE);
 	 free(head);
-	 head = *line;
 	unc_envs(line, all);
 	all->cmd = read_cmd(line);
 	if (all->cmd->spec)
