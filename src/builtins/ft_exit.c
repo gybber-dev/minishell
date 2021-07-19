@@ -30,6 +30,8 @@ void			ft_exit(char **command, int *res)
 	if (is_number(command[1]))
 	{
 		*res = ft_atoi(command[1]);
+		if (*res > 255)
+			*res %= 256;
 		exit(*res);
 	}
 	else
