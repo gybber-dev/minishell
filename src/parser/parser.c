@@ -189,9 +189,10 @@ void		add_tonline(char **n_line, char *prev_head, char **line)
 	char *tmp;
 
 	tmp = *n_line;
-	if (ft_strlen(prev_head) && !(*n_line = ft_strjoin(tmp, prev_head)) ||
-		free_and_return(&tmp, 0))
+	if (ft_strlen(prev_head) && !(*n_line = ft_strjoin(tmp, prev_head)))
 			*n_line = ft_strdup(*line); //скопировать в н_лайн, либо добавить либо проигнорить
+	if (ft_strlen(prev_head))
+		free_and_return(&tmp, 0);
 }
 
 char		*init_unc_envs(t_brack *br, char **head, char **line, char **prev)

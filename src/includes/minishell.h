@@ -116,4 +116,5 @@ char			*get_pwd(void);
 int				ft_error(char *err_msg, int res);
 int				ft_perror(char *msg, int res);
 int				free_and_return(char **mem, int res);
+void			add_tonline(char **n_line, char *prev_head, char **line);
 #endif
