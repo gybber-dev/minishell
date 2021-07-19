@@ -190,7 +190,7 @@ void		add_tonline(char **n_line, char *prev_head, char **line)
 
 	tmp = *n_line;
 	if (ft_strlen(prev_head) && !(*n_line = ft_strjoin(tmp, prev_head)))
-			*n_line = ft_strdup(*line); //скопировать в н_лайн, либо добавить либо проигнорить
+			*n_line = ft_strdup(*line);
 	if (ft_strlen(prev_head))
 		free_and_return(&tmp, 0);
 }
