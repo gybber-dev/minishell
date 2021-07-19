@@ -157,6 +157,8 @@ int			exec_piple_command(t_all *all)
 		close(fd[0]);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			all->vlast = 128 + WTERMSIG(status);
 	}
 }
 
