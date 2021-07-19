@@ -32,13 +32,19 @@
 # define SAFE_TO 1
 # define TAKE_FROM 0
 
-typedef struct s_fd
+typedef struct	s_fd
 {
 	int			in;
 	int			out;
 }				t_fd;
 
-typedef struct s_proc
+typedef struct	s_brack
+{
+	int		single;
+	int 	twice;
+}				t_brack;
+
+typedef struct	s_proc
 {
 	int			is_complex;
 	t_fd		fix_fd;

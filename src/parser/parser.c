@@ -35,11 +35,12 @@ void	next_head(char **head, char **prev_head)
 	while (**head != '\0' && (**head == ' ' || **head == '>' || **head == '<'))
 		(*head)++;
 	*prev_head = *head;
-	if ((**head == '\"' || **head == '\'') && !flag)
+	if (**head == '\"' || **head == '\'')
 	{
 		flag = 1;
-		if (**head == '\'' && (*head)++)
+		if (**head == '\'')
 			flag = 2;
+		(*head)++;
 		*prev_head = *head;
 	}
 	while (**head != '\0' && **head != '\'' && flag == 2)
@@ -84,7 +85,7 @@ void 	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 		lineaddback(&(cmd->command), tmp);
 		free_and_return(&tmp, 1);
 	}
-	else
+	else if (ft_strlen(*prev_head))
 		lineaddback(&(cmd->command), *prev_head);
 	*prev_head = *head;
 }
@@ -176,24 +177,44 @@ void		unc_envs(char **line, t_all *all)
 	char	*head;
 	char 	*prev_head;
 	char 	*n_line;
-	int		flag;
 	char	*tmp;
+	t_brack	br;
 
 	head = *line;
+	br.single = 0;
+	br.twice = 0;
 	n_line = NULL;
-	flag = 0;
 	prev_head = head;
 	while(*head != '\0')
 	{
-		if (*head == '\'' && !flag)
-			flag = 1;
-		if (*head == '\'' && flag)
-			flag = 0;
-		if (*head == '$' && !flag)//Если после " ", то $PWD, del ""
+		if (*head == '\'')
 		{
-			*head++ = '\0';
+			if (br.single)
+				br.single = 0;
+			else
+				br.single = 1;
+		}
+		if (*head == '\"')
+		{
+			if (br.twice)
+				br.twice = 0;
+			else
+				br.twice = 1;
+		}
+		if (*head == '$' && !br.single)//Если после " ", то $PWD, del ""
+		{
 			tmp = n_line;
-			if (ft_strlen(prev_head) && !(n_line = ft_strjoin(tmp, prev_head)) ||
+			*head++ = '\0';
+			if (*head == '\'' && br.twice && head--)
+			{
+				*head++ = '$';
+				prev_head = ft_substr(prev_head, 0, head - prev_head);
+				if (!(n_line = ft_strjoin(tmp, prev_head)) || free_and_return(&tmp, 0))
+					n_line = prev_head; //скопировать в н_лайн, либо добавить либо проигнорить
+				else
+					free_and_return(&prev_head, 1);
+			}
+			else if (ft_strlen(prev_head) && !(n_line = ft_strjoin(tmp, prev_head)) ||
 					free_and_return(&tmp, 0))
 				n_line = ft_strdup(*line); //скопировать в н_лайн, либо добавить либо проигнорить
 			get_dollar(&head, &n_line, all);//TODO
