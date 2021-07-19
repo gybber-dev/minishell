@@ -57,6 +57,8 @@ typedef struct s_cmd
 	char		**command;
 	int			spec;
 	t_red		**reds;
+	char		*path;
+	int			is_builtin;
 }				t_cmd;
 
 /**
