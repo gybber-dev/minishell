@@ -69,9 +69,8 @@ int			exec_binary(t_all *all)
 		waitpid(parent, &status, 0);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
-//		if (WIFSIGNALED(status)) {
-//			printf("The process ended with kill -%d.\n", WTERMSIG(status));
-//		}
+		if (WIFSIGNALED(status))
+			all->vlast = 128 + WTERMSIG(status);
 	}
 }
 
