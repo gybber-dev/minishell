@@ -2,6 +2,9 @@
 
 void 	init_cmd(t_cmd **cmd)
 {
+
+	(*cmd)->is_builtin = 0;
+	(*cmd)->path = NULL;
 	(*cmd)->command = (char **)malloc(sizeof(char *));
 	(*cmd)->reds = (t_red **)malloc(sizeof(t_red *));
 	(*cmd)->reds[0] = NULL;
