@@ -31,7 +31,21 @@ int			wait_signal(int sign)
 
 void		clear_cmd(t_all *all)
 {
-	;
+	int i;
+
+	i = -1;
+
+	while (all->cmd->command[++i])
+		free_and_return(&(all->cmd->command[i]), 1);
+	free(all->cmd->command);
+	i = -1;
+	while (all->cmd->reds[++i])
+	{
+		free_and_return(&(all->cmd->reds[i]->value), 1);
+		free(all->cmd->reds[i]);
+		all->cmd->reds[i] = NULL;
+	}
+	free(all->cmd->reds);
 }
 
 void		print_all(t_all *all)
@@ -72,7 +86,6 @@ int			iterable_init(t_all *all)
 	all->proc.fix_fd.in = 0;
 	all->proc.fix_fd.out = 1;
 	all->is_pipel = 0;
-//	all->cmd->reds = NULL;
 	std_fd(SAFE_TO, &(all->proc.backup_fd));
 }
 
@@ -100,9 +113,9 @@ int			main(int argc, char** argv, char **envp)
 			while(is_finished)
 			{
 				is_finished = parser(&line, &all);
-				print_all(&all);
+//				print_all(&all);
 				exec_command(&all);
-				clear_cmd(&all); // TODO Dinar clear all here
+				clear_cmd(&all);
 				printf("status: %d\n", all.vlast);
 			}
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
