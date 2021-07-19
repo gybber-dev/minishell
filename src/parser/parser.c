@@ -27,6 +27,7 @@ void 	add_tred(t_red ***reds, char *value, int type)
 	free(*reds);
 	*reds = n_red;
 }
+
 void	next_head(char **head, char **prev_head)
 {
 	int flag;
@@ -195,12 +196,12 @@ void		add_tonline(char **n_line, char *prev_head, char **line)
 
 char		*init_unc_envs(t_brack *br, char **head, char **line, char **prev)
 {
-	br->single = 0;
-	br->twice = 0;
+	*br = (t_brack){0, 0};
 	*head = *line;
 	*prev = *head;
 	return (NULL);
 }
+
 void		with_dolr(char **head, char **n_line, char **prev_head)
 {
 
