@@ -26,14 +26,6 @@ void handler_sigint(int sign)
 	}
 }
 
-void handler_sigquit(int sign)
-{
-	if (sign == SIGQUIT)
-	{
-		printf("SIGQUIT\n");
-	}
-}
-
 void	handle_sigquit(int sig)
 {
 //	printf("in_Sigquit\n");
@@ -58,7 +50,8 @@ void	handle_sigquit(int sig)
 
 void		clear_cmd(t_all *all)
 {
-	;
+	if (all->cmd->path)		  // may be NULL
+		free(all->cmd->path); // TODO not forget during merge
 }
 
 void		print_all(t_all *all)
@@ -127,7 +120,6 @@ int			main(int argc, char** argv, char **envp)
 		}
 		else if (*line)
 		{
-//			signal(SIGQUIT, handle_sigquit);
 			signal(SIGQUIT, handle_sigquit);
 			add_history(line);
 			iterable_init(&all); // TODO Dinar add init here
@@ -135,7 +127,6 @@ int			main(int argc, char** argv, char **envp)
 			while(is_finished)
 			{
 				is_finished = parser(&line, &all);
-//				print_all(&all);
 				exec_command(&all);
 				clear_cmd(&all); // TODO Dinar clear all here
 				printf("status: %d\n", all.vlast);
