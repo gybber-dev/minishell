@@ -3,7 +3,7 @@
 int			check_redirs(t_red **reds, t_fd *fix_fd)
 {
 	int		fd;
-//> 1 > 2
+
 	while(reds && *reds)
 	{
 		if ((*reds)->type == GT)
@@ -193,7 +193,8 @@ void		check_command(char *cmd, int *is_my, char **path, char **env)
 
 int			exec_command(t_all *all)
 {
-	check_redirs(all->cmd->reds, &(all->proc.fix_fd));
+	if (EXIT_FAILURE == check_redirs(all->cmd->reds, &(all->proc.fix_fd)))
+		return ((all->vlast = EXIT_FAILURE));
 	if (all->cmd->command[0])
 	{
 		check_command(all->cmd->command[0], &(all->cmd->is_builtin),
