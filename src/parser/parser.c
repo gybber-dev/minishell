@@ -221,8 +221,11 @@ void		with_dolr(char **head, char **n_line, char **prev_head)
 	*(*head)++ = '$';
 	tmp = *n_line;
 	*prev_head = ft_substr(*prev_head, 0, *head - *prev_head);
-	if (!(*n_line = ft_strjoin(tmp, *prev_head)) || free_and_return(&tmp, 0))
+	if (!(*n_line = ft_strjoin(tmp, *prev_head)))
+	{
 		*n_line = *prev_head;
+		free_and_return(&tmp, 0);
+	}
 	else
 		free_and_return(prev_head, 1);
 }
