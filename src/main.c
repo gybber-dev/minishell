@@ -106,7 +106,7 @@ int			main(int argc, char** argv, char **envp)
 			printf("\033[A\nminishell: exit\n");
 			exit(EXIT_SUCCESS);
 		}
-		else if (*line)
+		else if (*line && !check_valid(line, &all))
 		{
 			add_history(line);
 			iterable_init(&all);
