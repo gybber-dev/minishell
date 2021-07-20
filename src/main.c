@@ -7,6 +7,7 @@
 #include <readline/history.h>
 #include "includes/minishell.h"
 
+
 void		init_struct(t_all *all, char **envp)
 {
 	all->vlast = 0;
@@ -67,6 +68,7 @@ void		clear_cmd(t_all *all)
 	}
 	free(all->cmd->reds);
 	all->cmd->reds = NULL;
+	unlink(HERE_DOC_FILE);
 }
 
 void		print_all(t_all *all)

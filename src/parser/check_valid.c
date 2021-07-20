@@ -41,7 +41,7 @@ int		check_valid(char *line, t_all *all)
 	{
 		all->vlast = ret;
 		write(1,
-			  "bash: syntax error near unexpected token `newline'\n", 51);
+			  "minishell: syntax error near unexpected token `newline'\n", 51);
 	}
 	return ret;
 }

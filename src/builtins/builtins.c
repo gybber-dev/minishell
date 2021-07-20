@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int			check_redirs(t_red **reds, t_fd *fix_fd)
+int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 {
 	int		fd;
 
@@ -23,11 +23,19 @@ int			check_redirs(t_red **reds, t_fd *fix_fd)
 		if ((*reds)->type == LOW)
 		{
 			if ((fd = open((*reds)->value, O_RDONLY, 0666)) == -1)
-				return (ft_perror("bash", EXIT_FAILURE));
+				return (ft_perror("minishell", EXIT_FAILURE));
+			dup2(fd, fix_fd->in);
+			close(fd);
+		}
+		if ((*reds)->type == LOW2)
+		{
+			if ((fd = exec_heredoc((*reds)->value, all)) == -1)
+				return (ft_perror("minishell", EXIT_FAILURE));
 			dup2(fd, fix_fd->in);
 			close(fd);
 		}
 		reds++;
+
 	}
 	return 0;
 }
@@ -66,6 +74,7 @@ int			exec_binary(t_all *all)
 	}
 	else if (parent)
 	{
+//		pid = parent;
 		waitpid(parent, &status, 0);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
@@ -193,7 +202,7 @@ void		check_command(char *cmd, int *is_my, char **path, char **env)
 
 int			exec_command(t_all *all)
 {
-	if (EXIT_FAILURE == check_redirs(all->cmd->reds, &(all->proc.fix_fd)))
+	if (EXIT_FAILURE == check_redirs(all->cmd->reds, &(all->proc.fix_fd), all))
 		return ((all->vlast = EXIT_FAILURE));
 	if (all->cmd->command[0])
 	{

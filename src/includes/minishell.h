@@ -31,7 +31,7 @@
 
 # define SAFE_TO 1
 # define TAKE_FROM 0
-
+# define HERE_DOC_FILE ".here_doc"
 typedef struct	s_fd
 {
 	int			in;
@@ -87,6 +87,7 @@ typedef struct s_all
 
 
 int 			parser(char **line, t_all *all);
+void			unc_envs(char **line, t_all *all);
 void			lineaddback(char ***src,char *addback);
 void			clear_arr_2x(char ***arr);
 void			print_array_2x(char **arr);
@@ -121,4 +122,8 @@ int				free_and_return(char **mem, int res);
 void			add_tonline(char **n_line, char *prev_head, char **line);
 int				check_symb(char **line);
 int				check_valid(char *line, t_all *all);
+int				exec_heredoc(char *breaker, t_all *all);
+
+
+//pid_t		pid;
 #endif
