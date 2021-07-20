@@ -38,6 +38,7 @@ void		clear_cmd(t_all *all)
 	while (all->cmd->command[++i])
 		free_and_return(&(all->cmd->command[i]), 1);
 	free(all->cmd->command);
+	all->cmd->command = NULL;
 	i = -1;
 	while (all->cmd->reds[++i])
 	{
@@ -46,6 +47,7 @@ void		clear_cmd(t_all *all)
 		all->cmd->reds[i] = NULL;
 	}
 	free(all->cmd->reds);
+	all->cmd->reds = NULL;
 }
 
 void		print_all(t_all *all)
@@ -113,7 +115,7 @@ int			main(int argc, char** argv, char **envp)
 			while(is_finished)
 			{
 				is_finished = parser(&line, &all);
-//				print_all(&all);
+				print_all(&all);
 				exec_command(&all);
 				clear_cmd(&all);
 				printf("status: %d\n", all.vlast);
