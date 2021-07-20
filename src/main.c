@@ -142,7 +142,7 @@ int			main(int argc, char** argv, char **envp)
 			while(is_finished)
 			{
 				is_finished = parser(&line, &all);
-				print_all(&all);
+//				print_all(&all);
 				exec_command(&all);
 				clear_cmd(&all);
 				printf("status: %d\n", all.vlast);
