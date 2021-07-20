@@ -123,7 +123,6 @@ void			add_tonline(char **n_line, char *prev_head, char **line);
 int				check_symb(char **line);
 int				check_valid(char *line, t_all *all);
 int				exec_heredoc(char *breaker, t_all *all);
-
-
-//pid_t		pid;
+void 			handler_sigint(int sign);
+pid_t		pid;
 #endif

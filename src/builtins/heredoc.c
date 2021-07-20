@@ -14,9 +14,23 @@ static int	init_heredoc(int fd[2])
 	return (0);
 }
 
+void handler_sigint2(int sign)
+{
+	if (sign == SIGINT)
+	{
+		printf("hel: %d", flag);
+		raise(SIG);
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		flag = 1;
+	}
+}
+
+
 int	exec_heredoc(char *breaker, t_all *all)
 {
-	int		disable_expansion;
 	char	*line;
 	int		fd[2];
 
@@ -24,16 +38,20 @@ int	exec_heredoc(char *breaker, t_all *all)
 		return (-1);
 	while (1)
 	{
+		signal(SIGINT, handler_sigint2);
 		line = readline("> ");
-		if (line == NULL || ft_strncmp(line, breaker, ft_strlen(line) + 1) == 0)
+		if (line == NULL || ft_strncmp(line, breaker, ft_strlen(line) + 1) == 0 || flag)
+		{
 			break ;
+		}
 		if (line)
 			unc_envs(&line, all);
 		write(fd[1], line, ft_strlen(line));
 		write(fd[1], "\n", 1);
 		free(line);
 	}
-	if (line == NULL)
+	signal(SIGINT, handler_sigint);
+	if (line == NULL && !flag)
 		printf("minishell: here-doc error\n");
 	free(line);
 	close(fd[1]);

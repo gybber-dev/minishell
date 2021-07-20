@@ -40,6 +40,19 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 	return 0;
 }
 
+
+void		kill_my_daughter(int sig)
+{
+	if (sig == SIGINT && pid != -2)
+	{
+		if (pid != -1)
+		{
+			kill(pid, sig);
+			pid = -2;
+		}
+	}
+}
+
 int			is_builtin(char *command)
 {
 	if (!command)
@@ -66,6 +79,8 @@ int			exec_binary(t_all *all)
 		return (ft_perror("fork", 71));
 	else if (!parent)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 		{
 			perror("Could not execve");
@@ -74,8 +89,10 @@ int			exec_binary(t_all *all)
 	}
 	else if (parent)
 	{
-//		pid = parent;
+		pid = parent;
+		signal(SIGINT, kill_my_daughter);
 		waitpid(parent, &status, 0);
+		signal(SIGINT, handler_sigint);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
 		if (WIFSIGNALED(status))
