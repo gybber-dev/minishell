@@ -15,17 +15,35 @@ void		init_struct(t_all *all, char **envp)
 	all->envs = copy_arrays_2x(envp);
 }
 
-int			wait_signal(int sign)
+void handler_sigint(int sign)
 {
-	printf("kill %d\n", sign);
-//	if (sign == SIGINT)
-//	{
-//		write(1, "\n", 1);
-//		rl_on_new_line();
-//		rl_replace_line("", 0);
-//		rl_redisplay();
-//		exit(EXIT_SUCCESS);
-//	}
+	if (sign == SIGINT)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+	}
+}
+
+void	handle_sigquit(int sig)
+{
+//	printf("in_Sigquit\n");
+	if (sig == SIGQUIT)
+	{
+//		printf("Sigquit\n");
+//		if (g_data.is_fork == 1)
+//		{
+			printf("Quit (core dumped)\n");
+//			rl_on_new_line();
+//			rl_replace_line("", 0);
+//		}
+//		else
+//		{
+			rl_on_new_line();
+			rl_replace_line("", 0);
+//		}
+	}
 }
 
 
@@ -35,6 +53,8 @@ void		clear_cmd(t_all *all)
 
 	i = -1;
 
+	if (all->cmd->path)		  // may be NULL
+		free(all->cmd->path);
 	while (all->cmd->command[++i])
 		free_and_return(&(all->cmd->command[i]), 1);
 	free(all->cmd->command);
@@ -96,11 +116,17 @@ int			main(int argc, char** argv, char **envp)
 	char	*line;
 	t_all	all;
 	int		is_finished;
+	struct termios term;
 
-	signal(SIGTERM, SIG_IGN);
+	tcgetattr(0, &term);
+	term.c_lflag &= ~(ECHOCTL);
+	tcsetattr(0, TCSANOW, &term);
+	signal(SIGINT, handler_sigint);
+//	signal(SIGQUIT, SIG_IGN);
 	init_struct(&all, envp);
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
 		line = readline("minishell: ");
 		if (!line)
 		{
@@ -109,6 +135,7 @@ int			main(int argc, char** argv, char **envp)
 		}
 		else if (*line)
 		{
+			signal(SIGQUIT, handle_sigquit);
 			add_history(line);
 			iterable_init(&all); // TODO Dinar add init here
 			is_finished = 1;
@@ -125,7 +152,7 @@ int			main(int argc, char** argv, char **envp)
 			close(all.proc.backup_fd.out);
 			free(line);
 		}
-
+//		signal(SIGQUIT, SIG_IGN);
 	}
 	return 0;
 }

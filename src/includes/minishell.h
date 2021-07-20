@@ -63,6 +63,8 @@ typedef struct s_cmd
 	char		**command;
 	int			spec;
 	t_red		**reds;
+	char		*path;
+	int			is_builtin;
 }				t_cmd;
 
 /**
@@ -102,7 +104,7 @@ int 			ft_export(char **command, char ***env);
 int				ft_env(char **command, char **env);
 int				ft_cd(char **command, char ***env);
 int				ft_unset(char **command, char ***env);
-int				ft_exit(char **command);
+void			ft_exit(char **command, int *status);
 int				check_flag_n(char *command_1);
 char			*get_stdout_fun_result(char **cmd, int (*fun)(char **, char
 **), char **env);

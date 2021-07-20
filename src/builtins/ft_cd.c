@@ -10,7 +10,7 @@ static int		exec_cd(char *path, char ***env)
 	if (!old_path)
 		return 1;
 	if (chdir(path) == -1)
-		return free_and_return(&old_path, 1);
+		return (free_and_return(&old_path, 1) * ft_perror("cd", 1));
 	new_path = get_pwd();
 	if (!new_path)
 		return free_and_return(&old_path, 1);
@@ -38,10 +38,10 @@ int				ft_cd(char **command, char ***env)
 
 	home = NULL;
 	if ((len = get_arr_2x_len(command)) > 2)
-		return 1;
+		return ft_error("cd: too many arguments", EXIT_FAILURE);
 	if (len == 1 || *(command[1]) == '~')
 		if (!(home = get_value(*env, "HOME")))
-			return 1;
+			return ft_error("cd: HOME not set", EXIT_FAILURE);
 	if (len == 1)
 		return exec_cd(home, env);
 	if (len == 2 && !home)
