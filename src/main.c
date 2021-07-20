@@ -9,7 +9,6 @@
 
 void		init_struct(t_all *all, char **envp)
 {
-//	all->cmd->reds = NULL;
 	all->vlast = 0;
 	all->vpid = 0;
 	all->envs = copy_arrays_2x(envp);
@@ -133,11 +132,11 @@ int			main(int argc, char** argv, char **envp)
 			printf("\033[A\nminishell: exit\n");
 			exit(EXIT_SUCCESS);
 		}
-		else if (*line)
+		else if (*line && !check_valid(line, &all))
 		{
 			signal(SIGQUIT, handle_sigquit);
 			add_history(line);
-			iterable_init(&all); // TODO Dinar add init here
+			iterable_init(&all);
 			is_finished = 1;
 			while(is_finished)
 			{

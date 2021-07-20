@@ -119,4 +119,6 @@ int				ft_error(char *err_msg, int res);
 int				ft_perror(char *msg, int res);
 int				free_and_return(char **mem, int res);
 void			add_tonline(char **n_line, char *prev_head, char **line);
+int				check_symb(char **line);
+int				check_valid(char *line, t_all *all);
 #endif
