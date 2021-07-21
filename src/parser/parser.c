@@ -1,28 +1,35 @@
 #include "../includes/minishell.h"
 
-void		init_cmd(t_cmd **cmd)
+int		init_cmd(t_cmd **cmd)
 {
-
+	if (!(*cmd = (t_cmd *)malloc(sizeof(t_cmd))))
+		return (-1);
 	(*cmd)->is_builtin = 0;
 	(*cmd)->path = NULL;
-	(*cmd)->command = (char **)malloc(sizeof(char *));
-	(*cmd)->reds = (t_red **)malloc(sizeof(t_red *));
+	if (!((*cmd)->command = (char **)malloc(sizeof(char *))))
+		return (-1);
+	if (!((*cmd)->reds = (t_red **)malloc(sizeof(t_red *))))
+		return (-1);
 	(*cmd)->reds[0] = NULL;
 	(*cmd)->command[0] = NULL;
+	(*cmd)->err = 0;
+	return (0);
 }
 
-void		add_tred(t_red ***reds, char *value, int type)
+void		add_tred(t_red ***reds, char *value, int type, t_cmd *cmd)
 {
 	int		i;
 	t_red	**n_red;
 	t_red	*one_red;
 
-	one_red = (t_red *)malloc(sizeof(t_red));
+	if (!(one_red = (t_red *)malloc(sizeof(t_red))))
+		cmd->err = 1;
 	*one_red = (t_red){type, value};
 	i = 0;
 	while (*(*reds + i) != NULL)
 		i++;
-	n_red = (t_red **)malloc((i += 2) * sizeof(t_red *));
+	if (!(n_red = (t_red **)malloc((i += 2) * sizeof(t_red *))))
+		cmd->err = 1;
 	n_red[--i] = NULL;
 	n_red[--i] = one_red;
 	while(--i > -1)
@@ -73,9 +80,9 @@ void		read_redirs(t_cmd *cmd, char **prev_head, char **head)
 		*(*head)++ = '\0';
 	if (**head == '<' || **head == '>')
 		add_tred(&(cmd->reds), ft_substr(*prev_head, 0,
-										 *head - *prev_head), var);
+										 *head - *prev_head), var, cmd);
 	else
-		add_tred(&(cmd->reds), ft_strdup(*prev_head), var);
+		add_tred(&(cmd->reds), ft_strdup(*prev_head), var, cmd);
 	*prev_head = *head;
 }
 
@@ -109,14 +116,11 @@ void		check_end(t_cmd *cmd, char **head)
 		cmd->spec = 0;
 }
 
-t_cmd		*read_cmd(char **line)
+t_cmd		*read_cmd(char **line, t_cmd *cmd)
 {
-	t_cmd	*cmd;
 	char	*head;
 	char	*prev_head;
 
-	cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	init_cmd(&cmd);
 	head = *line;
 	prev_head = head;
 	while (*head != '\0' && *head != '|' && *head != '&')
@@ -245,7 +249,7 @@ void		unc_envs(char **line, t_all *all)
 				with_dolr(&head, &n_line, &prev_head);
 			else
 				add_tonline(&n_line, prev_head, line);
-			get_dollar(&head, &n_line, all);//TODO
+			get_dollar(&head, &n_line, all);
 			prev_head = head;
 		}
 		else
@@ -260,14 +264,18 @@ void		unc_envs(char **line, t_all *all)
 int 	parser(char **line, t_all *all)
 {
 	char	*head;
+	t_cmd	*cmd;
 
+	if (init_cmd(&cmd))
+		return (-1);
 	head = *line;
-	if (!(*line = ft_strtrim((const char *)(head), " ")))
-		exit(EXIT_FAILURE);
+	*line = ft_strtrim((const char *)(head), " ");
 	free(head);
 	unc_envs(line, all);
-	all->cmd = read_cmd(line);
+	all->cmd = read_cmd(line, cmd);
 	if (all->cmd->spec)
 		all->is_pipel = 1;
+	if (all->cmd->err)
+		return (-1);
 	return all->cmd->spec;
 }
