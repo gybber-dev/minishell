@@ -3,7 +3,7 @@
 void		init_cmd(t_cmd **cmd)
 {
 	pid = -2;
-	flag = 0;
+//	flag = 0;
 	(*cmd)->is_builtin = 0;
 	(*cmd)->path = NULL;
 	(*cmd)->command = (char **)malloc(sizeof(char *));

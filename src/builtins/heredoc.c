@@ -39,7 +39,6 @@ int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 	while (1)
 	{
 		signal(SIGINT, SIG_DFL);
-//		signal(SIGINT, handler_sigint2);
 		line = readline("> ");
 		if (line == NULL || ft_strncmp(line, breaker, ft_strlen(line) + 1) == 0 || flag)
 		{
@@ -55,6 +54,5 @@ int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 		printf("minishell: here-doc error\n");
 	free(line);
 	close(fd);
-//	return (fd[0]);
 	exit(0);
 }

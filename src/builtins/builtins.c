@@ -37,15 +37,13 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 			else if (!parent)
 			{
 				exec_heredoc((*reds)->value, all, pipe_fd);
-//				dup2(pipe_fd[1], fd);
-//				close(fd); // ?
+
 			}
-//					return (ft_perror("minishell", EXIT_FAILURE));
+
 			waitpid(parent, &status, 0);
-			int fd_hd = open("here.txt", O_RDWR, 0666);
+			int fd_hd = open("heredoc", O_RDWR, 0666);
 			dup2(fd_hd, fix_fd->in);
 			close(fd_hd);
-//			close(fd); // ?
 			if (WIFEXITED(status))
 				all->vlast = WEXITSTATUS(status);
 			if (WIFSIGNALED(status))

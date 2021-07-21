@@ -112,6 +112,31 @@ int			iterable_init(t_all *all)
 	std_fd(SAFE_TO, &(all->proc.backup_fd));
 }
 
+void check_fd(void)
+{
+	int fd = dup(0);
+	int fd1 = dup(0);
+	int fd2 = dup(0);
+	int fd3 = dup(0);
+	int fd4 = dup(0);
+	int fd5 = dup(0);
+	int fd6 = dup(0);
+	printf("check_fd: %d\n", fd);
+	printf("check_fd: %d\n", fd1);
+	printf("check_fd: %d\n", fd2);
+	printf("check_fd: %d\n", fd3);
+	printf("check_fd: %d\n", fd4);
+	printf("check_fd: %d\n", fd5);
+	printf("check_fd: %d\n", fd6);
+	close(fd);
+	close(fd1);
+	close(fd2);
+	close(fd3);
+	close(fd4);
+	close(fd5);
+	close(fd6);
+}
+
 int			main(int argc, char** argv, char **envp)
 {
 	char	*line;
@@ -153,6 +178,7 @@ int			main(int argc, char** argv, char **envp)
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);
 			close(all.proc.backup_fd.out);
+			check_fd();
 			free(line);
 		}
 //		signal(SIGQUIT, SIG_IGN);

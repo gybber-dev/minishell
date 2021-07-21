@@ -97,7 +97,7 @@ char			*find_binary(char *cmnd, char *paths);
 void			init_struct(t_all *all, char **envp);
 int				exec_command(t_all *all);
 void			std_fd(int opt, t_fd *fd);
-int				check_fd(void);
+void				check_fd(void);
 int				processor(char *envp[]);
 int				is_builtin(char *command);
 int 			ft_echo(char **command, char **env);
