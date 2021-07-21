@@ -3,6 +3,9 @@
 int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 {
 	int		fd;
+	pid_t	parent;
+	int		pipe_fd[2];
+	int		status;
 
 	while(reds && *reds)
 	{
@@ -29,10 +32,24 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 		}
 		if ((*reds)->type == LOW2)
 		{
-			if ((fd = exec_heredoc((*reds)->value, all)) == -1)
-				return (ft_perror("minishell", EXIT_FAILURE));
-			dup2(fd, fix_fd->in);
-			close(fd);
+			if ((parent = fork()) == -1)
+				all->vlast = 71;
+			else if (!parent)
+			{
+				exec_heredoc((*reds)->value, all, pipe_fd);
+//				dup2(pipe_fd[1], fd);
+//				close(fd); // ?
+			}
+//					return (ft_perror("minishell", EXIT_FAILURE));
+			waitpid(parent, &status, 0);
+			int fd_hd = open("here.txt", O_RDWR, 0666);
+			dup2(fd_hd, fix_fd->in);
+			close(fd_hd);
+//			close(fd); // ?
+			if (WIFEXITED(status))
+				all->vlast = WEXITSTATUS(status);
+			if (WIFSIGNALED(status))
+				all->vlast = 128 + WTERMSIG(status);
 		}
 		reds++;
 

@@ -122,7 +122,9 @@ int				free_and_return(char **mem, int res);
 void			add_tonline(char **n_line, char *prev_head, char **line);
 int				check_symb(char **line);
 int				check_valid(char *line, t_all *all);
-int				exec_heredoc(char *breaker, t_all *all);
+int				exec_heredoc(char *breaker, t_all *all, int *pipe_fd);
 void 			handler_sigint(int sign);
+void	 		read_from_write_to(int from, int to);
 pid_t		pid;
+int 		flag;
 #endif
