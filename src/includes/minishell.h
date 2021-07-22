@@ -126,6 +126,7 @@ int				check_valid(char *line, t_all *all);
 int				exec_heredoc(char *breaker, t_all *all, int *pipe_fd);
 void 			handler_sigint(int sign);
 void	 		read_from_write_to(int from, int to);
+void			check_quotes(char head, t_brack *br);
 pid_t		pid;
 int 		flag;
 #endif

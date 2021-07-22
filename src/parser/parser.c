@@ -80,11 +80,14 @@ void		read_redirs(t_cmd *cmd, char **prev_head, char **head)
 	*prev_head = *head;
 }
 
-void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
+void		add_cmd1(t_cmd *cmd, char **prev_head, char **head)
 {
 	char	*tmp;
+	char 	*n_line;
 
 	next_head(head, prev_head);
+	if (**head == '\'' || **head == '\"')
+		n_line = ft_substr(*prev_head, 0, (int)(*head - *prev_head));
 	if (**head != '\0' && **head != '<' && **head != '>')
 		*(*head)++ = '\0';
 	if (**head == '<' || **head == '>')
@@ -97,6 +100,24 @@ void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
 		lineaddback(&(cmd->command), *prev_head);
 	*prev_head = *head;
 }
+
+void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
+{
+	char	*tmp;
+	char 	*n_line;
+	t_brack	brack;
+
+	brack.single = 0;
+	brack.twice = 0;
+	while (!(**head == '\0' || (ft_strchr("> <", **head) && !brack.twice && !brack.single)))
+	{
+		check_quotes(**head, &brack);
+		(*head)++;
+	}
+	if (!(n_line = malloc((*head - *prev_head))))
+
+}
+
 
 void		check_end(t_cmd *cmd, char **head)
 {
@@ -124,7 +145,7 @@ t_cmd		*read_cmd(char **line)
 	{
 		if (*head == '>' || *head == '<')
 			read_redirs(cmd, &prev_head, &head);
-		else if (*head == '\'' || *head == '\"' || *head)
+		else if (*head)
 			add_cmd(cmd, &prev_head, &head);
 		else
 			head++;

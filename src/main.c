@@ -166,16 +166,14 @@ int			main(int argc, char** argv, char **envp)
 			add_history(line);
 			iterable_init(&all);
 			is_finished = 1;
-			while(is_finished)
+			while(is_finished > 0)
 			{
 				signal(SIGINT, handler_sigint);
-				is_finished = parser(&line, &all);
-//				print_all(&all);
-				exec_command(&all);
+				if ((is_finished = parser(&line, &all)) != -1)
+					exec_command(&all);
 				clear_cmd(&all);
 //				printf("status: %d\n", all.vlast);
 			}
-
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);
 			close(all.proc.backup_fd.out);
