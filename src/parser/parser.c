@@ -1,10 +1,10 @@
 #include "../includes/minishell.h"
 
-int		init_cmd(t_cmd **cmd)
+int	init_cmd(t_cmd **cmd)
 {
 	pid = -2;
-//	flag = 0;
-	if (!(*cmd = (t_cmd *)malloc(sizeof(t_cmd))))
+	*cmd = (t_cmd *) malloc(sizeof(t_cmd));
+	if (!(*cmd))
 		return (-1);
 	(*cmd)->is_builtin = 0;
 	(*cmd)->path = NULL;
@@ -18,13 +18,14 @@ int		init_cmd(t_cmd **cmd)
 	return (0);
 }
 
-void		add_tred(t_red ***reds, char *value, int type, t_cmd *cmd)
+void	add_tred(t_red ***reds, char *value, int type, t_cmd *cmd)
 {
 	int		i;
 	t_red	**n_red;
 	t_red	*one_red;
 
-	if (!(one_red = (t_red *)malloc(sizeof(t_red))))
+	one_red = (t_red *)malloc(sizeof(t_red));
+	if (!(one_red))
 		cmd->err = 1;
 	*one_red = (t_red){type, value};
 	i = 0;
@@ -34,13 +35,13 @@ void		add_tred(t_red ***reds, char *value, int type, t_cmd *cmd)
 		cmd->err = 1;
 	n_red[--i] = NULL;
 	n_red[--i] = one_red;
-	while(--i > -1)
+	while (--i > -1)
 		*(n_red + i) = *(*reds + i);
 	free(*reds);
 	*reds = n_red;
 }
 
-void		next_head(char **head, char **prev_head)
+void	next_head(char **head, char **prev_head)
 {
 	int		flag;
 
@@ -60,12 +61,12 @@ void		next_head(char **head, char **prev_head)
 		(*head)++;
 	while (**head != '\0' && **head != '\"' && flag == 1)
 		(*head)++;
-	while (**head != '\0' && **head != ' ' &&
-				!flag && **head != '<' && **head != '>')
-			(*head)++;
+	while (**head != '\0' && **head != ' '
+		&& !flag && **head != '<' && **head != '>')
+		(*head)++;
 }
 
-void		read_redirs(t_cmd *cmd, char **prev_head, char **head)
+void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
 {
 	int		var;
 
@@ -82,34 +83,13 @@ void		read_redirs(t_cmd *cmd, char **prev_head, char **head)
 		*(*head)++ = '\0';
 	if (**head == '<' || **head == '>')
 		add_tred(&(cmd->reds), ft_substr(*prev_head, 0,
-										 *head - *prev_head), var, cmd);
+				*head - *prev_head), var, cmd);
 	else
 		add_tred(&(cmd->reds), ft_strdup(*prev_head), var, cmd);
 	*prev_head = *head;
 }
 
-void		add_cmd1(t_cmd *cmd, char **prev_head, char **head)
-{
-	char	*tmp;
-	char 	*n_line;
-
-	next_head(head, prev_head);
-	if (**head == '\'' || **head == '\"')
-		n_line = ft_substr(*prev_head, 0, (int)(*head - *prev_head));
-	if (**head != '\0' && **head != '<' && **head != '>')
-		*(*head)++ = '\0';
-	if (**head == '<' || **head == '>')
-	{
-		tmp = ft_substr(*prev_head, 0, *head - *prev_head);
-		lineaddback(&(cmd->command), tmp);
-		free_and_return(&tmp, 1);
-	}
-	else if (ft_strlen(*prev_head))
-		lineaddback(&(cmd->command), *prev_head);
-	*prev_head = *head;
-}
-
-void		append_back(char *dst, char c)
+void	append_back(char *dst, char c)
 {
 	char	*tmp;
 
@@ -119,9 +99,9 @@ void		append_back(char *dst, char c)
 	*tmp = c;
 }
 
-char		*copy_until_to_end(char stop, char *dst, char *src)
+char	*copy_until_to_end(char stop, char *dst, char *src)
 {
-	while(*dst)
+	while (*dst)
 		dst++;
 	while (!(*src == '\0' || *src == stop))
 	{
@@ -132,17 +112,18 @@ char		*copy_until_to_end(char stop, char *dst, char *src)
 	return (src);
 }
 
-void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
+void	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 {
-	char 	*n_line;
+	char	*n_line;
 	t_brack	brack;
 
 	brack.single = 0;
 	brack.twice = 0;
-	while(**head == ' ')
+	while (**head == ' ')
 		(*head)++;
 	*prev_head = *head;
-	while (!(**head == '\0' || (ft_strchr("> <", **head) && !brack.twice && !brack.single)))
+	while (!(**head == '\0' || (ft_strchr("> <", **head)
+				&& !brack.twice && !brack.single)))
 	{
 		check_quotes(**head, &brack);
 		(*head)++;
@@ -152,25 +133,21 @@ void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
 	while (*prev_head != *head)
 	{
 		if (**prev_head == '\'' || **prev_head == '\"')
-		{
-			*prev_head = copy_until_to_end(**prev_head, n_line, (*prev_head + 1));
-		}
+			*prev_head = copy_until_to_end(**prev_head,
+					n_line, (*prev_head + 1));
 		else
-		{
 			append_back(n_line, **prev_head);
-		}
 		(*prev_head)++;
 	}
 	lineaddback(&(cmd->command), n_line);
 	free(n_line);
 }
 
-
-void		check_end(t_cmd *cmd, char **head)
+void	check_end(t_cmd *cmd, char **head)
 {
 	if (!ft_strncmp(*head, "||", 2) && (*head += 2))
 		cmd->spec = S_OR;
-	else if(!ft_strncmp(*head, "&&", 2) && (*head + 2))
+	else if (!ft_strncmp(*head, "&&", 2) && (*head + 2))
 		cmd->spec = S_AND;
 	else if (**head == '|' && (*head)++)
 		cmd->spec = PIPE;
@@ -178,7 +155,7 @@ void		check_end(t_cmd *cmd, char **head)
 		cmd->spec = 0;
 }
 
-t_cmd		*read_cmd(char **line, t_cmd *cmd)
+t_cmd	*read_cmd(char **line, t_cmd *cmd)
 {
 	char	*head;
 	char	*prev_head;
@@ -202,10 +179,11 @@ t_cmd		*read_cmd(char **line, t_cmd *cmd)
 		free(prev_head);
 	return (cmd);
 }
-void		quest_func(char **n_line, t_all *all)
+
+void	quest_func(char **n_line, t_all *all)
 {
 	char	*prev_head;
-	char 	*tmp;
+	char	*tmp;
 
 	prev_head = *n_line;
 	tmp = ft_itoa(all->vlast);
@@ -215,7 +193,7 @@ void		quest_func(char **n_line, t_all *all)
 	free_and_return(&prev_head, 1);
 }
 
-void		get_dollar(char **head, char **n_line, t_all *all)
+void	get_dollar(char **head, char **n_line, t_all *all)
 {
 	char	*prev_head;
 	char	*tmp;
@@ -242,7 +220,7 @@ void		get_dollar(char **head, char **n_line, t_all *all)
 	}
 }
 
-void		check_quotes(char head, t_brack *br)
+void	check_quotes(char head, t_brack *br)
 {
 	if (head == '\'')
 	{
@@ -260,18 +238,18 @@ void		check_quotes(char head, t_brack *br)
 	}
 }
 
-void		add_tonline(char **n_line, char *prev_head, char **line)
+void	add_tonline(char **n_line, char *prev_head, char **line)
 {
 	char	*tmp;
 
 	tmp = *n_line;
 	if (ft_strlen(prev_head) && !(*n_line = ft_strjoin(tmp, prev_head)))
-			*n_line = ft_strdup(*line);
+		*n_line = ft_strdup(*line);
 	if (ft_strlen(prev_head))
 		free_and_return(&tmp, 0);
 }
 
-char		*init_unc_envs(t_brack *br, char **head, char **line, char **prev)
+char	*init_unc_envs(t_brack *br, char **head, char **line, char **prev)
 {
 	*br = (t_brack){0, 0};
 	*head = *line;
@@ -279,9 +257,8 @@ char		*init_unc_envs(t_brack *br, char **head, char **line, char **prev)
 	return (NULL);
 }
 
-void		with_dolr(char **head, char **n_line, char **prev_head)
+void	with_dolr(char **head, char **n_line, char **prev_head)
 {
-
 	char	*tmp;
 
 	*(*head)++ = '$';
@@ -293,7 +270,7 @@ void		with_dolr(char **head, char **n_line, char **prev_head)
 		free_and_return(prev_head, 1);
 }
 
-void		unc_envs(char **line, t_all *all)
+void	unc_envs(char **line, t_all *all)
 {
 	char	*head;
 	char	*prev_head;
@@ -323,7 +300,7 @@ void		unc_envs(char **line, t_all *all)
 		*line = n_line;
 }
 
-int 	parser(char **line, t_all *all)
+int	parser(char **line, t_all *all)
 {
 	char	*head;
 	t_cmd	*cmd;
@@ -339,5 +316,5 @@ int 	parser(char **line, t_all *all)
 		all->is_pipel = 1;
 	if (all->cmd->err)
 		return (-1);
-	return all->cmd->spec;
+	return (all->cmd->spec);
 }
