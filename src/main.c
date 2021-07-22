@@ -154,6 +154,7 @@ int			main(int argc, char** argv, char **envp)
 	{
 		signal(SIGQUIT, SIG_IGN);
 		line = readline("minishell: ");
+		printf("0: %p\n", line);
 		if (!line)
 		{
 			printf("\033[A\nminishell: exit\n");
@@ -178,9 +179,9 @@ int			main(int argc, char** argv, char **envp)
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);
 			close(all.proc.backup_fd.out);
-			check_fd();
-			free(line);
+//			check_fd();
 		}
+		free(line);
 //		signal(SIGQUIT, SIG_IGN);
 	}
 	return 0;

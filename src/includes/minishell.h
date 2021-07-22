@@ -4,7 +4,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-# include <sys/types.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <unistd.h>
 # include <string.h>
@@ -19,6 +19,7 @@
 
 
 # include "../../libft/libft.h"
+# include <sys/types.h>
 #include <sys/stat.h>
 
 # define PIPE 1
