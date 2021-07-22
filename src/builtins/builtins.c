@@ -37,17 +37,17 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 			else if (!parent)
 			{
 				exec_heredoc((*reds)->value, all, pipe_fd);
-
 			}
-
 			waitpid(parent, &status, 0);
+			if (WIFEXITED(status))
+				all->vlast = WEXITSTATUS(status);
+			if (WIFSIGNALED(status) && !(all->vlast))
+				all->vlast = 128 + WTERMSIG(status);
+			if (all->vlast != EXIT_SUCCESS)
+				return (all->vlast);
 			int fd_hd = open("heredoc", O_RDWR, 0666);
 			dup2(fd_hd, fix_fd->in);
 			close(fd_hd);
-			if (WIFEXITED(status))
-				all->vlast = WEXITSTATUS(status);
-			if (WIFSIGNALED(status))
-				all->vlast = 128 + WTERMSIG(status);
 		}
 		reds++;
 
@@ -62,6 +62,9 @@ void		kill_my_daughter(int sig)
 	{
 		if (pid != -1)
 		{
+			write(1, "\n", 1);
+			rl_on_new_line();
+			rl_replace_line("", 0);
 			kill(pid, sig);
 			pid = -2;
 		}
@@ -99,7 +102,7 @@ int			exec_binary(t_all *all)
 		if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 		{
 			perror("Could not execve");
-			exit(EXIT_FAILURE);
+			exit(127);
 		}
 	}
 	else if (parent)
@@ -157,7 +160,7 @@ int			exec_in_daughter(t_all *all)
 	if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 	{
 		perror("Could not execve");
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 }
 
@@ -234,8 +237,10 @@ void		check_command(char *cmd, int *is_my, char **path, char **env)
 
 int			exec_command(t_all *all)
 {
-	if (EXIT_FAILURE == check_redirs(all->cmd->reds, &(all->proc.fix_fd), all))
-		return ((all->vlast = EXIT_FAILURE));
+	int		status;
+
+	if ((status = check_redirs(all->cmd->reds, &(all->proc.fix_fd), all)) != EXIT_SUCCESS)
+		return ((all->vlast = status));
 	if (all->cmd->command[0])
 	{
 		check_command(all->cmd->command[0], &(all->cmd->is_builtin),

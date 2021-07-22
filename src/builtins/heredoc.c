@@ -51,7 +51,7 @@ int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 		free(line);
 	}
 	if (line == NULL && !flag)
-		printf("minishell: here-doc error\n");
+		printf("minishell: here-doc delimited by EOF\n");
 	free(line);
 	close(fd);
 	exit(0);
