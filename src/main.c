@@ -67,6 +67,7 @@ void		clear_cmd(t_all *all)
 		all->cmd->reds[i] = NULL;
 	}
 	free(all->cmd->reds);
+	free(all->cmd);
 	all->cmd->reds = NULL;
 	unlink(HERE_DOC_FILE);
 }
