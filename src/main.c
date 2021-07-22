@@ -7,7 +7,6 @@
 #include <readline/history.h>
 #include "includes/minishell.h"
 
-
 void		init_struct(t_all *all, char **envp)
 {
 	all->vlast = 0;
@@ -67,8 +66,9 @@ void		clear_cmd(t_all *all)
 		all->cmd->reds[i] = NULL;
 	}
 	free(all->cmd->reds);
-	free(all->cmd);
 	all->cmd->reds = NULL;
+	free(all->cmd);
+	all->cmd = NULL;
 	unlink(HERE_DOC_FILE);
 }
 
@@ -113,31 +113,6 @@ int			iterable_init(t_all *all)
 	std_fd(SAFE_TO, &(all->proc.backup_fd));
 }
 
-void check_fd(void)
-{
-	int fd = dup(0);
-	int fd1 = dup(0);
-	int fd2 = dup(0);
-	int fd3 = dup(0);
-	int fd4 = dup(0);
-	int fd5 = dup(0);
-	int fd6 = dup(0);
-	printf("check_fd: %d\n", fd);
-	printf("check_fd: %d\n", fd1);
-	printf("check_fd: %d\n", fd2);
-	printf("check_fd: %d\n", fd3);
-	printf("check_fd: %d\n", fd4);
-	printf("check_fd: %d\n", fd5);
-	printf("check_fd: %d\n", fd6);
-	close(fd);
-	close(fd1);
-	close(fd2);
-	close(fd3);
-	close(fd4);
-	close(fd5);
-	close(fd6);
-}
-
 int			main(int argc, char** argv, char **envp)
 {
 	char	*line;
@@ -170,7 +145,10 @@ int			main(int argc, char** argv, char **envp)
 			{
 				signal(SIGINT, handler_sigint);
 				if ((is_finished = parser(&line, &all)) != -1)
+				{
+					print_all(&all);
 					exec_command(&all);
+				}
 				clear_cmd(&all);
 //				printf("status: %d\n", all.vlast);
 			}
