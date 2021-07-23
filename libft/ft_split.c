@@ -37,9 +37,9 @@ char	**make_arr(char const *s, char c)
 	return (result);
 }
 
-int		free_need(char **arr, int word)
+int	free_need(char **arr, int word)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!arr[word])

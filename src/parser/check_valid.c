@@ -1,10 +1,7 @@
 #include "../includes/minishell.h"
-int		check_symb(char **line)
+int	check_symb(char **line)
 {
-	/**
-	 * добавить проверку на не закрытые кавычки
-	 */
-	int ret;
+	int	ret;
 
 	ret = 0;
 	if (!ft_strncmp(*line, ">>", 2))
@@ -13,16 +10,15 @@ int		check_symb(char **line)
 		ret = 1;
 	else if (!ft_strncmp(*line, ">", 1))
 		ret = 1;
-	return ret;
+	return (ret);
 }
 
-int		check_valid(char *line, t_all *all)
+int	check_valid(char *line, t_all *all)
 {
 	int		i;
 	int		ret;
 
 	ret = EXIT_SUCCESS;
-
 	while (*line != '\0')
 	{
 		i = check_symb(&line);
@@ -41,7 +37,7 @@ int		check_valid(char *line, t_all *all)
 	{
 		all->vlast = ret;
 		write(1,
-			  "minishell: syntax error near unexpected token `newline'\n", 51);
+			"bash: syntax error near unexpected token `newline'\n", 51);
 	}
-	return ret;
+	return (ret);
 }

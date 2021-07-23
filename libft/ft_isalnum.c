@@ -6,7 +6,7 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/31 14:03:54 by desausag          #+#    #+#             */
-/*   Updated: 2021/07/16 11:35:51 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:33:53 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 ** @return
 */
 
-int		ft_isalnum(int c)
+int	ft_isalnum(int c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if ((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122))

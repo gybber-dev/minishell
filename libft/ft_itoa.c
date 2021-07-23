@@ -12,9 +12,9 @@
 
 #include "libft.h"
 
-int		arr_size(int n)
+int	arr_size(int n)
 {
-	int q;
+	int	q;
 
 	q = 0;
 	if (n == 0)

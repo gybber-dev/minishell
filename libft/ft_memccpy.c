@@ -6,7 +6,7 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/09 13:55:49 by desausag          #+#    #+#             */
-/*   Updated: 2020/11/10 11:12:14 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:37:17 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void	*ft_memccpy(void *destination, const void *source, int c, size_t n)
 	unsigned char	*src;
 	size_t			i;
 
-	dest = (unsigned char*)destination;
-	src = (unsigned char*)source;
+	dest = (unsigned char *) destination;
+	src = (unsigned char *) source;
 	i = 0;
 	while (i != n)
 	{
