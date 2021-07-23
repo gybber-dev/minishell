@@ -1,5 +1,20 @@
 #include "../includes/minishell.h"
 
+int	open_file_for_single_reds(t_red **reds)
+{
+	int	fd;
+
+	if ((*reds)->type == GT)
+		fd = open((*reds)->value, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	if ((*reds)->type == GT2)
+		fd = open((*reds)->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	if ((*reds)->type == LOW)
+		fd = open((*reds)->value, O_RDONLY, 0666);
+	return fd;
+}
+
+
+
 int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 {
 	int		fd;
@@ -9,27 +24,38 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 
 	while(reds && *reds)
 	{
-		if ((*reds)->type == GT)
+		if ((*reds)->type == GT || (*reds)->type == GT2 || (*reds)->type == LOW)
 		{
-			if ((fd = open((*reds)->value, O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1)
+			fd = open_file_for_single_reds(reds);
+			if (fd == -1)
 				return (ft_perror("bash", EXIT_FAILURE));
-			dup2(fd, fix_fd->out);
+			if ((*reds)->type == GT || (*reds)->type == GT2)
+				dup2(fd, fix_fd->out);
+			if ((*reds)->type == LOW)
+				dup2(fd, fix_fd->in);
 			close(fd);
 		}
-		if ((*reds)->type == GT2)
-		{
-			if ((fd = open((*reds)->value, O_WRONLY | O_CREAT | O_APPEND, 0666)) == -1)
-				return (ft_perror("bash", EXIT_FAILURE));
-			dup2(fd, fix_fd->out);
-			close(fd);
-		}
-		if ((*reds)->type == LOW)
-		{
-			if ((fd = open((*reds)->value, O_RDONLY, 0666)) == -1)
-				return (ft_perror("minishell", EXIT_FAILURE));
-			dup2(fd, fix_fd->in);
-			close(fd);
-		}
+//		if ((*reds)->type == GT)
+//		{
+//			if ((fd = open((*reds)->value, O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1)
+//				return (ft_perror("bash", EXIT_FAILURE));
+//			dup2(fd, fix_fd->out);
+//			close(fd);
+//		}
+//		if ((*reds)->type == GT2)
+//		{
+//			if ((fd = open((*reds)->value, O_WRONLY | O_CREAT | O_APPEND, 0666)) == -1)
+//				return (ft_perror("bash", EXIT_FAILURE));
+//			dup2(fd, fix_fd->out);
+//			close(fd);
+//		}
+//		if ((*reds)->type == LOW)
+//		{
+//			if ((fd = open((*reds)->value, O_RDONLY, 0666)) == -1)
+//				return (ft_perror("minishell", EXIT_FAILURE));
+//			dup2(fd, fix_fd->in);
+//			close(fd);
+//		}
 		if ((*reds)->type == LOW2)
 		{
 			signal(SIGQUIT, SIG_IGN);
@@ -52,7 +78,7 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 					all->vlast = 128 + WTERMSIG(status);
 				if (all->vlast != EXIT_SUCCESS)
 					return (all->vlast);
-				int fd_hd = open("heredoc", O_RDWR, 0666);
+				int fd_hd = open(HERE_DOC_FILE, O_RDWR, 0666);
 				dup2(fd_hd, fix_fd->in);
 				close(fd_hd);
 			}
