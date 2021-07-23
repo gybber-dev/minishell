@@ -82,7 +82,6 @@ typedef struct s_all
 	t_cmd		*cmd;
 	char		**envs;
 	t_proc		proc;
-	int			vpid;
 	int			vlast;
 	int 		is_pipel;
 }				t_all;
@@ -128,7 +127,7 @@ int				exec_heredoc(char *breaker, t_all *all, int *pipe_fd);
 void 			handler_sigint(int sign);
 void	 		read_from_write_to(int from, int to);
 void			check_quotes(char head, t_brack *br);
-void handler_sigint2(int sign);
-void	handle_sigquit(int sig);
-pid_t			g_pid;
+int			get_child_status(int status);
+pid_t			g_status;
+void sigint_handler(int sig_num);
 #endif

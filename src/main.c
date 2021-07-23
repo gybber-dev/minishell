@@ -7,10 +7,59 @@
 #include <readline/history.h>
 #include "includes/minishell.h"
 
+
+void sigint_handler(int sig_num)
+{
+	int stat_loc;
+
+	wait(&stat_loc);
+//	write(1, "\n", 1);
+
+//	printf("by signal? : %d\n", WIFSIGNALED(stat_loc));
+//	if(WIFSIGNALED(stat_loc))
+//	printf("sig: %d\nstat_loc: %d", sig_num, get_child_status(stat_loc));
+	if (stat_loc == sig_num)
+	{
+		if (sig_num == SIGINT)
+		{
+			write(1, "\n", 1);
+			rl_on_new_line();
+			rl_replace_line("", 0);
+		}
+		else if (sig_num == SIGQUIT)
+			ft_putstr_fd("Quit: 3\n", 2);
+//		g_mini.status_set = 1;
+		g_status = 128 + sig_num;
+	}
+	else if (sig_num == SIGINT)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		g_status = 1;
+//		if (hd)
+//		{
+//			kill(hd, SIGINT);
+//			hd = 0;
+//		}
+
+	}
+//	printf("check: %d", g_status);
+}
+
+void
+init_signals(void)
+{
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, sigint_handler);
+}
+
+
+
 void		init_struct(t_all *all, char **envp)
 {
 	all->vlast = 0;
-	all->vpid = 0;
 	all->envs = copy_arrays_2x(envp);
 }
 
@@ -88,9 +137,11 @@ int			main(int argc, char** argv, char **envp)
 	int		is_finished;
 	struct termios term;
 
+	g_status = 0;
 	tcgetattr(0, &term);
 	term.c_lflag &= ~(ECHOCTL);
 	tcsetattr(0, TCSANOW, &term);
+	init_signals();
 	init_struct(&all, envp);
 	while (1)
 	{
@@ -102,25 +153,24 @@ int			main(int argc, char** argv, char **envp)
 		}
 		else if (*line && !check_valid(line, &all))
 		{
-
 			add_history(line);
 			iterable_init(&all);
 			is_finished = 1;
 			while(is_finished > 0)
 			{
+//				printf("before: %d", all.vlast);
 				if ((is_finished = parser(&line, &all)) != -1)
 				{
+
 					exec_command(&all);
-					if (all.vlast == 131)
-						write(1, "Quit (core dumped)\n", 19);
-					if (all.vlast == 130 && !g_pid)
-					{
-						write(1, "\n", 1);
-					}
-					g_pid = 0;
 				}
+				if (!g_status)
+					g_status = all.vlast;
 				clear_cmd(&all);
+//				printf("statuasdfasdfadsfs: %d\n", all.vlast);
 			}
+//			printf("out_stasadfasdfasdfat: %d\n", all.vlast);
+//			all.vlast = g_status;
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);
 			close(all.proc.backup_fd.out);

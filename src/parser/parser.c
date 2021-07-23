@@ -2,7 +2,6 @@
 
 int	init_cmd(t_cmd **cmd)
 {
-	g_pid = 0;
 	*cmd = (t_cmd *) malloc(sizeof(t_cmd));
 	if (!(*cmd))
 		return (-1);
@@ -187,7 +186,8 @@ void	quest_func(char **n_line, t_all *all)
 	char	*tmp;
 
 	prev_head = *n_line;
-	tmp = ft_itoa(all->vlast);
+//	tmp = ft_itoa(all->vlast);
+	tmp = ft_itoa(g_status);
 	if (!(*n_line = ft_strjoin(prev_head, tmp)))
 		*n_line = ft_strdup(tmp);
 	free_and_return(&tmp, 1);
@@ -318,6 +318,8 @@ int	parser(char **line, t_all *all)
 	all->cmd = read_cmd(line, cmd);
 	if (all->cmd->spec)
 		all->is_pipel = 1;
+	if (all->is_pipel == 0)
+		g_status = 0;
 	if (all->cmd->err)
 		return (-1);
 	return (all->cmd->spec);

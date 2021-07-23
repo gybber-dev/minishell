@@ -37,7 +37,6 @@ int	get_lines_from_input(t_all *all, t_red **reds)
 		exec_heredoc((*reds)->value, all, pipe_fd);
 	else if (parent > 0)
 	{
-		g_pid = 1;
 		waitpid(parent, &status, 0);
 		return (get_child_status(status));
 	}
@@ -67,6 +66,7 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 		}
 		if ((*reds)->type == LOW2)
 		{
+
 //			all->vlast =  get_lines_from_input(all, reds);
 			if ((parent = fork()) == -1)
 				all->vlast = 71;
@@ -74,7 +74,6 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 				exec_heredoc((*reds)->value, all, pipe_fd);
 			else if (parent > 0)
 			{
-				g_pid = 1;
 				waitpid(parent, &status, 0);
 				all->vlast = get_child_status(status);
 
@@ -211,7 +210,6 @@ int			exec_piple_command(t_all *all)
 	}
 	else if (parent > 0)
 	{
-		g_pid = 1;
 		close(fd[1]);
 		dup2(fd[0], all->proc.fix_fd.in);
 		waitpid(parent, &status, 0);
@@ -271,5 +269,4 @@ void	exec_command(t_all *all)
 		else
 			exec_piple_command(all);
 	}
-	all->vlast = EXIT_SUCCESS;
 }
