@@ -130,6 +130,5 @@ void	 		read_from_write_to(int from, int to);
 void			check_quotes(char head, t_brack *br);
 void handler_sigint2(int sign);
 void	handle_sigquit(int sig);
-pid_t		pid;
-char 		flag;
+pid_t			g_pid;
 #endif

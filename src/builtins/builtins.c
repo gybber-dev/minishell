@@ -42,7 +42,7 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 			}
 			else if (parent > 0)
 			{
-				pid = parent;
+				g_pid = 1;
 				signal(SIGINT, SIG_IGN);
 				waitpid(parent, &status, 0);
 				signal(SIGINT, handler_sigint);
@@ -115,9 +115,7 @@ int			exec_binary(t_all *all)
 	else if (parent)
 	{
 		signal(SIGINT, SIG_IGN);
-		pid = parent;
 		waitpid(parent, &status, 0);
-//		pid = -2;
 		signal(SIGINT, handler_sigint);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
@@ -203,8 +201,8 @@ int			exec_piple_command(t_all *all)
 	}
 	else if (parent > 0)
 	{
+		g_pid = 1;
 		close(fd[1]);
-		pid = parent;
 		dup2(fd[0], all->proc.fix_fd.in);
 		waitpid(parent, &status, 0);
 		close(fd[0]);

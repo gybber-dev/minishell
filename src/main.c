@@ -16,42 +16,15 @@ void		init_struct(t_all *all, char **envp)
 
 void handler_sigint(int sign)
 {
+//	write(1, "o", 1);
 	if (sign == SIGINT)
 	{
-		write(1, "0\n", 2);
+		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
 }
-
-void	handle_sigquit(int sig)
-{
-//	printf("in_Sigquit\n");
-	write(1, "ss", 2);
-	if (sig == SIGQUIT && pid != -2)
-	{
-//		printf("Sigquit\n");
-//		if (g_data.is_fork == 1)
-//		{
-			write(1, "Quit (core dumped)\n", 19);
-//			pid = 0;
-//			rl_on_new_line();
-//			rl_replace_line("", 0);
-
-//		}
-//		else
-//		{
-			rl_on_new_line();
-			rl_replace_line("", 0);
-//			sleep(2);
-			kill(pid, SIGINT);
-//			pid = -2;
-//			exit(131);
-//		}
-	}
-}
-
 
 void		clear_cmd(t_all *all)
 {
@@ -152,21 +125,22 @@ int			main(int argc, char** argv, char **envp)
 				signal(SIGINT, handler_sigint);
 				if ((is_finished = parser(&line, &all)) != -1)
 				{
-//					print_all(&all);
 					exec_command(&all);
 					if (all.vlast == 131)
-						printf("Quit (core dumped)\n");
+						write(1, "Quit (core dumped)\n", 19);
+					if (all.vlast == 130 && !g_pid)
+					{
+						write(1, "1\n", 2);
+					}
+					g_pid = 0;
 				}
 				clear_cmd(&all);
-//				printf("status: %d\n", all.vlast);
 			}
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);
 			close(all.proc.backup_fd.out);
-//			check_fd();
 		}
 		free(line);
-//		signal(SIGINT, handler_sigint);
 	}
 	return 0;
 }

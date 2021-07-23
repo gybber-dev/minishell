@@ -20,11 +20,12 @@ void handler_sigint2(int sign)
 	{
 //		printf("hel: %d", flag);
 //		raise(SIG);
-		write(1, "2\n", 2);
+		write(1, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 //		rl_redisplay();
 //		flag = 1;
+		g_pid = 1;
 		exit(130);
 	}
 }
@@ -35,14 +36,11 @@ int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 	char	*line;
 	int		fd = open("heredoc", O_CREAT | O_RDWR | O_TRUNC, 0666);
 
-//	if (init_heredoc(fd) != 0)
-//		return (-1);
 	signal(SIGINT, handler_sigint2);
 	while (1)
 	{
-//		signal(SIGINT, SIG_DFL);
 		line = readline("> ");
-		if (line == NULL || ft_strncmp(line, breaker, ft_strlen(line) + 1) == 0 || flag)
+		if (line == NULL || ft_strncmp(line, breaker, ft_strlen(line) + 1) == 0)
 		{
 			break ;
 		}
@@ -52,7 +50,7 @@ int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 		write(fd, "\n", 1);
 		free(line);
 	}
-	if (line == NULL && !flag)
+	if (line == NULL)
 		printf("minishell: here-doc delimited by EOF\n");
 	free(line);
 	close(fd);
