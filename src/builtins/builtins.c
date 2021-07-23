@@ -177,6 +177,7 @@ void		std_fd(int opt, t_fd *fd)
 
 int			exec_in_daughter(t_all *all)
 {
+	signal(SIGQUIT, SIG_DFL);
 	if (all->cmd->is_builtin)
 	{
 		exec_builtin(all);
