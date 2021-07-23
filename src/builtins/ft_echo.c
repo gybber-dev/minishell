@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int			check_flag_n(char *command_1)
+int		check_flag_n(char *command_1)
 {
 	if (command_1 && (*command_1 == '-') && (*(++command_1) == 'n'))
 	{
@@ -17,17 +17,24 @@ int			check_flag_n(char *command_1)
 
 int			ft_echo(char **command, char **env)
 {
-	int		flag_n;
+	int		flag;
+	int		tmp;
 
-	if ((flag_n = check_flag_n(*(command + 1))) == 1)
+	flag = 0;
+	tmp = 0;
+	while ((tmp = check_flag_n(*(command + 1))) == 1)
+	{
+		if (tmp == 1)
+			flag = 1;
 		command++;
+	}
 	while(*(++command))
 	{
 		printf("%s", *command);
 		if (*(command + 1))
 			printf(" ");
 	}
-	if (!flag_n)
+	if (!flag)
 		printf("\n");
 	return 0;
 }

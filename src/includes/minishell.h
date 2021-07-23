@@ -4,7 +4,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-# include <sys/types.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <unistd.h>
 # include <string.h>
@@ -19,6 +19,7 @@
 
 
 # include "../../libft/libft.h"
+# include <sys/types.h>
 #include <sys/stat.h>
 
 # define PIPE 1
@@ -31,7 +32,7 @@
 
 # define SAFE_TO 1
 # define TAKE_FROM 0
-
+# define HERE_DOC_FILE ".here_doc"
 typedef struct	s_fd
 {
 	int			in;
@@ -65,6 +66,7 @@ typedef struct s_cmd
 	t_red		**reds;
 	char		*path;
 	int			is_builtin;
+	int			err;
 }				t_cmd;
 
 /**
@@ -87,6 +89,7 @@ typedef struct s_all
 
 
 int 			parser(char **line, t_all *all);
+void			unc_envs(char **line, t_all *all);
 void			lineaddback(char ***src,char *addback);
 void			clear_arr_2x(char ***arr);
 void			print_array_2x(char **arr);
@@ -96,7 +99,7 @@ char			*find_binary(char *cmnd, char *paths);
 void			init_struct(t_all *all, char **envp);
 int				exec_command(t_all *all);
 void			std_fd(int opt, t_fd *fd);
-int				check_fd(void);
+void				check_fd(void);
 int				processor(char *envp[]);
 int				is_builtin(char *command);
 int 			ft_echo(char **command, char **env);
@@ -121,4 +124,11 @@ int				free_and_return(char **mem, int res);
 void			add_tonline(char **n_line, char *prev_head, char **line);
 int				check_symb(char **line);
 int				check_valid(char *line, t_all *all);
+int				exec_heredoc(char *breaker, t_all *all, int *pipe_fd);
+void 			handler_sigint(int sign);
+void	 		read_from_write_to(int from, int to);
+void			check_quotes(char head, t_brack *br);
+void handler_sigint2(int sign);
+void	handle_sigquit(int sig);
+pid_t			g_pid;
 #endif

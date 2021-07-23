@@ -1,8 +1,11 @@
 #include "../includes/minishell.h"
 
-int			check_redirs(t_red **reds, t_fd *fix_fd)
+int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 {
 	int		fd;
+	pid_t	parent;
+	int		pipe_fd[2];
+	int		status;
 
 	while(reds && *reds)
 	{
@@ -23,14 +26,58 @@ int			check_redirs(t_red **reds, t_fd *fix_fd)
 		if ((*reds)->type == LOW)
 		{
 			if ((fd = open((*reds)->value, O_RDONLY, 0666)) == -1)
-				return (ft_perror("bash", EXIT_FAILURE));
+				return (ft_perror("minishell", EXIT_FAILURE));
 			dup2(fd, fix_fd->in);
 			close(fd);
 		}
+		if ((*reds)->type == LOW2)
+		{
+			signal(SIGQUIT, SIG_IGN);
+			if ((parent = fork()) == -1)
+				all->vlast = 71;
+			else if (!parent)
+			{
+
+				exec_heredoc((*reds)->value, all, pipe_fd);
+			}
+			else if (parent > 0)
+			{
+				g_pid = 1;
+				signal(SIGINT, SIG_IGN);
+				waitpid(parent, &status, 0);
+				signal(SIGINT, handler_sigint);
+				if (WIFEXITED(status))
+					all->vlast = WEXITSTATUS(status);
+				if (WIFSIGNALED(status) && !(all->vlast))
+					all->vlast = 128 + WTERMSIG(status);
+				if (all->vlast != EXIT_SUCCESS)
+					return (all->vlast);
+				int fd_hd = open("heredoc", O_RDWR, 0666);
+				dup2(fd_hd, fix_fd->in);
+				close(fd_hd);
+			}
+		}
 		reds++;
+
 	}
 	return 0;
 }
+
+//void		kill_my_daughter(int sig)
+//{
+//	if (sig == SIGINT && pid != -2)
+//	{
+//		if (pid != -1)
+//		{
+//			ft_putnbr_fd(pid, 1);
+//			write(1, "k\n", 2);
+//			rl_on_new_line();
+//			rl_replace_line("", 0);
+//			kill(pid, sig);
+//			pid = -2;
+//		}
+//	}
+//}
 
 int			is_builtin(char *command)
 {
@@ -58,15 +105,18 @@ int			exec_binary(t_all *all)
 		return (ft_perror("fork", 71));
 	else if (!parent)
 	{
+		signal(SIGQUIT, SIG_DFL);
 		if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 		{
 			perror("Could not execve");
-			exit(EXIT_FAILURE);
+			exit(127);
 		}
 	}
 	else if (parent)
 	{
+		signal(SIGINT, SIG_IGN);
 		waitpid(parent, &status, 0);
+		signal(SIGINT, handler_sigint);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
 		if (WIFSIGNALED(status))
@@ -116,7 +166,7 @@ int			exec_in_daughter(t_all *all)
 	if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 	{
 		perror("Could not execve");
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
 }
 
@@ -151,6 +201,7 @@ int			exec_piple_command(t_all *all)
 	}
 	else if (parent > 0)
 	{
+		g_pid = 1;
 		close(fd[1]);
 		dup2(fd[0], all->proc.fix_fd.in);
 		waitpid(parent, &status, 0);
@@ -193,8 +244,10 @@ void		check_command(char *cmd, int *is_my, char **path, char **env)
 
 int			exec_command(t_all *all)
 {
-	if (EXIT_FAILURE == check_redirs(all->cmd->reds, &(all->proc.fix_fd)))
-		return ((all->vlast = EXIT_FAILURE));
+	int		status;
+
+	if ((status = check_redirs(all->cmd->reds, &(all->proc.fix_fd), all)) != EXIT_SUCCESS)
+		return ((all->vlast = status));
 	if (all->cmd->command[0])
 	{
 		check_command(all->cmd->command[0], &(all->cmd->is_builtin),

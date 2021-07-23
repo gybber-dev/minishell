@@ -1,28 +1,36 @@
 #include "../includes/minishell.h"
 
-void		init_cmd(t_cmd **cmd)
+int		init_cmd(t_cmd **cmd)
 {
-
+	g_pid = 0;
+	if (!(*cmd = (t_cmd *)malloc(sizeof(t_cmd))))
+		return (-1);
 	(*cmd)->is_builtin = 0;
 	(*cmd)->path = NULL;
-	(*cmd)->command = (char **)malloc(sizeof(char *));
-	(*cmd)->reds = (t_red **)malloc(sizeof(t_red *));
+	if (!((*cmd)->command = (char **)malloc(sizeof(char *))))
+		return (-1);
+	if (!((*cmd)->reds = (t_red **)malloc(sizeof(t_red *))))
+		return (-1);
 	(*cmd)->reds[0] = NULL;
 	(*cmd)->command[0] = NULL;
+	(*cmd)->err = 0;
+	return (0);
 }
 
-void		add_tred(t_red ***reds, char *value, int type)
+void		add_tred(t_red ***reds, char *value, int type, t_cmd *cmd)
 {
 	int		i;
 	t_red	**n_red;
 	t_red	*one_red;
 
-	one_red = (t_red *)malloc(sizeof(t_red));
+	if (!(one_red = (t_red *)malloc(sizeof(t_red))))
+		cmd->err = 1;
 	*one_red = (t_red){type, value};
 	i = 0;
 	while (*(*reds + i) != NULL)
 		i++;
-	n_red = (t_red **)malloc((i += 2) * sizeof(t_red *));
+	if (!(n_red = (t_red **)malloc((i += 2) * sizeof(t_red *))))
+		cmd->err = 1;
 	n_red[--i] = NULL;
 	n_red[--i] = one_red;
 	while(--i > -1)
@@ -73,17 +81,20 @@ void		read_redirs(t_cmd *cmd, char **prev_head, char **head)
 		*(*head)++ = '\0';
 	if (**head == '<' || **head == '>')
 		add_tred(&(cmd->reds), ft_substr(*prev_head, 0,
-										 *head - *prev_head), var);
+										 *head - *prev_head), var, cmd);
 	else
-		add_tred(&(cmd->reds), ft_strdup(*prev_head), var);
+		add_tred(&(cmd->reds), ft_strdup(*prev_head), var, cmd);
 	*prev_head = *head;
 }
 
-void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
+void		add_cmd1(t_cmd *cmd, char **prev_head, char **head)
 {
 	char	*tmp;
+	char 	*n_line;
 
 	next_head(head, prev_head);
+	if (**head == '\'' || **head == '\"')
+		n_line = ft_substr(*prev_head, 0, (int)(*head - *prev_head));
 	if (**head != '\0' && **head != '<' && **head != '>')
 		*(*head)++ = '\0';
 	if (**head == '<' || **head == '>')
@@ -97,6 +108,63 @@ void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
 	*prev_head = *head;
 }
 
+void		append_back(char *dst, char c)
+{
+	char	*tmp;
+
+	tmp = dst;
+	while (*tmp)
+		tmp++;
+	*tmp = c;
+}
+
+char		*copy_until_to_end(char stop, char *dst, char *src)
+{
+	while(*dst)
+		dst++;
+	while (!(*src == '\0' || *src == stop))
+	{
+		*dst = *src;
+		src++;
+		dst++;
+	}
+	return (src);
+}
+
+void		add_cmd(t_cmd *cmd, char **prev_head, char **head)
+{
+	char 	*n_line;
+	t_brack	brack;
+
+	brack.single = 0;
+	brack.twice = 0;
+	while(**head == ' ')
+		(*head)++;
+	*prev_head = *head;
+	while (!(**head == '\0' || (ft_strchr("> <", **head) && !brack.twice && !brack.single)))
+	{
+		check_quotes(**head, &brack);
+		(*head)++;
+	}
+	if (!(n_line = ft_calloc((*head - *prev_head + 1), sizeof(char))))
+		cmd->err = 1;
+	while (*prev_head != *head)
+	{
+		if (**prev_head == '\'' || **prev_head == '\"')
+		{
+			*prev_head = copy_until_to_end(**prev_head, n_line, (*prev_head + 1));
+		}
+		else
+		{
+			append_back(n_line, **prev_head);
+		}
+		(*prev_head)++;
+	}
+	lineaddback(&(cmd->command), n_line);
+	free(n_line);
+}
+
+
 void		check_end(t_cmd *cmd, char **head)
 {
 	if (!ft_strncmp(*head, "||", 2) && (*head += 2))
@@ -109,21 +177,18 @@ void		check_end(t_cmd *cmd, char **head)
 		cmd->spec = 0;
 }
 
-t_cmd		*read_cmd(char **line)
+t_cmd		*read_cmd(char **line, t_cmd *cmd)
 {
-	t_cmd	*cmd;
 	char	*head;
 	char	*prev_head;
 
-	cmd = (t_cmd *)malloc(sizeof(t_cmd));
-	init_cmd(&cmd);
 	head = *line;
 	prev_head = head;
 	while (*head != '\0' && *head != '|' && *head != '&')
 	{
 		if (*head == '>' || *head == '<')
 			read_redirs(cmd, &prev_head, &head);
-		else if (*head == '\'' || *head == '\"' || *head)
+		else if (*head)
 			add_cmd(cmd, &prev_head, &head);
 		else
 			head++;
@@ -248,7 +313,7 @@ void		unc_envs(char **line, t_all *all)
 				with_dolr(&head, &n_line, &prev_head);
 			else
 				add_tonline(&n_line, prev_head, line);
-			get_dollar(&head, &n_line, all);//TODO
+			get_dollar(&head, &n_line, all);
 			prev_head = head;
 		}
 		else
@@ -263,14 +328,18 @@ void		unc_envs(char **line, t_all *all)
 int 	parser(char **line, t_all *all)
 {
 	char	*head;
+	t_cmd	*cmd;
 
+	if (init_cmd(&cmd))
+		return (-1);
 	head = *line;
-	if (!(*line = ft_strtrim((const char *)(head), " ")))
-		exit(EXIT_FAILURE);
+	*line = ft_strtrim((const char *)(head), " ");
 	free(head);
 	unc_envs(line, all);
-	all->cmd = read_cmd(line);
+	all->cmd = read_cmd(line, cmd);
 	if (all->cmd->spec)
 		all->is_pipel = 1;
+	if (all->cmd->err)
+		return (-1);
 	return all->cmd->spec;
 }

@@ -16,6 +16,7 @@ void		init_struct(t_all *all, char **envp)
 
 void handler_sigint(int sign)
 {
+//	write(1, "o", 1);
 	if (sign == SIGINT)
 	{
 		write(1, "\n", 1);
@@ -24,27 +25,6 @@ void handler_sigint(int sign)
 		rl_redisplay();
 	}
 }
-
-void	handle_sigquit(int sig)
-{
-//	printf("in_Sigquit\n");
-	if (sig == SIGQUIT)
-	{
-//		printf("Sigquit\n");
-//		if (g_data.is_fork == 1)
-//		{
-			printf("Quit (core dumped)\n");
-//			rl_on_new_line();
-//			rl_replace_line("", 0);
-//		}
-//		else
-//		{
-			rl_on_new_line();
-			rl_replace_line("", 0);
-//		}
-	}
-}
-
 
 void		clear_cmd(t_all *all)
 {
@@ -67,6 +47,9 @@ void		clear_cmd(t_all *all)
 	}
 	free(all->cmd->reds);
 	all->cmd->reds = NULL;
+	free(all->cmd);
+	all->cmd = NULL;
+	unlink(HERE_DOC_FILE);
 }
 
 void		print_all(t_all *all)
@@ -121,37 +104,43 @@ int			main(int argc, char** argv, char **envp)
 	term.c_lflag &= ~(ECHOCTL);
 	tcsetattr(0, TCSANOW, &term);
 	signal(SIGINT, handler_sigint);
-//	signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	init_struct(&all, envp);
 	while (1)
 	{
-		signal(SIGQUIT, SIG_IGN);
 		line = readline("minishell: ");
 		if (!line)
 		{
-			printf("\033[A\nminishell: exit\n");
+			printf("\033[Aminishell: exit\n");
 			exit(EXIT_SUCCESS);
 		}
 		else if (*line && !check_valid(line, &all))
 		{
-			signal(SIGQUIT, handle_sigquit);
+
 			add_history(line);
 			iterable_init(&all);
 			is_finished = 1;
-			while(is_finished)
+			while(is_finished > 0)
 			{
-				is_finished = parser(&line, &all);
-//				print_all(&all);
-				exec_command(&all);
+				signal(SIGINT, handler_sigint);
+				if ((is_finished = parser(&line, &all)) != -1)
+				{
+					exec_command(&all);
+					if (all.vlast == 131)
+						write(1, "Quit (core dumped)\n", 19);
+					if (all.vlast == 130 && !g_pid)
+					{
+						write(1, "1\n", 2);
+					}
+					g_pid = 0;
+				}
 				clear_cmd(&all);
-				printf("status: %d\n", all.vlast);
 			}
 			std_fd(TAKE_FROM, &(all.proc.backup_fd));
 			close(all.proc.backup_fd.in);
 			close(all.proc.backup_fd.out);
-			free(line);
 		}
-//		signal(SIGQUIT, SIG_IGN);
+		free(line);
 	}
 	return 0;
 }
