@@ -113,9 +113,8 @@ char	*copy_until_to_end(char stop, char *dst, char *src)
 	return (src);
 }
 
-void	add_cmd(t_cmd *cmd, char **prev_head, char **head)
+void	next_cmd(char **head, char **prev_head, char **n_line, t_cmd *cmd)
 {
-	char	*n_line;
 	t_brack	brack;
 
 	brack.single = 0;
@@ -124,13 +123,20 @@ void	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 		(*head)++;
 	*prev_head = *head;
 	while (!(**head == '\0' || (ft_strchr("> <", **head)
-				&& !brack.twice && !brack.single)))
+								&& !brack.twice && !brack.single)))
 	{
 		check_quotes(**head, &brack);
 		(*head)++;
 	}
-	if (!(n_line = ft_calloc((*head - *prev_head + 1), sizeof(char))))
+	if (!(*n_line = ft_calloc((*head - *prev_head + 1), sizeof(char))))
 		cmd->err = 1;
+}
+
+void	add_cmd(t_cmd *cmd, char **prev_head, char **head)
+{
+	char	*n_line;
+
+	next_cmd(head, prev_head, &n_line, cmd);
 	while (*prev_head != *head)
 	{
 		if (**prev_head == '\'' || **prev_head == '\"')
