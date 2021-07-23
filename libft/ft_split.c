@@ -6,7 +6,7 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/15 11:57:51 by desausag          #+#    #+#             */
-/*   Updated: 2020/11/19 14:06:19 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:59:09 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ char	**make_arr(char const *s, char c)
 	return (result);
 }
 
-int		free_need(char **arr, int word)
+int	free_need(char **arr, int word)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!arr[word])

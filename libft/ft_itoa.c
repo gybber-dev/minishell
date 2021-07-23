@@ -6,15 +6,15 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/14 14:32:23 by desausag          #+#    #+#             */
-/*   Updated: 2020/11/19 14:06:19 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:59:09 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		arr_size(int n)
+int	arr_size(int n)
 {
-	int q;
+	int	q;
 
 	q = 0;
 	if (n == 0)

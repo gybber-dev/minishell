@@ -6,7 +6,7 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/11/09 12:10:42 by desausag          #+#    #+#             */
-/*   Updated: 2020/11/09 12:56:29 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:59:09 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	ft_bzero(void *s, size_t n)
 {
 	unsigned char	*p;
 
-	p = (unsigned char*)s;
+	p = (unsigned char *) s;
 	while (n--)
 	{
 		*p = 0;

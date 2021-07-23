@@ -6,15 +6,15 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/31 14:38:24 by desausag          #+#    #+#             */
-/*   Updated: 2020/10/31 14:45:20 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:59:09 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_isprint(int c)
+int	ft_isprint(int c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (c >= 32 && c <= 126)

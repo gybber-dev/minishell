@@ -6,13 +6,13 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/31 11:25:04 by desausag          #+#    #+#             */
-/*   Updated: 2020/11/06 22:12:18 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:59:09 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_strncmp(const char *s1, const char *s2, size_t c)
+int	ft_strncmp(const char *s1, const char *s2, size_t c)
 {
 	size_t	i;
 	int		r;

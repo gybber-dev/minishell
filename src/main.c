@@ -130,7 +130,7 @@ int			main(int argc, char** argv, char **envp)
 						write(1, "Quit (core dumped)\n", 19);
 					if (all.vlast == 130 && !g_pid)
 					{
-						write(1, "1\n", 2);
+						write(1, "\n", 1);
 					}
 					g_pid = 0;
 				}

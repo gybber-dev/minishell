@@ -6,15 +6,15 @@
 /*   By: desausag <desausag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/31 14:26:33 by desausag          #+#    #+#             */
-/*   Updated: 2020/11/04 15:49:28 by desausag         ###   ########.fr       */
+/*   Updated: 2021/07/23 14:59:09 by desausag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_isascii(int ch)
+int	ft_isascii(int ch)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (ch >= 0 && ch <= 127)
