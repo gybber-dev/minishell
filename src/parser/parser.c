@@ -3,7 +3,7 @@
 int		init_cmd(t_cmd **cmd)
 {
 	pid = -2;
-//	flag = 0;
+	flag = '0';
 	if (!(*cmd = (t_cmd *)malloc(sizeof(t_cmd))))
 		return (-1);
 	(*cmd)->is_builtin = 0;

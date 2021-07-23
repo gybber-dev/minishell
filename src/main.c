@@ -28,19 +28,26 @@ void handler_sigint(int sign)
 void	handle_sigquit(int sig)
 {
 //	printf("in_Sigquit\n");
-	if (sig == SIGQUIT)
+	write(1, "ss", 2);
+	if (sig == SIGQUIT && pid != -2)
 	{
 //		printf("Sigquit\n");
 //		if (g_data.is_fork == 1)
 //		{
-			printf("Quit (core dumped)\n");
+			write(1, "Quit (core dumped)\n", 19);
+//			pid = 0;
 //			rl_on_new_line();
 //			rl_replace_line("", 0);
+
 //		}
 //		else
 //		{
 			rl_on_new_line();
 			rl_replace_line("", 0);
+//			sleep(2);
+			kill(pid, SIGINT);
+//			pid = -2;
+//			exit(131);
 //		}
 	}
 }
@@ -124,15 +131,14 @@ int			main(int argc, char** argv, char **envp)
 	term.c_lflag &= ~(ECHOCTL);
 	tcsetattr(0, TCSANOW, &term);
 	signal(SIGINT, handler_sigint);
-//	signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	init_struct(&all, envp);
 	while (1)
 	{
-		signal(SIGQUIT, SIG_IGN);
 		line = readline("minishell: ");
 		if (!line)
 		{
-			printf("\033[A\nminishell: exit\n");
+			printf("\033[Aminishell: exit\n");
 			exit(EXIT_SUCCESS);
 		}
 		else if (*line && !check_valid(line, &all))
@@ -148,6 +154,8 @@ int			main(int argc, char** argv, char **envp)
 				{
 //					print_all(&all);
 					exec_command(&all);
+					if (all.vlast == 131)
+						printf("Quit (core dumped)\n");
 				}
 				clear_cmd(&all);
 //				printf("status: %d\n", all.vlast);
@@ -158,7 +166,7 @@ int			main(int argc, char** argv, char **envp)
 //			check_fd();
 		}
 		free(line);
-//		signal(SIGQUIT, SIG_IGN);
+//		signal(SIGINT, handler_sigint);
 	}
 	return 0;
 }

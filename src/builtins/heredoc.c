@@ -18,13 +18,14 @@ void handler_sigint2(int sign)
 {
 	if (sign == SIGINT)
 	{
-		printf("hel: %d", flag);
+//		printf("hel: %d", flag);
 //		raise(SIG);
-		write(1, "\n", 1);
+		write(1, "2\n", 2);
 		rl_on_new_line();
 		rl_replace_line("", 0);
-		rl_redisplay();
-		flag = 1;
+//		rl_redisplay();
+//		flag = 1;
+		exit(130);
 	}
 }
 
@@ -36,9 +37,10 @@ int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 
 //	if (init_heredoc(fd) != 0)
 //		return (-1);
+	signal(SIGINT, handler_sigint2);
 	while (1)
 	{
-		signal(SIGINT, SIG_DFL);
+//		signal(SIGINT, SIG_DFL);
 		line = readline("> ");
 		if (line == NULL || ft_strncmp(line, breaker, ft_strlen(line) + 1) == 0 || flag)
 		{

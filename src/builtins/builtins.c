@@ -32,18 +32,20 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 		}
 		if ((*reds)->type == LOW2)
 		{
+			signal(SIGQUIT, SIG_IGN);
 			if ((parent = fork()) == -1)
 				all->vlast = 71;
 			else if (!parent)
 			{
+
 				exec_heredoc((*reds)->value, all, pipe_fd);
 			}
 			else if (parent > 0)
 			{
 				pid = parent;
-				signal(SIGINT, kill_my_daughter);
 				signal(SIGINT, SIG_IGN);
 				waitpid(parent, &status, 0);
+				signal(SIGINT, handler_sigint);
 				if (WIFEXITED(status))
 					all->vlast = WEXITSTATUS(status);
 				if (WIFSIGNALED(status) && !(all->vlast))
@@ -61,22 +63,21 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 	return 0;
 }
 
-
-void		kill_my_daughter(int sig)
-{
-	if (sig == SIGINT && pid != -2)
-	{
-		if (pid != -1)
-		{
-			ft_putnbr_fd(pid, 1);
-			write(1, "k\n", 2);
-			rl_on_new_line();
-			rl_replace_line("", 0);
-			kill(pid, sig);
-			pid = -2;
-		}
-	}
-}
+//void		kill_my_daughter(int sig)
+//{
+//	if (sig == SIGINT && pid != -2)
+//	{
+//		if (pid != -1)
+//		{
+//			ft_putnbr_fd(pid, 1);
+//			write(1, "k\n", 2);
+//			rl_on_new_line();
+//			rl_replace_line("", 0);
+//			kill(pid, sig);
+//			pid = -2;
+//		}
+//	}
+//}
 
 int			is_builtin(char *command)
 {
@@ -104,7 +105,6 @@ int			exec_binary(t_all *all)
 		return (ft_perror("fork", 71));
 	else if (!parent)
 	{
-		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 		{
@@ -114,9 +114,10 @@ int			exec_binary(t_all *all)
 	}
 	else if (parent)
 	{
+		signal(SIGINT, SIG_IGN);
 		pid = parent;
-		signal(SIGINT, kill_my_daughter);
 		waitpid(parent, &status, 0);
+//		pid = -2;
 		signal(SIGINT, handler_sigint);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
