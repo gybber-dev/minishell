@@ -31,7 +31,8 @@ void	add_tred(t_red ***reds, char *value, int type, t_cmd *cmd)
 	i = 0;
 	while (*(*reds + i) != NULL)
 		i++;
-	if (!(n_red = (t_red **)malloc((i += 2) * sizeof(t_red *))))
+	n_red = (t_red **)malloc((i += 2) * sizeof(t_red *));
+	if (!n_red)
 		cmd->err = 1;
 	n_red[--i] = NULL;
 	n_red[--i] = one_red;
