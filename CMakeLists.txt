@@ -50,7 +50,7 @@ link_directories(/Users/desausag/.brew/Cellar/readline/8.1/lib/)
 add_executable(
         minishell
         ${MINISHELL_SOURCES}
-)
+		src/parser/tools_func.c src/parser/envs_func.c src/parser/cmd_tools.c)
 # Test target
 add_executable(
         test_minishell
