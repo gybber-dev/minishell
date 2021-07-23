@@ -97,7 +97,7 @@ char			**copy_arrays_2x(char **src_arr);
 char			*get_value(char **envs, char *key);
 char			*find_binary(char *cmnd, char *paths);
 void			init_struct(t_all *all, char **envp);
-int				exec_command(t_all *all);
+void			exec_command(t_all *all);
 void			std_fd(int opt, t_fd *fd);
 void				check_fd(void);
 int				processor(char *envp[]);

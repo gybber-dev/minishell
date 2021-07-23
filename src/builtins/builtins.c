@@ -13,7 +13,31 @@ int	open_file_for_single_reds(t_red **reds)
 	return fd;
 }
 
+int	get_lines_from_input(t_all *all, t_red **reds)
+{
+	pid_t	parent;
+	int		pipe_fd[2];
+	int		status;
 
+	signal(SIGQUIT, SIG_IGN);
+	if ((parent = fork()) == -1)
+		all->vlast = 71;
+	else if (!parent)
+		exec_heredoc((*reds)->value, all, pipe_fd);
+	else if (parent > 0)
+	{
+		g_pid = 1;
+		signal(SIGINT, SIG_IGN);
+		waitpid(parent, &status, 0);
+		signal(SIGINT, handler_sigint);
+		if (WIFEXITED(status))
+			all->vlast = WEXITSTATUS(status);
+		if (WIFSIGNALED(status) && !(all->vlast))
+			all->vlast = 128 + WTERMSIG(status);
+		if (all->vlast != EXIT_SUCCESS)
+			return (all->vlast);
+	}
+}
 
 int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 {
@@ -35,37 +59,17 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 				dup2(fd, fix_fd->in);
 			close(fd);
 		}
-//		if ((*reds)->type == GT)
-//		{
-//			if ((fd = open((*reds)->value, O_WRONLY | O_CREAT | O_TRUNC, 0666)) == -1)
-//				return (ft_perror("bash", EXIT_FAILURE));
-//			dup2(fd, fix_fd->out);
-//			close(fd);
-//		}
-//		if ((*reds)->type == GT2)
-//		{
-//			if ((fd = open((*reds)->value, O_WRONLY | O_CREAT | O_APPEND, 0666)) == -1)
-//				return (ft_perror("bash", EXIT_FAILURE));
-//			dup2(fd, fix_fd->out);
-//			close(fd);
-//		}
-//		if ((*reds)->type == LOW)
-//		{
-//			if ((fd = open((*reds)->value, O_RDONLY, 0666)) == -1)
-//				return (ft_perror("minishell", EXIT_FAILURE));
-//			dup2(fd, fix_fd->in);
-//			close(fd);
-//		}
 		if ((*reds)->type == LOW2)
 		{
+//			get_lines_from_input(all, reds);
+
+
+
 			signal(SIGQUIT, SIG_IGN);
 			if ((parent = fork()) == -1)
 				all->vlast = 71;
 			else if (!parent)
-			{
-
 				exec_heredoc((*reds)->value, all, pipe_fd);
-			}
 			else if (parent > 0)
 			{
 				g_pid = 1;
@@ -78,6 +82,9 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 					all->vlast = 128 + WTERMSIG(status);
 				if (all->vlast != EXIT_SUCCESS)
 					return (all->vlast);
+
+
+
 				int fd_hd = open(HERE_DOC_FILE, O_RDWR, 0666);
 				dup2(fd_hd, fix_fd->in);
 				close(fd_hd);
@@ -88,22 +95,6 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 	}
 	return 0;
 }
-
-//void		kill_my_daughter(int sig)
-//{
-//	if (sig == SIGINT && pid != -2)
-//	{
-//		if (pid != -1)
-//		{
-//			ft_putnbr_fd(pid, 1);
-//			write(1, "k\n", 2);
-//			rl_on_new_line();
-//			rl_replace_line("", 0);
-//			kill(pid, sig);
-//			pid = -2;
-//		}
-//	}
-//}
 
 int			is_builtin(char *command)
 {
@@ -268,12 +259,16 @@ void		check_command(char *cmd, int *is_my, char **path, char **env)
 }
 
 
-int			exec_command(t_all *all)
+void	exec_command(t_all *all)
 {
 	int		status;
 
-	if ((status = check_redirs(all->cmd->reds, &(all->proc.fix_fd), all)) != EXIT_SUCCESS)
-		return ((all->vlast = status));
+	status = check_redirs(all->cmd->reds, &(all->proc.fix_fd), all);
+	if (status != EXIT_SUCCESS)
+	{
+		all->vlast = status;
+		return;
+	}
 	if (all->cmd->command[0])
 	{
 		check_command(all->cmd->command[0], &(all->cmd->is_builtin),
@@ -283,5 +278,5 @@ int			exec_command(t_all *all)
 		else
 			exec_piple_command(all);
 	}
-	return 0;
+	all->vlast = EXIT_SUCCESS;
 }

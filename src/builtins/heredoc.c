@@ -34,7 +34,7 @@ void handler_sigint2(int sign)
 int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 {
 	char	*line;
-	int		fd = open("heredoc", O_CREAT | O_RDWR | O_TRUNC, 0666);
+	int		fd = open(HERE_DOC_FILE, O_CREAT | O_RDWR | O_TRUNC, 0666);
 
 	signal(SIGINT, handler_sigint2);
 	while (1)
