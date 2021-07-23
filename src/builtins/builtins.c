@@ -31,7 +31,6 @@ int	get_lines_from_input(t_all *all, t_red **reds)
 	int		pipe_fd[2];
 	int		status;
 
-	signal(SIGQUIT, SIG_IGN);
 	if ((parent = fork()) == -1)
 		all->vlast = 71;
 	else if (!parent)
@@ -39,9 +38,7 @@ int	get_lines_from_input(t_all *all, t_red **reds)
 	else if (parent > 0)
 	{
 		g_pid = 1;
-		signal(SIGINT, SIG_IGN);
 		waitpid(parent, &status, 0);
-		signal(SIGINT, handler_sigint);
 		return (get_child_status(status));
 	}
 }
@@ -71,7 +68,6 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 		if ((*reds)->type == LOW2)
 		{
 //			all->vlast =  get_lines_from_input(all, reds);
-			signal(SIGQUIT, SIG_IGN);
 			if ((parent = fork()) == -1)
 				all->vlast = 71;
 			else if (!parent)
@@ -79,9 +75,7 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 			else if (parent > 0)
 			{
 				g_pid = 1;
-				signal(SIGINT, SIG_IGN);
 				waitpid(parent, &status, 0);
-				signal(SIGINT, handler_sigint);
 				all->vlast = get_child_status(status);
 
 
@@ -124,7 +118,6 @@ int			exec_binary(t_all *all)
 		return (ft_perror("fork", 71));
 	else if (!parent)
 	{
-		signal(SIGQUIT, SIG_DFL);
 		if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 		{
 			perror("Could not execve");
@@ -133,9 +126,7 @@ int			exec_binary(t_all *all)
 	}
 	else if (parent)
 	{
-		signal(SIGINT, SIG_IGN);
 		waitpid(parent, &status, 0);
-		signal(SIGINT, handler_sigint);
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
 		if (WIFSIGNALED(status))
@@ -177,7 +168,6 @@ void		std_fd(int opt, t_fd *fd)
 
 int			exec_in_daughter(t_all *all)
 {
-	signal(SIGQUIT, SIG_DFL);
 	if (all->cmd->is_builtin)
 	{
 		exec_builtin(all);

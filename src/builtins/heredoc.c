@@ -14,29 +14,11 @@ static int	init_heredoc(int fd[2])
 	return (0);
 }
 
-void handler_sigint2(int sign)
-{
-	if (sign == SIGINT)
-	{
-//		printf("hel: %d", flag);
-//		raise(SIG);
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-//		rl_redisplay();
-//		flag = 1;
-		g_pid = 1;
-		exit(130);
-	}
-}
-
-
 int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 {
 	char	*line;
 	int		fd = open(HERE_DOC_FILE, O_CREAT | O_RDWR | O_TRUNC, 0666);
 
-	signal(SIGINT, handler_sigint2);
 	while (1)
 	{
 		line = readline("> ");

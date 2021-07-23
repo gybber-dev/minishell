@@ -14,18 +14,6 @@ void		init_struct(t_all *all, char **envp)
 	all->envs = copy_arrays_2x(envp);
 }
 
-void handler_sigint(int sign)
-{
-//	write(1, "o", 1);
-	if (sign == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-}
-
 void		clear_cmd(t_all *all)
 {
 	int i;
@@ -103,8 +91,6 @@ int			main(int argc, char** argv, char **envp)
 	tcgetattr(0, &term);
 	term.c_lflag &= ~(ECHOCTL);
 	tcsetattr(0, TCSANOW, &term);
-	signal(SIGINT, handler_sigint);
-	signal(SIGQUIT, SIG_IGN);
 	init_struct(&all, envp);
 	while (1)
 	{
@@ -122,7 +108,6 @@ int			main(int argc, char** argv, char **envp)
 			is_finished = 1;
 			while(is_finished > 0)
 			{
-				signal(SIGINT, handler_sigint);
 				if ((is_finished = parser(&line, &all)) != -1)
 				{
 					exec_command(&all);
