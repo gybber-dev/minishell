@@ -18,7 +18,7 @@ void handler_sigint(int sign)
 {
 	if (sign == SIGINT)
 	{
-		write(1, "\n", 1);
+		write(1, "0\n", 2);
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		rl_redisplay();
@@ -146,7 +146,7 @@ int			main(int argc, char** argv, char **envp)
 				signal(SIGINT, handler_sigint);
 				if ((is_finished = parser(&line, &all)) != -1)
 				{
-					print_all(&all);
+//					print_all(&all);
 					exec_command(&all);
 				}
 				clear_cmd(&all);

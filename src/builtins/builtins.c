@@ -38,16 +38,22 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 			{
 				exec_heredoc((*reds)->value, all, pipe_fd);
 			}
-			waitpid(parent, &status, 0);
-			if (WIFEXITED(status))
-				all->vlast = WEXITSTATUS(status);
-			if (WIFSIGNALED(status) && !(all->vlast))
-				all->vlast = 128 + WTERMSIG(status);
-			if (all->vlast != EXIT_SUCCESS)
-				return (all->vlast);
-			int fd_hd = open("heredoc", O_RDWR, 0666);
-			dup2(fd_hd, fix_fd->in);
-			close(fd_hd);
+			else if (parent > 0)
+			{
+				pid = parent;
+				signal(SIGINT, kill_my_daughter);
+				signal(SIGINT, SIG_IGN);
+				waitpid(parent, &status, 0);
+				if (WIFEXITED(status))
+					all->vlast = WEXITSTATUS(status);
+				if (WIFSIGNALED(status) && !(all->vlast))
+					all->vlast = 128 + WTERMSIG(status);
+				if (all->vlast != EXIT_SUCCESS)
+					return (all->vlast);
+				int fd_hd = open("heredoc", O_RDWR, 0666);
+				dup2(fd_hd, fix_fd->in);
+				close(fd_hd);
+			}
 		}
 		reds++;
 
@@ -62,7 +68,8 @@ void		kill_my_daughter(int sig)
 	{
 		if (pid != -1)
 		{
-			write(1, "\n", 1);
+			ft_putnbr_fd(pid, 1);
+			write(1, "k\n", 2);
 			rl_on_new_line();
 			rl_replace_line("", 0);
 			kill(pid, sig);
@@ -196,6 +203,7 @@ int			exec_piple_command(t_all *all)
 	else if (parent > 0)
 	{
 		close(fd[1]);
+		pid = parent;
 		dup2(fd[0], all->proc.fix_fd.in);
 		waitpid(parent, &status, 0);
 		close(fd[0]);

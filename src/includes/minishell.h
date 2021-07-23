@@ -128,6 +128,7 @@ int				exec_heredoc(char *breaker, t_all *all, int *pipe_fd);
 void 			handler_sigint(int sign);
 void	 		read_from_write_to(int from, int to);
 void			check_quotes(char head, t_brack *br);
+void		kill_my_daughter(int sig);
 pid_t		pid;
 int 		flag;
 #endif
