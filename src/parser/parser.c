@@ -8,9 +8,11 @@ int	init_cmd(t_cmd **cmd)
 		return (-1);
 	(*cmd)->is_builtin = 0;
 	(*cmd)->path = NULL;
-	if (!((*cmd)->command = (char **)malloc(sizeof(char *))))
+	(*cmd)->command = (char **)malloc(sizeof(char *));
+	if (!(*cmd)->command)
 		return (-1);
-	if (!((*cmd)->reds = (t_red **)malloc(sizeof(t_red *))))
+	(*cmd)->reds = (t_red **)malloc(sizeof(t_red *));
+	if (!(*cmd)->reds)
 		return (-1);
 	(*cmd)->reds[0] = NULL;
 	(*cmd)->command[0] = NULL;
@@ -123,12 +125,13 @@ void	next_cmd(char **head, char **prev_head, char **n_line, t_cmd *cmd)
 		(*head)++;
 	*prev_head = *head;
 	while (!(**head == '\0' || (ft_strchr("> <", **head)
-								&& !brack.twice && !brack.single)))
+				&& !brack.twice && !brack.single)))
 	{
 		check_quotes(**head, &brack);
 		(*head)++;
 	}
-	if (!(*n_line = ft_calloc((*head - *prev_head + 1), sizeof(char))))
+	*n_line = ft_calloc((*head - *prev_head + 1), sizeof(char));
+	if (!(*n_line))
 		cmd->err = 1;
 }
 
@@ -152,9 +155,9 @@ void	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 
 void	check_end(t_cmd *cmd, char **head)
 {
-	if (!ft_strncmp(*head, "||", 2) && (*head += 2))
+	if (!ft_strncmp(*head, "||", 2) && (*head++) && (*head++))
 		cmd->spec = S_OR;
-	else if (!ft_strncmp(*head, "&&", 2) && (*head + 2))
+	else if (!ft_strncmp(*head, "&&", 2) && (*head++) && (*head++))
 		cmd->spec = S_AND;
 	else if (**head == '|' && (*head)++)
 		cmd->spec = PIPE;
@@ -182,8 +185,12 @@ t_cmd	*read_cmd(char **line, t_cmd *cmd)
 	}
 	check_end(cmd, &head);
 	prev_head = *line;
-	if (*head && (*line = ft_strdup(head)))
-		free(prev_head);
+	if (*head)
+	{
+		*line = ft_strdup(head);
+		if (*line)
+			free(prev_head);
+	}
 	return (cmd);
 }
 
@@ -194,7 +201,8 @@ void	quest_func(char **n_line, t_all *all)
 
 	prev_head = *n_line;
 	tmp = ft_itoa(all->vlast);
-	if (!(*n_line = ft_strjoin(prev_head, tmp)))
+	*n_line = ft_strjoin(prev_head, tmp);
+	if (!(*n_line))
 		*n_line = ft_strdup(tmp);
 	free_and_return(&tmp, 1);
 	free_and_return(&prev_head, 1);
@@ -216,11 +224,13 @@ void	get_dollar(char **head, char **n_line, t_all *all)
 			(*head)++;
 		tmp = ft_substr(prev_head, 0, *head - prev_head);
 		prev_head = tmp;
-		if ((tmp = get_value(all->envs, prev_head)))
+		tmp = get_value(all->envs, prev_head);
+		if (tmp)
 		{
 			free_and_return(&prev_head, 1);
 			prev_head = *n_line;
-			if (!(*n_line = ft_strjoin(prev_head, tmp)))
+			*n_line = ft_strjoin(prev_head, tmp);
+			if (!(*n_line))
 				*n_line = ft_strdup(tmp);
 			free_and_return(&prev_head, 1);
 		}
@@ -250,10 +260,13 @@ void	add_tonline(char **n_line, char *prev_head, char **line)
 	char	*tmp;
 
 	tmp = *n_line;
-	if (ft_strlen(prev_head) && !(*n_line = ft_strjoin(tmp, prev_head)))
-		*n_line = ft_strdup(*line);
 	if (ft_strlen(prev_head))
+	{
+		*n_line = ft_strjoin(tmp, prev_head);
+		if (!(*n_line))
+			*n_line = ft_strdup(*line);
 		free_and_return(&tmp, 0);
+	}
 }
 
 char	*init_unc_envs(t_brack *br, char **head, char **line, char **prev)
@@ -271,13 +284,22 @@ void	with_dolr(char **head, char **n_line, char **prev_head)
 	*(*head)++ = '$';
 	tmp = *n_line;
 	*prev_head = ft_substr(*prev_head, 0, *head - *prev_head);
-	if (!(*n_line = ft_strjoin(tmp, *prev_head)))
+	*n_line = ft_strjoin(tmp, *prev_head);
+	if (!(*n_line))
 	{
 		*n_line = *prev_head;
 		free_and_return(&tmp, 0);
 	}
 	else
 		free_and_return(prev_head, 1);
+}
+
+void	sub_unc_envs(char **prev_head, char **n_line, char **line)
+{
+	if (ft_strlen(*prev_head))
+		add_tonline(n_line, *prev_head, line);
+	if (*n_line && free_and_return(line, 1))
+		*line = *n_line;
 }
 
 void	unc_envs(char **line, t_all *all)
@@ -304,10 +326,7 @@ void	unc_envs(char **line, t_all *all)
 		else
 			head++;
 	}
-	if (ft_strlen(prev_head))
-		add_tonline(&n_line, prev_head, line);
-	if (n_line && free_and_return(line, 1))
-		*line = n_line;
+	sub_unc_envs(&prev_head, &n_line, line);
 }
 
 int	parser(char **line, t_all *all)
