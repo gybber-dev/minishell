@@ -14,6 +14,11 @@ static int	init_heredoc(int fd[2])
 	return (0);
 }
 
+void sigint_handler2(int sig_num)
+{
+	exit(1);
+}
+
 int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 {
 	char	*line;
@@ -21,6 +26,8 @@ int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
 
 	while (1)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
 		line = readline("> ");
 		if (line == NULL || ft_strncmp(line, breaker, ft_strlen(line) + 1) == 0)
 		{
