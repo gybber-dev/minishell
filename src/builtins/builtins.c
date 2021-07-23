@@ -13,6 +13,18 @@ int	open_file_for_single_reds(t_red **reds)
 	return fd;
 }
 
+int			get_child_status(int status)
+{
+	int		res;
+
+	res = 0;
+	if (WIFEXITED(status))
+		res = WEXITSTATUS(status);
+	if (WIFSIGNALED(status) && !res)
+		res = 128 + WTERMSIG(status);
+	return (res);
+}
+
 int	get_lines_from_input(t_all *all, t_red **reds)
 {
 	pid_t	parent;
@@ -30,14 +42,11 @@ int	get_lines_from_input(t_all *all, t_red **reds)
 		signal(SIGINT, SIG_IGN);
 		waitpid(parent, &status, 0);
 		signal(SIGINT, handler_sigint);
-		if (WIFEXITED(status))
-			all->vlast = WEXITSTATUS(status);
-		if (WIFSIGNALED(status) && !(all->vlast))
-			all->vlast = 128 + WTERMSIG(status);
-		if (all->vlast != EXIT_SUCCESS)
-			return (all->vlast);
+		return (get_child_status(status));
 	}
 }
+
+
 
 int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 {
@@ -61,10 +70,7 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 		}
 		if ((*reds)->type == LOW2)
 		{
-//			get_lines_from_input(all, reds);
-
-
-
+//			all->vlast =  get_lines_from_input(all, reds);
 			signal(SIGQUIT, SIG_IGN);
 			if ((parent = fork()) == -1)
 				all->vlast = 71;
@@ -76,15 +82,11 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 				signal(SIGINT, SIG_IGN);
 				waitpid(parent, &status, 0);
 				signal(SIGINT, handler_sigint);
-				if (WIFEXITED(status))
-					all->vlast = WEXITSTATUS(status);
-				if (WIFSIGNALED(status) && !(all->vlast))
-					all->vlast = 128 + WTERMSIG(status);
+				all->vlast = get_child_status(status);
+
+
 				if (all->vlast != EXIT_SUCCESS)
 					return (all->vlast);
-
-
-
 				int fd_hd = open(HERE_DOC_FILE, O_RDWR, 0666);
 				dup2(fd_hd, fix_fd->in);
 				close(fd_hd);
