@@ -1,5 +1,40 @@
 #include "../includes/minishell.h"
 
+void	print_and_exit(char *msg, int res)
+{
+	ft_putstr_fd(msg, 1);
+	exit(res);
+}
+
+void	print_all(t_all *all)
+{
+	int	i;
+
+	printf("\n================================\ncommands:\n");
+	if (!(all->cmd->command))
+		printf("\t%s\n", NULL);
+	else
+		print_array_2x(all->cmd->command);
+	printf("redirs:\n");
+	if (!(all->cmd->reds))
+		printf("\t%s\n", NULL);
+	else
+	{
+		i = 0;
+		while (all->cmd->reds[i])
+		{
+			printf("\t%d. type: %d\n", i, all->cmd->reds[i]->type);
+			printf("\t%d.  val: %s\n", i, all->cmd->reds[i]->value);
+			printf("\t---\n");
+			i++;
+		}
+		printf("\t%d.  %s\n", i, NULL);
+		printf("-----\nis spec  : %d\n", all->cmd->spec);
+		printf("is pipe  : %d\n", all->is_pipel);
+	}
+	printf("\n================================\n");
+}
+
 char			**check_key(char **envs, char *key)
 {
 	char		**tmp;

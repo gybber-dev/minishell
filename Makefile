@@ -1,7 +1,12 @@
 NAME		= minishell
 
 SRCS	= src/main.c \
+	src/init.c \
+	src/builtins/signal.c \
 	src/builtins/builtins.c \
+	src/builtins/pipes.c \
+	src/builtins/exec.c \
+	src/builtins/redirects.c \
 	src/builtins/ft_cd.c \
 	src/builtins/ft_echo.c \
 	src/builtins/ft_env.c \

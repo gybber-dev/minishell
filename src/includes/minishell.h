@@ -84,6 +84,7 @@ typedef struct s_all
 	t_proc		proc;
 	int			vlast;
 	int 		is_pipel;
+	int			is_finished;
 }				t_all;
 
 
@@ -98,7 +99,7 @@ char			*find_binary(char *cmnd, char *paths);
 void			init_struct(t_all *all, char **envp);
 void			exec_command(t_all *all);
 void			std_fd(int opt, t_fd *fd);
-void				check_fd(void);
+void			check_fd(void);
 int				processor(char *envp[]);
 int				is_builtin(char *command);
 int 			ft_echo(char **command);
@@ -127,7 +128,13 @@ int				exec_heredoc(char *breaker, t_all *all);
 void 			handler_sigint(int sign);
 void	 		read_from_write_to(int from, int to);
 void			check_quotes(char head, t_brack *br);
-int			get_child_status(int status);
+int				get_child_status(int status);
+int				check_redirs(t_red **reds, t_fd *fix_fd, t_all *all);
+void			exec_piple_command(t_all *all);
+void			exec_builtin(t_all *all);
+void			init_signals(void);
+void			init_all(t_all *all, char **envp, int argc, char **argv);
+void			print_all(t_all *all);
+void			print_and_exit(char *msg, int res);
 pid_t			g_status;
-void sigint_handler(int sig_num);
 #endif
