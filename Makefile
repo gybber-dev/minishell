@@ -20,7 +20,11 @@ SRCS	= 	src/main.c \
 			src/builtins/array_utils.c \
 			src/builtins/array_utils2.c \
 			src/parser/check_valid.c \
-			src/parser/parser.c
+			src/parser/parser.c \
+			src/parser/envs_func.c \
+			src/parser/tools_func.c \
+			src/parser/cmd_tools.c
+
 
 OBJS		= $(patsubst %.c, %.o, $(SRCS))
 

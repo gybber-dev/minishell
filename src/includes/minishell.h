@@ -123,5 +123,22 @@ void			init_all(t_all *all, char **envp, int argc, char **argv);
 void			print_all(t_all *all);
 void			print_and_exit(char *msg, int res);
 char			**check_key(char **envs, char *key);
+int				init_cmd(t_cmd **cmd);
+void			next_head(char **head, char **prev_head);
+void			append_back(char *dst, char c);
+char			*copy_until_to_end(char stop, char *dst, char *src);
+void			check_end(t_cmd *cmd, char **head);
+void			quest_func(char **n_line);
+void			get_dollar(char **head, char **n_line, t_all *all);
+char			*init_unc_envs(t_brack *br, char **head, \
+						char **line, char **prev);
+void			with_dolr(char **head, char **n_line, char **prev_head);
+void			sub_unc_envs(char **prev_head, char **n_line, char **line);
+t_cmd			*read_cmd(char **line, t_cmd *cmd);
+void			add_cmd(t_cmd *cmd, char **prev_head, char **head);
+void			next_cmd(char **head, char **prev_head, \
+						char **n_line, t_cmd *cmd);
+void			read_redirs(t_cmd *cmd, char **prev_head, char **head);
+void			add_tred(t_red ***reds, char *value, int type, t_cmd *cmd);
 pid_t			g_status;
 #endif
