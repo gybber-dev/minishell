@@ -1,7 +1,11 @@
 cmake-build-debug
 .idea
 *a.out
+*.o
+*.a
+minishell.dSYM/
 build*
 *.gch
 sandbox.c
 sandbox
+minishell
