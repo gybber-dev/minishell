@@ -1,23 +1,26 @@
 NAME		= minishell
 
-SRCS	= src/main.c \
-	src/init.c \
-	src/builtins/signal.c \
-	src/builtins/builtins.c \
-	src/builtins/pipes.c \
-	src/builtins/exec.c \
-	src/builtins/redirects.c \
-	src/builtins/ft_cd.c \
-	src/builtins/ft_echo.c \
-	src/builtins/ft_env.c \
-	src/builtins/ft_exit.c \
-	src/builtins/ft_export.c \
-	src/builtins/ft_pwd.c \
-	src/builtins/ft_unset.c \
-	src/builtins/heredoc.c \
-	src/builtins/tools.c \
-	src/parser/check_valid.c \
-	src/parser/parser.c
+SRCS	= 	src/main.c \
+			src/init.c \
+			src/builtins/signal.c \
+			src/builtins/builtins.c \
+			src/builtins/pipes.c \
+			src/builtins/exec.c \
+			src/builtins/redirects.c \
+			src/builtins/ft_cd.c \
+			src/builtins/ft_echo.c \
+			src/builtins/ft_env.c \
+			src/builtins/ft_exit.c \
+			src/builtins/ft_export.c \
+			src/builtins/ft_pwd.c \
+			src/builtins/ft_unset.c \
+			src/builtins/heredoc.c \
+			src/builtins/tools.c \
+			src/builtins/return_utils.c \
+			src/builtins/array_utils.c \
+			src/builtins/array_utils2.c \
+			src/parser/check_valid.c \
+			src/parser/parser.c
 
 OBJS		= $(patsubst %.c, %.o, $(SRCS))
 

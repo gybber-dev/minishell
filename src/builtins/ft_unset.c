@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int			ft_unset(char **command, char ***env)
+int	ft_unset(char **command, char ***env)
 {
 	char	**tmp;
 	int		err_status;
@@ -14,5 +14,5 @@ int			ft_unset(char **command, char ***env)
 			return (err_status);
 		tmp++;
 	}
-	return EXIT_SUCCESS;
+	return (EXIT_SUCCESS);
 }

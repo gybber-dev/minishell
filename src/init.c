@@ -9,7 +9,6 @@ static void	init_terminal(void)
 	tcsetattr(0, TCSANOW, &term);
 }
 
-
 void	init_all(t_all *all, char **envp, int argc, char **argv)
 {
 	all->vlast = 0;

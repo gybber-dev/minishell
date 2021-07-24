@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void		bubble_sort_arr_2x(char **arr)
+void	bubble_sort_arr_2x(char **arr)
 {
 	int		i;
 	int		j;
@@ -26,8 +26,7 @@ void		bubble_sort_arr_2x(char **arr)
 	}
 }
 
-
-void		sort_env(char **env)
+static void	sort_env(char **env)
 {
 	char	**tmp;
 	char	**tmp_backup;
@@ -40,18 +39,16 @@ void		sort_env(char **env)
 	{
 		write(1, "declare -x ", 11);
 		i = 0;
-		while(1)
+		while (1)
 		{
-			write(1, &(*tmp)[i], 1);
-			i++;
+			write(1, &(*tmp)[i++], 1);
 			if ((*tmp)[i] == 0 || (*tmp)[i] == '=')
 				break ;
 		}
 		write(1, &(*tmp)[i++], 1);
 		write(1, "\"", 1);
-		while((*tmp)[i]) {
+		while ((*tmp)[i])
 			write(1, &(*tmp)[i++], 1);
-		}
 		write(1, "\"\n", 2);
 		tmp++;
 	}
@@ -59,45 +56,45 @@ void		sort_env(char **env)
 }
 
 /**
-**
 ** @param command 'PWD=<path>'
 ** @return 	0:	if there is no '=' symbol
 ** 				if first is not alpha
 */
 
-int			check_var_name(char *command)
+int	check_var_name(char *command)
 {
 	if (!command)
-		return 0;
+		return (0);
 	if (!ft_strchr(command, '='))
 		return (ft_error("Don't add shell variables", 0));
 	if (!(ft_isalpha(*command) || *command == '_'))
 	{
 		printf("export: '%s': not a valid identifier\n", command);
-		return 0;
+		return (0);
 	}
 	command++;
-	while(*command != '=')
+	while (*command != '=')
 	{
 		if (!(ft_isalnum(*command) || *command == '_'))
-			return 0;
+			return (0);
 		command++;
 	}
-	return 1;
+	return (1);
 }
 
-int			check_string(char **command)
+int	check_string(char **command)
 {
 	char	*new_line;
 	char	*equal;
 
 	new_line = *command;
-	if (!(equal = ft_strchr(new_line, '=')))
+	equal = ft_strchr(new_line, '=');
+	if (!equal)
 		return (ft_error("Don't add shell variables", 0));
-	return 1;
+	return (1);
 }
 
-int 		ft_export(char **command, char ***env)
+int	ft_export(char **command, char ***env)
 {
 	int		i;
 

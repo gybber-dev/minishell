@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-int			ft_env(char **command, char **env)
+int	ft_env(char **command, char **env)
 {
 	if (*(command + 1))
 		return (EXIT_FAILURE);

@@ -10,17 +10,12 @@
 # include <string.h>
 # include <errno.h>
 # include <fcntl.h>
-
-//#include "/Users/yeschall/.brew/opt/readline/include/readline/readline.h"
-//#include "/Users/yeschall/.brew/opt/readline/include/readline/history.h"
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <sys/termios.h>
-
-
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <sys/termios.h>
 # include "../../libft/libft.h"
 # include <sys/types.h>
-#include <sys/stat.h>
+# include <sys/stat.h>
 
 # define PIPE 1
 # define LOW 2
@@ -33,21 +28,21 @@
 # define SAFE_TO 1
 # define TAKE_FROM 0
 # define HERE_DOC_FILE ".here_doc"
-typedef struct	s_fd
+# define BACKUP_FILE ".back"
+typedef struct s_fd
 {
 	int			in;
 	int			out;
 }				t_fd;
 
-typedef struct	s_brack
+typedef struct s_brack
 {
 	int		single;
-	int 	twice;
+	int		twice;
 }				t_brack;
 
-typedef struct	s_proc
+typedef struct s_proc
 {
-	int			is_complex;
 	t_fd		fix_fd;
 	t_fd		backup_fd;
 }				t_proc;
@@ -57,7 +52,6 @@ typedef struct s_red
 	int			type;
 	char		*value;
 }				t_red;
-
 
 typedef struct s_cmd
 {
@@ -83,39 +77,33 @@ typedef struct s_all
 	char		**envs;
 	t_proc		proc;
 	int			vlast;
-	int 		is_pipel;
+	int			is_pipel;
 	int			is_finished;
 }				t_all;
 
-
-int 			parser(char **line, t_all *all);
+int				parser(char **line, t_all *all);
 void			unc_envs(char **line, t_all *all);
-void			lineaddback(char ***src,char *addback);
+void			lineaddback(char ***src, char *addback);
 void			clear_arr_2x(char ***arr);
 void			print_array_2x(char **arr);
 char			**copy_arrays_2x(char **src_arr);
 char			*get_value(char **envs, char *key);
 char			*find_binary(char *cmnd, char *paths);
-void			init_struct(t_all *all, char **envp);
 void			exec_command(t_all *all);
 void			std_fd(int opt, t_fd *fd);
 void			check_fd(void);
 int				processor(char *envp[]);
 int				is_builtin(char *command);
-int 			ft_echo(char **command);
-int 			ft_export(char **command, char ***env);
+int				ft_echo(char **command);
+int				ft_export(char **command, char ***env);
 int				ft_env(char **command, char **env);
 int				ft_cd(char **command, char ***env);
 int				ft_unset(char **command, char ***env);
 void			ft_exit(char **command, int *status);
-int				check_flag_n(char *command_1);
-char			*get_stdout_fun_result(char **cmd, int (*fun)(char **, char
-**), char **env);
-char			*get_command_result(char **cmd, char **env);
 int				get_arr_2x_len(char **arr);
 int				set_value_arr_2x(char *str, char ***arr);
 int				check_var_name(char *command);
-int 			del_line_arr_2x(char *line, char ***src);
+int				del_line_arr_2x(char *line, char ***src);
 int				ft_pwd(void);
 char			*get_pwd(void);
 int				ft_error(char *err_msg, int res);
@@ -125,8 +113,6 @@ void			add_tonline(char **n_line, char *prev_head, char **line);
 int				check_symb(char **line);
 int				check_valid(char *line, t_all *all);
 int				exec_heredoc(char *breaker, t_all *all);
-void 			handler_sigint(int sign);
-void	 		read_from_write_to(int from, int to);
 void			check_quotes(char head, t_brack *br);
 int				get_child_status(int status);
 int				check_redirs(t_red **reds, t_fd *fix_fd, t_all *all);
@@ -136,5 +122,6 @@ void			init_signals(void);
 void			init_all(t_all *all, char **envp, int argc, char **argv);
 void			print_all(t_all *all);
 void			print_and_exit(char *msg, int res);
+char			**check_key(char **envs, char *key);
 pid_t			g_status;
 #endif

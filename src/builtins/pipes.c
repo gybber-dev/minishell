@@ -14,6 +14,20 @@ static void	exec_in_daughter(t_all *all)
 	}
 }
 
+void	replace_fd_on_error(int dst_fd, int status)
+{
+	int	file;
+
+	if (status != EXIT_SUCCESS)
+	{
+		file = open(BACKUP_FILE, O_RDWR | O_CREAT | O_TRUNC, 0666);
+		if (file == -1)
+			return ;
+		dup2(file, dst_fd);
+		close(file);
+	}
+}
+
 void	exec_piple_command(t_all *all)
 {
 	int		fd[2];
@@ -26,6 +40,7 @@ void	exec_piple_command(t_all *all)
 		all->vlast = 71;
 	else if (!parent)
 	{
+		replace_fd_on_error(all->proc.fix_fd.in, all->vlast);
 		if (all->cmd->spec)
 			dup2(fd[1], all->proc.fix_fd.out);
 		close(fd[1]);

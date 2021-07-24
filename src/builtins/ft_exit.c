@@ -1,17 +1,21 @@
 #include "../includes/minishell.h"
 
-int				is_number(char *str)
+int	is_number(char *str)
 {
-	while(*str)
+	if (str == NULL || *str == '\0')
+		return (0);
+	if (*str == '-')
+		str++;
+	while (*str)
 	{
 		if (!(ft_isdigit(*str)))
-			return 0;
+			return (0);
 		str++;
 	}
-	return 1;
+	return (1);
 }
 
-void			ft_exit(char **command, int *res)
+void	ft_exit(char **command, int *res)
 {
 	int			len;
 
@@ -30,13 +34,9 @@ void			ft_exit(char **command, int *res)
 	if (is_number(command[1]))
 	{
 		*res = ft_atoi(command[1]);
-		if (*res > 255)
-			*res %= 256;
+		*res = (unsigned char)(*res);
 		exit(*res);
 	}
 	else
-	{
-		printf("numeric argument required");
-		exit(2);
-	}
+		print_and_exit("numeric argument required\n", 2);
 }
