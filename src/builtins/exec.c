@@ -6,6 +6,7 @@ void	exec_binary(t_all *all)
 	int		status;
 
 	parent = fork();
+	signal(SIGQUIT, signal_handler);
 	if (parent == -1)
 		all->vlast = (ft_perror("fork", 71));
 	else if (!parent)
@@ -24,6 +25,7 @@ void	exec_binary(t_all *all)
 		if (WIFSIGNALED(status))
 			all->vlast = 128 + WTERMSIG(status);
 	}
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	std_fd(int opt, t_fd *fd)

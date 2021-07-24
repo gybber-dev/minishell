@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void	signal_handler(int sig_num)
+void	signal_handler(int sig_num)
 {
 	int		stat_loc;
 
@@ -14,7 +14,9 @@ static void	signal_handler(int sig_num)
 			rl_replace_line("", 0);
 		}
 		else if (sig_num == SIGQUIT)
+		{
 			ft_putstr_fd("Quit: 3\n", 1);
+		}
 		g_status = 128 + sig_num;
 	}
 	else if (sig_num == SIGINT)

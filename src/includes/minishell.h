@@ -140,5 +140,6 @@ void			next_cmd(char **head, char **prev_head, \
 						char **n_line, t_cmd *cmd);
 void			read_redirs(t_cmd *cmd, char **prev_head, char **head);
 void			add_tred(t_red ***reds, char *value, int type, t_cmd *cmd);
+void			signal_handler(int sig_num);
 pid_t			g_status;
 #endif

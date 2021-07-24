@@ -27,6 +27,7 @@ void	clear_cmd(t_all *all)
 
 void	iterable_init(t_all *all)
 {
+	signal(SIGQUIT, signal_handler);
 	all->proc.fix_fd.in = 0;
 	all->proc.fix_fd.out = 1;
 	all->is_pipel = 0;
@@ -57,6 +58,7 @@ int	main(int argc, char **argv, char **envp)
 	init_all(&all, envp, argc, argv);
 	while (1)
 	{
+		signal(SIGQUIT, SIG_IGN);
 		line = readline("minishell: ");
 		if (!line)
 			print_and_exit("\033[Aminishell: exit\n", EXIT_SUCCESS);
