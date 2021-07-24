@@ -38,7 +38,7 @@ void	add_cmd(t_cmd *cmd, char **prev_head, char **head)
 	{
 		if (**prev_head == '\'' || **prev_head == '\"')
 			*prev_head = copy_until_to_end(**prev_head,
-										   n_line, (*prev_head + 1));
+					n_line, (*prev_head + 1));
 		else
 			append_back(n_line, **prev_head);
 		(*prev_head)++;
@@ -57,7 +57,7 @@ void	next_cmd(char **head, char **prev_head, char **n_line, t_cmd *cmd)
 		(*head)++;
 	*prev_head = *head;
 	while (!(**head == '\0' || (ft_strchr("> <", **head)
-								&& !brack.twice && !brack.single)))
+				&& !brack.twice && !brack.single)))
 	{
 		check_quotes(**head, &brack);
 		(*head)++;
@@ -84,7 +84,7 @@ void	read_redirs(t_cmd *cmd, char **prev_head, char **head)
 		*(*head)++ = '\0';
 	if (**head == '<' || **head == '>')
 		add_tred(&(cmd->reds), ft_substr(*prev_head, 0,
-										 *head - *prev_head), var, cmd);
+				*head - *prev_head), var, cmd);
 	else
 		add_tred(&(cmd->reds), ft_strdup(*prev_head), var, cmd);
 	*prev_head = *head;
