@@ -25,27 +25,18 @@ SRCS	= 	src/main.c \
 			src/parser/tools_func.c \
 			src/parser/cmd_tools.c
 
-
 OBJS		= $(patsubst %.c, %.o, $(SRCS))
-
 CC			= gcc
 FLAGS		= -Wall -Wextra -Werror
 HEADER		= src/includes/minishell.h
 RM			= rm -f
 LIB_FLAGS	= -Llibmlx_mac -lmlx -framework OpenGL -framework AppKit
 
-
 all:		${NAME}
-
-
-
-#$(NAME):	$(OBJS) $(HEADER)
-#			$(CC) $(FLAGS) ${OBJS} -Llibft -lft $(LIB_FLAGS) -o $(NAME)
 
 $(NAME): $(HEADER) $(SRCS)
 			make bonus -C libft
 			gcc $(SRCS) $(FLAGS) -g -Llibft -lft -lreadline -L/Users/yeschall/.brew/opt/readline/lib -I/Users/yeschall/.brew/opt/readline/include -o $(NAME)
-			#gcc $(SRCS)  -g -Llibft -lft -lreadline -L/Users/yeschall/.brew/opt/readline/lib -I/Users/yeschall/.brew/opt/readline/include -o $(NAME)
 
 %.o : %.c
 			${CC} $(FLAGS) -c $< -o $@
@@ -56,7 +47,7 @@ clean:
 
 fclean:		clean
 			make -C libft fclean
-			#$(RM) -f $(NAME)
+			$(RM) $(NAME)
 
 re:			fclean all
 

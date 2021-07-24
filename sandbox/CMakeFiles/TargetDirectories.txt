@@ -1,3 +1,0 @@
-/home/oem/Desktop/minishell/sandbox/CMakeFiles/rebuild_cache.dir
-/home/oem/Desktop/minishell/sandbox/CMakeFiles/edit_cache.dir
-/home/oem/Desktop/minishell/sandbox/CMakeFiles/sandbox.dir
