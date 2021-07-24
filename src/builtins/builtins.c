@@ -42,14 +42,9 @@ int	get_lines_from_input(t_all *all, t_red **reds)
 	}
 }
 
-
-
 int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 {
 	int		fd;
-	pid_t	parent;
-	int		pipe_fd[2];
-	int		status;
 
 	while(reds && *reds)
 	{
@@ -66,27 +61,14 @@ int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
 		}
 		if ((*reds)->type == LOW2)
 		{
-
-//			all->vlast =  get_lines_from_input(all, reds);
-			if ((parent = fork()) == -1)
-				all->vlast = 71;
-			else if (!parent)
-				exec_heredoc((*reds)->value, all, pipe_fd);
-			else if (parent > 0)
-			{
-				waitpid(parent, &status, 0);
-				all->vlast = get_child_status(status);
-
-
-				if (all->vlast != EXIT_SUCCESS)
-					return (all->vlast);
-				int fd_hd = open(HERE_DOC_FILE, O_RDWR, 0666);
-				dup2(fd_hd, fix_fd->in);
-				close(fd_hd);
-			}
+			all->vlast =  get_lines_from_input(all, reds);
+			if (all->vlast != EXIT_SUCCESS)
+				return (all->vlast);
+			fd = open(HERE_DOC_FILE, O_RDWR, 0666);
+			dup2(fd, fix_fd->in);
+			close(fd);
 		}
 		reds++;
-
 	}
 	return 0;
 }
