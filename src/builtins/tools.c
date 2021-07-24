@@ -188,8 +188,8 @@ char 	*get_command_result(char **cmd, char **env)
 	}
 	else
 	{
-		ssize_t size = read(fd[0], buffer, 1000);
-		if ( (size>0) && (size<sizeof(buffer)) )
+		int size = (int)read(fd[0], buffer, 1000);
+		if ( (size>0) && (size < (int)sizeof(buffer)) )
 		{
 			buffer[size]='\0';
 		}
@@ -218,8 +218,8 @@ char 	*get_stdout_fun_result(char **cmd, int (*fun)(char **, char **), char
 	}
 	else
 	{
-		ssize_t size = read(fd[0], buffer, 1000);
-		if ( (size>0) && (size<sizeof(buffer)) )
+		int size = read(fd[0], buffer, 1000);
+		if ( (size>0) && (size < (int)sizeof(buffer)) )
 		{
 			buffer[size]='\0';
 		}
@@ -294,7 +294,6 @@ int 		del_line_arr_2x(char *line, char ***src)
 	int		size;
 	char	**arr;
 	char	**found_line;
-	char	**tmp;
 	char 	**tmp_src;
 	char	**tmp_arr;
 
@@ -304,16 +303,6 @@ int 		del_line_arr_2x(char *line, char ***src)
 	size = get_arr_2x_len(*src);
 	if (!(arr = (char **)malloc(size * sizeof(char *))))
 		return (EXIT_FAILURE);
-//	arr[size] = NULL;
-//	free(**src);
-//	tmp = *src;
-//	while (*tmp)
-//	{
-//		if (*tmp != *found_line)
-//			if (!(*arr = ft_strdup(*tmp)))
-//				return (EXIT_FAILURE);
-//		tmp++;
-//	}
 	tmp_src = *src;
 	tmp_arr = arr;
 	while(*tmp_src)
@@ -326,7 +315,6 @@ int 		del_line_arr_2x(char *line, char ***src)
 		tmp_arr++;
 	}
 	*tmp_arr = NULL;
-//	free(**src);
 	clear_arr_2x(src);
 	*src = arr;
 	return (EXIT_SUCCESS);

@@ -180,7 +180,7 @@ t_cmd	*read_cmd(char **line, t_cmd *cmd)
 	return (cmd);
 }
 
-void	quest_func(char **n_line, t_all *all)
+void	quest_func(char **n_line)
 {
 	char	*prev_head;
 	char	*tmp;
@@ -200,7 +200,7 @@ void	get_dollar(char **head, char **n_line, t_all *all)
 	char	*tmp;
 
 	if (**head == '?' && (*head)++)
-		quest_func(n_line, all);
+		quest_func(n_line);
 	else if (ft_isdigit(**head))
 		(*head)++;
 	else if (ft_isalpha(**head) || **head == '_')

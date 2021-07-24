@@ -122,7 +122,7 @@ void		print_all(t_all *all)
 }
 
 
-int			iterable_init(t_all *all)
+void	iterable_init(t_all *all)
 {
 	all->proc.fix_fd.in = 0;
 	all->proc.fix_fd.out = 1;
@@ -137,6 +137,8 @@ int			main(int argc, char** argv, char **envp)
 	int		is_finished;
 	struct termios term;
 
+	argc = 2;
+	argv = NULL;
 	g_status = 0;
 	tcgetattr(0, &term);
 	term.c_lflag &= ~(ECHOCTL);

@@ -32,8 +32,8 @@ all:		${NAME}
 
 $(NAME): $(HEADER) $(SRCS)
 			make bonus -C libft
-			#gcc $(SRCS) $(FLAGS) -g -Llibft -lft -lreadline -L/Users/yeschall/.brew/opt/readline/lib -I/Users/yeschall/.brew/opt/readline/include -o $(NAME)
-			gcc $(SRCS)  -g -Llibft -lft -lreadline -L/Users/yeschall/.brew/opt/readline/lib -I/Users/yeschall/.brew/opt/readline/include -o $(NAME)
+			gcc $(SRCS) $(FLAGS) -g -Llibft -lft -lreadline -L/Users/yeschall/.brew/opt/readline/lib -I/Users/yeschall/.brew/opt/readline/include -o $(NAME)
+			#gcc $(SRCS)  -g -Llibft -lft -lreadline -L/Users/yeschall/.brew/opt/readline/lib -I/Users/yeschall/.brew/opt/readline/include -o $(NAME)
 
 %.o : %.c
 			${CC} $(FLAGS) -c $< -o $@

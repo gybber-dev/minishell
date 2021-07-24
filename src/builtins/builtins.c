@@ -10,10 +10,10 @@ int	open_file_for_single_reds(t_red **reds)
 		fd = open((*reds)->value, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	if ((*reds)->type == LOW)
 		fd = open((*reds)->value, O_RDONLY, 0666);
-	return fd;
+	return (fd);
 }
 
-int			get_child_status(int status)
+int	get_child_status(int status)
 {
 	int		res;
 
@@ -28,18 +28,16 @@ int			get_child_status(int status)
 int	get_lines_from_input(t_all *all, t_red **reds)
 {
 	pid_t	parent;
-	int		pipe_fd[2];
 	int		status;
 
+	status = 0;
 	if ((parent = fork()) == -1)
 		all->vlast = 71;
 	else if (!parent)
-		exec_heredoc((*reds)->value, all, pipe_fd);
-	else if (parent > 0)
-	{
+		exec_heredoc((*reds)->value, all);
+	else
 		waitpid(parent, &status, 0);
-		return (get_child_status(status));
-	}
+	return (get_child_status(status));
 }
 
 int			check_redirs(t_red **reds, t_fd *fix_fd, t_all *all)
@@ -90,13 +88,13 @@ int			is_builtin(char *command)
 	);
 }
 
-int			exec_binary(t_all *all)
+void			exec_binary(t_all *all)
 {
 	pid_t	parent;
 	int		status;
 
 	if ((parent = fork()) == -1)
-		return (ft_perror("fork", 71));
+		all->vlast = (ft_perror("fork", 71));
 	else if (!parent)
 	{
 		if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
@@ -118,7 +116,7 @@ int			exec_binary(t_all *all)
 void		exec_builtin(t_all *all)
 {
 	if (!ft_strncmp(all->cmd->command[0], "echo", 5))
-		all->vlast = ft_echo(all->cmd->command, all->envs);
+		all->vlast = ft_echo(all->cmd->command);
 	else if (!ft_strncmp(all->cmd->command[0], "pwd", 4))
 		all->vlast = ft_pwd();
 	else if (!ft_strncmp(all->cmd->command[0], "export", 7))
@@ -147,7 +145,7 @@ void		std_fd(int opt, t_fd *fd)
 	}
 }
 
-int			exec_in_daughter(t_all *all)
+void	exec_in_daughter(t_all *all)
 {
 	if (all->cmd->is_builtin)
 	{
@@ -161,7 +159,7 @@ int			exec_in_daughter(t_all *all)
 	}
 }
 
-int			exec_simple_command(t_all *all)
+void	exec_simple_command(t_all *all)
 {
 	if (all->cmd->is_builtin)
 		exec_builtin(all);
@@ -173,7 +171,7 @@ int			exec_simple_command(t_all *all)
 	}
 }
 
-int			exec_piple_command(t_all *all)
+void	exec_piple_command(t_all *all)
 {
 	int		fd[2];
 	pid_t	parent;
@@ -211,6 +209,7 @@ int			exec_piple_command(t_all *all)
  * @param path may be equal to NULL
  * @param env
  */
+
 void		check_command(char *cmd, int *is_my, char **path, char **env)
 {
 	char	*from;

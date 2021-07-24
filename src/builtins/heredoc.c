@@ -1,25 +1,6 @@
 #include "../includes/minishell.h"
 
-static int	init_heredoc(int fd[2])
-{
-	char	buf[1000];
-
-	fd[1] = open(HERE_DOC_FILE, O_WRONLY | O_APPEND | O_CREAT, 0664);
-	fd[0] = open(HERE_DOC_FILE, O_RDONLY);
-	if (fd[0] == -1 || fd[1] == -1)
-		return (ft_perror("here_doc", 1));
-	write(fd[1], "\n", 1);
-	while (read(fd[0], buf, 1000) > 0)
-		;
-	return (0);
-}
-
-void sigint_handler2(int sig_num)
-{
-	exit(1);
-}
-
-int	exec_heredoc(char *breaker, t_all *all, int *pipe_fd)
+int	exec_heredoc(char *breaker, t_all *all)
 {
 	char	*line;
 	int		fd = open(HERE_DOC_FILE, O_CREAT | O_RDWR | O_TRUNC, 0666);
