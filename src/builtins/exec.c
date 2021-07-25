@@ -62,9 +62,22 @@ static void	exec_simple_command(t_all *all)
 	}
 }
 
+int	is_shell(char *command)
+{
+	if (!command || *command == '\0')
+		return (0);
+	if (ft_strnstr(command, "minishell", ft_strlen(command) + 1))
+	{
+		printf("SHELL      !!!!\n");
+	}
+	return (0);
+}
+
 static void	check_command_path(char *cmd, int *is_my, char **path, char **env)
 {
 	char	*from;
+	int		is_s;
+//	struct stat		buf;
 
 	if (!ft_strchr(cmd, '/'))
 	{
@@ -78,7 +91,10 @@ static void	check_command_path(char *cmd, int *is_my, char **path, char **env)
 		}
 	}
 	else
+	{
+		is_s = is_shell(cmd);
 		*path = ft_strdup(cmd);
+	}
 }
 
 void	exec_command(t_all *all)
