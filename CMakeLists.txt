@@ -32,15 +32,6 @@ message(STATUS ${TEST_SOURCES})
 # ====================================================
 
 
-# Add GoogleTests directory
-# ====================================================
-# Build googletest
-add_subdirectory(
-        "${CMAKE_CURRENT_SOURCE_DIR}/googletest"
-        "googletest"
-)
-# ====================================================
-
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libft)
 #link_directories(${CMAKE_CURRENT_SOURCE_DIR}/readline)
 link_directories(/Users/yeschall/.brew/Cellar/readline/8.1/lib/)
@@ -51,15 +42,6 @@ add_executable(
         minishell
         ${MINISHELL_SOURCES}
 		src/parser/tools_func.c src/parser/envs_func.c src/parser/cmd_tools.c)
-# Test target
-add_executable(
-        test_minishell
-#        tests/test.cpp
-        tests/builtins/builtins.cpp
-        tests/builtins/cmd_generator.c
-        ${TEST_SOURCES}
-)
-# ====================================================
 
 # Local targets
 add_executable(
@@ -67,16 +49,6 @@ add_executable(
         ${LOCAL_SOURCES}
 )
 # ====================================================
-
-target_link_libraries(
-        test_minishell PRIVATE
-        gtest gtest_main
-		readline
-        libft
-		libreadline.a
-		libhistory.a
-)
-
 
 target_link_libraries(
         builtins PRIVATE

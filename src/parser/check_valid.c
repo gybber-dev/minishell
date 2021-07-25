@@ -54,13 +54,13 @@ int	check_valid(char *line, t_all *all)
 	t_brack	brack;
 
 	add_history(line);
-	brack.single = 0;
-	brack.twice = 0;
+	ft_memset(&brack, 0, sizeof(brack));
 	ret = EXIT_SUCCESS;
 	while (*line != '\0')
 	{
 		check_quotes2(*line, &brack);
-		i = check_symb(&line);
+		if (!(brack.single || brack.twice))
+			i = check_symb(&line);
 		if (i == 1 || (i == 2 && *line++ != '\0'))
 		{
 			ret = 2;
@@ -69,9 +69,9 @@ int	check_valid(char *line, t_all *all)
 				line++;
 			if (*line != '\0' && !check_symb(&line))
 				ret = 0;
+			continue ;
 		}
 		line++;
 	}
-	ret = checker(ret, &brack, all);
-	return (ret);
+	return (checker(ret, &brack, all));
 }

@@ -23,6 +23,7 @@ void	clear_cmd(t_all *all)
 	free(all->cmd);
 	all->cmd = NULL;
 	unlink(HERE_DOC_FILE);
+	unlink(BACKUP_FILE);
 }
 
 void	iterable_init(t_all *all)

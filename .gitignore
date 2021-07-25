@@ -9,3 +9,5 @@ build*
 sandbox.c
 sandbox
 minishell
+*/.DS_Store
+.DS_Store
