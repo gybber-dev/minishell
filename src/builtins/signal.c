@@ -32,5 +32,5 @@ void	signal_handler(int sig_num)
 void	init_signals(void)
 {
 	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, signal_handler);
+	signal(SIGQUIT, SIG_IGN);
 }

@@ -9,7 +9,7 @@ static void	exec_in_daughter(t_all *all)
 	}
 	if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
 	{
-		perror("Could not execve");
+		perror("execve");
 		exit(127);
 	}
 }

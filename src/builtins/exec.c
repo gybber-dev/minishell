@@ -9,23 +9,23 @@ void	exec_binary(t_all *all)
 	signal(SIGQUIT, signal_handler);
 	if (parent == -1)
 		all->vlast = (ft_perror("fork", 71));
-	else if (!parent)
+	else if (!parent && execve(all->cmd->path, \
+				all->cmd->command, all->envs) == -1)
 	{
-		if (execve(all->cmd->path, all->cmd->command, all->envs) == -1)
-		{
-			perror("Could not execve");
-			exit(127);
-		}
+		perror("execve");
+		exit(127);
 	}
 	else if (parent)
 	{
+		if (is_shell(all->cmd->command[0]))
+			signal(SIGINT, SIG_IGN);
 		waitpid(parent, &status, 0);
+		init_signals();
 		if (WIFEXITED(status))
 			all->vlast = WEXITSTATUS(status);
 		if (WIFSIGNALED(status))
 			all->vlast = 128 + WTERMSIG(status);
 	}
-	signal(SIGQUIT, SIG_IGN);
 }
 
 void	std_fd(int opt, t_fd *fd)
@@ -62,22 +62,9 @@ static void	exec_simple_command(t_all *all)
 	}
 }
 
-int	is_shell(char *command)
-{
-	if (!command || *command == '\0')
-		return (0);
-	if (ft_strnstr(command, "minishell", ft_strlen(command) + 1))
-	{
-		printf("SHELL      !!!!\n");
-	}
-	return (0);
-}
-
 static void	check_command_path(char *cmd, int *is_my, char **path, char **env)
 {
 	char	*from;
-	int		is_s;
-//	struct stat		buf;
 
 	if (!ft_strchr(cmd, '/'))
 	{
@@ -87,14 +74,11 @@ static void	check_command_path(char *cmd, int *is_my, char **path, char **env)
 			from = get_value(env, "PATH");
 			*path = find_binary(cmd, from);
 			if (!(*path))
-				*path = ft_strdup(cmd);
+				*path = ft_strdup("fsafdasdf");
 		}
 	}
 	else
-	{
-		is_s = is_shell(cmd);
 		*path = ft_strdup(cmd);
-	}
 }
 
 void	exec_command(t_all *all)

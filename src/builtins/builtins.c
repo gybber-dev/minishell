@@ -1,5 +1,14 @@
 #include "../includes/minishell.h"
 
+int	is_shell(char *command)
+{
+	if (!command || *command == '\0')
+		return (0);
+	if (ft_strnstr(command, "minishell", ft_strlen(command) + 1))
+		return (1);
+	return (0);
+}
+
 int	is_builtin(char *command)
 {
 	if (!command)

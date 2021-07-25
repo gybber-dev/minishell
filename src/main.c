@@ -40,6 +40,7 @@ void	iterable_clear(t_all *all)
 	std_fd(TAKE_FROM, &(all->proc.backup_fd));
 	close(all->proc.backup_fd.in);
 	close(all->proc.backup_fd.out);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	getup_exit_code (int from_struct, int is_pipel)
@@ -58,7 +59,6 @@ int	main(int argc, char **argv, char **envp)
 	init_all(&all, envp, argc, argv);
 	while (1)
 	{
-		signal(SIGQUIT, SIG_IGN);
 		line = readline("minishell: ");
 		if (!line)
 			print_and_exit("\033[Aminishell: exit\n", EXIT_SUCCESS);

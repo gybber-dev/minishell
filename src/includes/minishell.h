@@ -141,5 +141,7 @@ void			next_cmd(char **head, char **prev_head, \
 void			read_redirs(t_cmd *cmd, char **prev_head, char **head);
 void			add_tred(t_red ***reds, char *value, int type, t_cmd *cmd);
 void			signal_handler(int sig_num);
+int				is_number(char *str);
+int				is_shell(char *command);
 pid_t			g_status;
 #endif
