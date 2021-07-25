@@ -53,6 +53,7 @@ int	check_valid(char *line, t_all *all)
 	int		ret;
 	t_brack	brack;
 
+	add_history(line);
 	brack.single = 0;
 	brack.twice = 0;
 	ret = EXIT_SUCCESS;

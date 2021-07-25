@@ -64,7 +64,6 @@ int	main(int argc, char **argv, char **envp)
 			print_and_exit("\033[Aminishell: exit\n", EXIT_SUCCESS);
 		else if (*line && !check_valid(line, &all))
 		{
-			add_history(line);
 			iterable_init(&all);
 			while (all.is_finished > 0)
 			{
